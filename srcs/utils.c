@@ -1,39 +1,35 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/12/07 13:54:10 by mlavergn          #+#    #+#             */
-/*   Updated: 2024/12/11 16:48:36 by mlavergn         ###   ########.fr       */
+/*   Created: 2024/12/11 16:37:39 by mlavergn          #+#    #+#             */
+/*   Updated: 2024/12/11 16:47:05 by mlavergn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-int main(int ac, char **av, char **envp)
+char    **copy_env(char **envp)
 {
-    char    *line;
-    char    **line_split;
-    char    **myenv;
-    (void)ac;
-    (void)av;
+    char    **my_env;
+    int     i;
+    int     j;
     
-    while (1)
+    i = 0;
+    j = 0;
+    while (envp[i])
+        i++;
+    my_env = malloc(sizeof(char *) * (i + 1));
+    while (j < i - 1)
     {
-        myenv = copy_env(envp);
-        line =  readline("minishell>");
-        if (*line == '\0')
-        {
-            free(line);
-            continue;
-        }
-        if (line)
-        {
-            line_split = ft_split(line, ' ');
-            check_builtin(line_split, myenv);
-        }
+        my_env[j] = ft_strdup(envp[j]);
+        j++;
     }
-    return (0);
+    my_env[j] = ft_strdup("_=/usr/bin/env");
+    j++;
+    my_env[j] = NULL;
+    return (my_env);
 }

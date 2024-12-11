@@ -6,7 +6,7 @@
 /*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/11 14:26:32 by mlavergn          #+#    #+#             */
-/*   Updated: 2024/12/11 15:07:21 by mlavergn         ###   ########.fr       */
+/*   Updated: 2024/12/11 16:49:48 by mlavergn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,9 +38,52 @@ void    pwd(char **envp)
     i = 0;
     while (envp[i])
     {
-        if (ft_strncmp(envp[i], "PWD", 3) == 0)
+        if (ft_strncmp(envp[i], "PWD=", 4) == 0)
+        {
             printf("%s\n", envp[i] + 4);
+            return ;
+        }
         i++;
     }
 }
 
+void    exit_cmd(char **line)
+{
+    int i;
+
+    
+    if (!line[1])
+    {
+        printf("exit\n");
+        exit(EXIT_SUCCESS);
+    }
+    if (line[1])
+    {
+        i = 0;
+        while (line[1][i])
+        {
+            if (!(ft_isdigit(line[1][i])))
+            {
+                printf("exit\nminishell: %s: numeric argument required\n", line[1]);
+                exit(EXIT_SUCCESS);
+            }
+            i++;
+        }
+        if (line[2])
+            printf("exit\nminishell: exit: too many arguments\n");
+        else
+            exit(EXIT_SUCCESS);
+    }
+}
+
+void    env_cmd(char **myenv)
+{
+    int i;
+
+    i = 0;
+    while (myenv[i])
+    {
+        printf("%s\n", myenv[i]);
+        i++;
+    }
+}
