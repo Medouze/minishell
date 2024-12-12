@@ -6,7 +6,7 @@
 /*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/11 13:10:04 by mlavergn          #+#    #+#             */
-/*   Updated: 2024/12/12 11:02:04 by mlavergn         ###   ########.fr       */
+/*   Updated: 2024/12/12 11:59:50 by mlavergn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,8 @@ void    check_builtin(char **line, char ***envp)
         env_cmd(*envp);
     if (ft_strncmp(line[0], "export", 7) == 0)
         export_env(line, envp, line[1]);
+    if (ft_strncmp(line[0], "unset", 7) == 0)
+        unset_env(line, envp, line[1]);
 }
 
 // char	*check_cmd(char *cmd, char **envp)
