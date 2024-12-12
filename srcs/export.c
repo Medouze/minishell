@@ -6,7 +6,7 @@
 /*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/11 17:48:10 by mlavergn          #+#    #+#             */
-/*   Updated: 2024/12/12 12:29:48 by mlavergn         ###   ########.fr       */
+/*   Updated: 2024/12/12 12:41:31 by mlavergn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,7 +98,10 @@ void    add_line_env(char ***envp, char *export)
 void    export_env(char **line, char ***envp, char *export)
 {
     if (!line[1])
+    {
         env_declare(envp);
+        return ;
+    }
     if (!valid_line_export(export))
     {
         printf("minishell: export: '%s': not a valid identifier\n", export);

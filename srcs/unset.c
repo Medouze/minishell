@@ -6,7 +6,7 @@
 /*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/12 11:33:22 by mlavergn          #+#    #+#             */
-/*   Updated: 2024/12/12 12:29:43 by mlavergn         ###   ########.fr       */
+/*   Updated: 2024/12/12 12:56:42 by mlavergn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,34 @@ int     find_line_unset(char ***envp, char *unset)
     return (0);
 }
 
+void    remove_line_env(char ***envp, int line_unset)
+{
+    int     i;
+    int     j;
+    char    **new_env;
+
+    i = 0;
+    j = 0;
+    while ((*envp)[i])
+        i++;
+    new_env = malloc(sizeof(char *) * i);
+    i = 0;
+    while ((*envp)[i])
+    {
+        if (i == line_unset)
+        {
+            i++;
+            continue ;
+        }
+        new_env[j] = ft_strdup((*envp)[i]);
+        i++;
+        j++;
+    }
+    new_env[j] = NULL;
+    free_env(*envp);
+    *envp = new_env; 
+}
+
 void    unset_env(char **line, char ***envp, char *unset)
 {
     int line_unset;
@@ -58,4 +86,5 @@ void    unset_env(char **line, char ***envp, char *unset)
     unset = ft_strjoin(unset, "=");
     if (!(line_unset = find_line_unset(envp, unset)))
         return ;
+    remove_line_env(envp, line_unset);
 }
