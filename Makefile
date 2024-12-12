@@ -6,7 +6,7 @@
 #    By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/12/07 13:53:34 by mlavergn          #+#    #+#              #
-#    Updated: 2024/12/11 16:42:57 by mlavergn         ###   ########.fr        #
+#    Updated: 2024/12/11 17:48:19 by mlavergn         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,7 +16,7 @@ LIBFTDIR	= 	./libft
 CC			= 	cc
 FLAGS		= 	-Wall -Wextra -Werror -fsanitize=address -g
 
-SRCS 		=	${DIR}main.c $(DIR)check.c $(DIR)builtin.c $(DIR)utils.c
+SRCS 		=	${DIR}main.c $(DIR)check.c $(DIR)builtin.c $(DIR)utils.c $(DIR)export.c
 OBJS 		= 	$(SRCS:.c=.o)
 LIBFT		= 	${LIBFTDIR}/libft.a
 

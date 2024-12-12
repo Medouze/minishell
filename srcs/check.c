@@ -6,22 +6,24 @@
 /*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/11 13:10:04 by mlavergn          #+#    #+#             */
-/*   Updated: 2024/12/11 16:50:24 by mlavergn         ###   ########.fr       */
+/*   Updated: 2024/12/12 10:56:07 by mlavergn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-void    check_builtin(char **line, char **envp)
+void    check_builtin(char **line, char ***envp)
 {
     if (ft_strncmp(line[0], "echo", 5) == 0)
         echo(line);
     if (ft_strncmp(line[0], "pwd", 4) == 0)
-        pwd(envp);
+        pwd(*envp);
     if (ft_strncmp(line[0], "exit", 5) == 0)
         exit_cmd(line);
     if (ft_strncmp(line[0], "env", 4) == 0)
-        env_cmd(envp);
+        env_cmd(*envp);
+    if (ft_strncmp(line[0], "export", 7) == 0)
+        export_env(envp, line[1]);
 }
 
 // char	*check_cmd(char *cmd, char **envp)

@@ -6,7 +6,7 @@
 /*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 13:54:10 by mlavergn          #+#    #+#             */
-/*   Updated: 2024/12/11 16:48:36 by mlavergn         ###   ########.fr       */
+/*   Updated: 2024/12/12 10:54:29 by mlavergn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,14 +15,14 @@
 int main(int ac, char **av, char **envp)
 {
     char    *line;
-    char    **line_split;
     char    **myenv;
+    char    **line_split;
     (void)ac;
     (void)av;
     
+    myenv = copy_env(envp);
     while (1)
     {
-        myenv = copy_env(envp);
         line =  readline("minishell>");
         if (*line == '\0')
         {
@@ -32,7 +32,7 @@ int main(int ac, char **av, char **envp)
         if (line)
         {
             line_split = ft_split(line, ' ');
-            check_builtin(line_split, myenv);
+            check_builtin(line_split, &myenv);
         }
     }
     return (0);

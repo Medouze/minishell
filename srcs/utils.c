@@ -6,7 +6,7 @@
 /*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/11 16:37:39 by mlavergn          #+#    #+#             */
-/*   Updated: 2024/12/11 16:47:05 by mlavergn         ###   ########.fr       */
+/*   Updated: 2024/12/11 17:48:32 by mlavergn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,4 +32,20 @@ char    **copy_env(char **envp)
     j++;
     my_env[j] = NULL;
     return (my_env);
+}
+
+void    free_env(char **env)
+{
+    int i;
+    
+    i = 0;
+    if (env)
+    {
+        while (env[i])
+        {
+            free(env[i]);
+            i++;
+        }
+        free(env);
+    }
 }
