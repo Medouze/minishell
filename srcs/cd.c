@@ -6,7 +6,7 @@
 /*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/13 13:41:03 by mlavergn          #+#    #+#             */
-/*   Updated: 2024/12/13 17:39:58 by mlavergn         ###   ########.fr       */
+/*   Updated: 2024/12/14 01:51:36 by mlavergn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,11 +112,12 @@ void    cd_cmd(char **line, char ***envp)
 
     home = getenv("HOME");
     old_pwd = get_pwd(*envp);
-    if (!line[1])
+    if (!line[1] || (line[1] && line[1][0] == '~') || (line[1] && !ft_strncmp(line[1], "~/", 2)))
     {
         if (chdir(home) == -1)
             return ;
         change_pwd(envp, home);
+        return ;
     }
     if (line[1])
     {
