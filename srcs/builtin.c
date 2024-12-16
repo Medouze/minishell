@@ -6,7 +6,7 @@
 /*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/11 14:26:32 by mlavergn          #+#    #+#             */
-/*   Updated: 2024/12/11 18:00:53 by mlavergn         ###   ########.fr       */
+/*   Updated: 2024/12/16 16:22:12 by mlavergn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ void    pwd(char **envp)
     }
 }
 
-void    exit_cmd(char **line)
+void    exit_cmd(char **line, char **envp)
 {
     int i;
 
@@ -65,6 +65,7 @@ void    exit_cmd(char **line)
             if (!(ft_isdigit(line[1][i])))
             {
                 printf("exit\nminishell: %s: numeric argument required\n", line[1]);
+                free(envp);
                 exit(EXIT_SUCCESS);
             }
             i++;
@@ -72,7 +73,10 @@ void    exit_cmd(char **line)
         if (line[2])
             printf("exit\nminishell: exit: too many arguments\n");
         else
+        {
+            free(envp);
             exit(EXIT_SUCCESS);
+        }
     }
 }
 

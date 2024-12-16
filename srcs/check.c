@@ -6,7 +6,7 @@
 /*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/11 13:10:04 by mlavergn          #+#    #+#             */
-/*   Updated: 2024/12/13 13:49:11 by mlavergn         ###   ########.fr       */
+/*   Updated: 2024/12/16 16:22:41 by mlavergn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ void    check_builtin(char **line, char ***envp)
     if (ft_strncmp(line[0], "pwd", 4) == 0)
         pwd(*envp);
     if (ft_strncmp(line[0], "exit", 5) == 0)
-        exit_cmd(line);
+        exit_cmd(line, *envp);
     if (ft_strncmp(line[0], "env", 4) == 0)
         env_cmd(*envp);
     if (ft_strncmp(line[0], "export", 7) == 0)
