@@ -6,7 +6,7 @@
 /*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 13:54:10 by mlavergn          #+#    #+#             */
-/*   Updated: 2024/12/16 16:22:21 by mlavergn         ###   ########.fr       */
+/*   Updated: 2024/12/18 15:25:46 by mlavergn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,7 @@ int main(int ac, char **av, char **envp)
             line_split = ft_split(line, ' ');
             check_builtin(line_split, &myenv);
         }
+        free(line);
         free_env(line_split);
     }
     return (0);
