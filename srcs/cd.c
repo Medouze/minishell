@@ -6,7 +6,7 @@
 /*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/13 13:41:03 by mlavergn          #+#    #+#             */
-/*   Updated: 2024/12/18 17:13:55 by mlavergn         ###   ########.fr       */
+/*   Updated: 2025/01/31 16:13:14 by mlavergn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -171,12 +171,8 @@ void    back_absolute_pwd(char ***envp, char *path, char *old_pwd)
     }
     new_old_pwd = get_pwd(*envp);
     if (new_path[0] != '\0')
-    {
-        tmp = new_path;
-        new_path = ft_strjoin("/", new_path);
-        free(tmp);
         addto_pwd(envp, new_path, new_old_pwd);
-    }
+    change_old_pwd(envp, old_pwd);
     free(new_old_pwd);
     free(new_path);
 }
