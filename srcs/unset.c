@@ -6,7 +6,7 @@
 /*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/12 11:33:22 by mlavergn          #+#    #+#             */
-/*   Updated: 2024/12/12 12:56:42 by mlavergn         ###   ########.fr       */
+/*   Updated: 2025/02/05 16:30:40 by mlavergn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,6 +85,10 @@ void    unset_env(char **line, char ***envp, char *unset)
     }
     unset = ft_strjoin(unset, "=");
     if (!(line_unset = find_line_unset(envp, unset)))
+    {
+        free(unset);
         return ;
+    }
     remove_line_env(envp, line_unset);
+    free(unset);
 }

@@ -6,7 +6,7 @@
 /*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 13:57:07 by mlavergn          #+#    #+#             */
-/*   Updated: 2024/12/16 16:23:23 by mlavergn         ###   ########.fr       */
+/*   Updated: 2025/02/05 15:49:09 by mlavergn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,24 @@
 #include <readline/readline.h>
 #include <readline/history.h>
 #include "../libft/libft.h"
+
+//extern int	error;
+
+typedef	enum	e_type
+{
+	CMD,
+	PIPE,
+	REDIRECT_IN,
+	REDIRECT_OUT,
+	APPEND,
+	HEREDOC
+}	t_type;
+
+typedef struct s_token
+{
+	t_type			type;
+	char			*str;
+}	t_token;
 
 /*checks*/
 void    check_builtin(char **line, char ***envp);
@@ -36,5 +54,6 @@ void    cd_cmd(char **line, char ***envp);
 /*utils*/
 char    **copy_env(char **envp);
 void    free_env(char **env);
+void	print_error(int error);
 
 #endif

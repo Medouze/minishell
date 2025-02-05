@@ -6,7 +6,7 @@
 /*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/11 16:37:39 by mlavergn          #+#    #+#             */
-/*   Updated: 2024/12/11 17:48:32 by mlavergn         ###   ########.fr       */
+/*   Updated: 2025/02/05 15:43:17 by mlavergn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,4 +48,9 @@ void    free_env(char **env)
         }
         free(env);
     }
+}
+
+void    print_error(int error)
+{
+    printf("%d", error);
 }
