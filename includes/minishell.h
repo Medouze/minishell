@@ -6,7 +6,7 @@
 /*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 13:57:07 by mlavergn          #+#    #+#             */
-/*   Updated: 2025/02/12 15:49:56 by mlavergn         ###   ########.fr       */
+/*   Updated: 2025/02/12 17:35:19 by mlavergn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,5 +59,9 @@ void	print_error(int error);
 
 /*lexer*/
 t_token *lexer(char *str);
+void	handle_token(char *str, t_token **head, t_token **current, int *i);
+t_token *new_token(t_type type, char *str);
+void    fill_token(t_token **head, t_token **current, t_token *new);
+void	free_tokens(t_token *head);
 
 #endif
