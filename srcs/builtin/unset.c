@@ -6,11 +6,11 @@
 /*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/12 11:33:22 by mlavergn          #+#    #+#             */
-/*   Updated: 2025/02/05 16:30:40 by mlavergn         ###   ########.fr       */
+/*   Updated: 2025/02/12 15:01:09 by mlavergn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/minishell.h"
+#include "../../includes/minishell.h"
 
 int     valid_line_unset(char *unset)
 {

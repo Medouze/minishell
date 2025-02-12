@@ -6,11 +6,11 @@
 /*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/11 17:48:10 by mlavergn          #+#    #+#             */
-/*   Updated: 2024/12/12 12:41:31 by mlavergn         ###   ########.fr       */
+/*   Updated: 2025/02/12 15:01:23 by mlavergn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/minishell.h"
+#include "../../includes/minishell.h"
 
 int     valid_line_export(char *export)
 {

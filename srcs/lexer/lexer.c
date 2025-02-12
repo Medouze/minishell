@@ -6,11 +6,11 @@
 /*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/05 14:59:17 by mlavergn          #+#    #+#             */
-/*   Updated: 2025/02/07 18:05:29 by mlavergn         ###   ########.fr       */
+/*   Updated: 2025/02/12 15:08:21 by mlavergn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/minishell.h"
+#include "../../includes/minishell.h"
 
 char *get_word(char *str, int *index)
 {
@@ -45,9 +45,11 @@ t_token	*lexer(char *str)
 {
 	t_token	*head;
 	t_token	*current;
-    char *word;
+    t_token *new_token;
     int i;
 
+    head = NULL;
+    current = NULL;
 	i = 0;
     while (str[i])
     {
@@ -58,11 +60,13 @@ t_token	*lexer(char *str)
         }
         if (ft_isalpha(str[i]))
         {
-			if (head = NULL)
+            new_token = malloc(sizeof(t_token));
+			if (head == NULL)
             	head->str = get_word(str, &i);
 			else
 				current->str = get_word(str, &i);
         }
     }
+    return(head);
 }
 

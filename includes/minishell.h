@@ -6,7 +6,7 @@
 /*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 13:57:07 by mlavergn          #+#    #+#             */
-/*   Updated: 2025/02/07 18:04:08 by mlavergn         ###   ########.fr       */
+/*   Updated: 2025/02/12 15:06:50 by mlavergn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,6 +56,7 @@ char    **copy_env(char **envp);
 void    free_env(char **env);
 void	print_error(int error);
 
+/*lexer*/
 t_token *lexer(char *str);
 
 #endif

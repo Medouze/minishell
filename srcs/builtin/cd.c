@@ -6,11 +6,11 @@
 /*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/13 13:41:03 by mlavergn          #+#    #+#             */
-/*   Updated: 2025/01/31 16:13:14 by mlavergn         ###   ########.fr       */
+/*   Updated: 2025/02/12 15:01:51 by mlavergn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/minishell.h"
+#include "../../includes/minishell.h"
 
 void remove_slash(char **line)
 {
