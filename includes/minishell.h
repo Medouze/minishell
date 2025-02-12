@@ -6,7 +6,7 @@
 /*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 13:57:07 by mlavergn          #+#    #+#             */
-/*   Updated: 2025/02/12 15:06:50 by mlavergn         ###   ########.fr       */
+/*   Updated: 2025/02/12 15:49:56 by mlavergn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,7 @@ typedef struct s_token
 {
 	t_type			type;
 	char			*str;
+	struct s_token	*next;
 }	t_token;
 
 /*checks*/
