@@ -6,7 +6,7 @@
 /*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/11 16:37:39 by mlavergn          #+#    #+#             */
-/*   Updated: 2025/02/12 14:55:28 by mlavergn         ###   ########.fr       */
+/*   Updated: 2025/02/16 17:03:39 by mlavergn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,9 +50,10 @@ void    free_env(char **env)
     }
 }
 
-void    print_error(int error)
+void    print_error(char *error)
 {
-    printf("%d", error);
+    printf("%s", error);
+    exit(0);
 }
 
 void    env_cmd(char **myenv)

@@ -6,7 +6,7 @@
 /*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/05 14:59:17 by mlavergn          #+#    #+#             */
-/*   Updated: 2025/02/12 17:39:18 by mlavergn         ###   ########.fr       */
+/*   Updated: 2025/02/16 17:38:41 by mlavergn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,8 @@ t_token	*new_token(t_type type, char *str)
 	if (!new)
 		return (NULL);
 	new->str = ft_strdup(str);
+	if (!new->str)
+		print_error("Failed strdup\n");
 	new->type = type;
 	new->next = NULL;
 	return (new);
@@ -34,36 +36,17 @@ void	fill_token(t_token **head, t_token **current, t_token *new)
 	*current = new;
 }
 
-char	*copy_str(char *str, int start, int end)
+void	print_tokens(t_token *head) // A supprimer par la suite(test)
 {
-	char	*word;
-	int		i;
-	int		length;
+	t_token	*current;
 
-	length = end - start;
-	word = malloc(sizeof(char) * (length + 1));
-	i = 0;
-	while (start < end)
+	current = head;
+	while (current)
 	{
-		word[i] = str[start];
-		i++;
-		start++;
+		printf("type: %d, value: '%s'\n", current->type, current->str);
+		current = current->next;
 	}
-	word[i] = '\0';
-	return (word);
 }
-
-// void	print_tokens(t_token *head) // A supprimer par la suite(test)
-// {
-//     t_token	*current;
-
-// 	current = head;
-// 	while (current)
-// 	{
-// 		printf("type: %d, value: '%s'\n", current->type, current->str);
-// 		current = current->next;
-// 	}
-// }
 
 void	proceed_cmd(char *str, t_token **head, t_token **current, int *i)
 {
@@ -72,9 +55,14 @@ void	proceed_cmd(char *str, t_token **head, t_token **current, int *i)
 	t_token	*new;
 
 	start = *i;
-	while (str[*i] && ft_isalpha(str[*i]))
+	while (str[*i] && ft_isalnum(str[*i]))
 		(*i)++;
-	cmd_str = copy_str(str, start, *i);
+	cmd_str = ft_substr(str, start, *i - start);
+	if (!cmd_str)
+	{
+		free_tokens(*head);
+		print_error("Memory allocation failed\n");
+	}
 	new = new_token(CMD, cmd_str);
 	free(cmd_str);
 	fill_token(head, current, new);
@@ -92,16 +80,15 @@ t_token	*lexer(char *str)
 	while (str[i])
 	{
 		if ((str[i] >= 9 && str[i] <= 13) || str[i] == 32)
-		{
 			i++;
-			continue ;
-		}
-		else if ((str[i]) == '|' || str[i] == '<' || str[i] == '>')
+		else if (str[i] == '|' || str[i] == '<' || str[i] == '>')
 			handle_token(str, &head, &current, &i);
+		else if (str[i] == '\"' || str[i] == '\'')
+			handle_quotes(str, &i, &current, &head);
 		else
 			proceed_cmd(str, &head, &current, &i);
 	}
-	//print_tokens(head); //Fonction pour voir les tokens;
+	print_tokens(head);
 	free_tokens(head);
 	return (head);
 }

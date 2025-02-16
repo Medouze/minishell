@@ -6,7 +6,7 @@
 /*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 13:57:07 by mlavergn          #+#    #+#             */
-/*   Updated: 2025/02/12 17:35:19 by mlavergn         ###   ########.fr       */
+/*   Updated: 2025/02/16 17:26:15 by mlavergn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@ void    cd_cmd(char **line, char ***envp);
 /*utils*/
 char    **copy_env(char **envp);
 void    free_env(char **env);
-void	print_error(int error);
+void	print_error(char *error);
 
 /*lexer*/
 t_token *lexer(char *str);
@@ -63,5 +63,6 @@ void	handle_token(char *str, t_token **head, t_token **current, int *i);
 t_token *new_token(t_type type, char *str);
 void    fill_token(t_token **head, t_token **current, t_token *new);
 void	free_tokens(t_token *head);
+void	handle_quotes(char *str, int *i, t_token **current, t_token **head);
 
 #endif
