@@ -6,7 +6,7 @@
 /*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/12 16:15:26 by mlavergn          #+#    #+#             */
-/*   Updated: 2025/02/16 17:32:51 by mlavergn         ###   ########.fr       */
+/*   Updated: 2025/02/16 17:50:47 by mlavergn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ void	free_tokens(t_token *head)
 	}
 }
 
-void	proceed_token(char *str, t_token **head, t_token **current, int *i)
+void	handle_in_out(char *str, t_token **head, t_token **current, int *i)
 {
 	t_token	*new;
 
@@ -63,7 +63,7 @@ void	handle_token(char *str, t_token **head, t_token **current, int *i)
 		(*i)++;
 	}
 	else if (str[*i] == '<' || str[*i] == '>')
-		proceed_token(str, head, current, i);
+		handle_in_out(str, head, current, i);
 }
 
 int	check_closed(char *str, char quote)
