@@ -6,7 +6,7 @@
 /*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 13:54:10 by mlavergn          #+#    #+#             */
-/*   Updated: 2025/02/16 19:47:13 by mlavergn         ###   ########.fr       */
+/*   Updated: 2025/02/16 20:59:30 by mlavergn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,12 +15,12 @@
 int main(int ac, char **av, char **envp)
 {
     char    *line;
-    char    **myenv;
+    t_shell g_env;
     char    **line_split;
     (void)ac;
     (void)av;
     
-    myenv = copy_env(envp);
+    g_env = copy_env(envp);
     while (1)
     {
         line =  readline("minishell>");
@@ -31,7 +31,7 @@ int main(int ac, char **av, char **envp)
         }
         add_history(line);
         line_split = ft_split(line, ' ');
-        check_builtin(line_split, &myenv);
+        check_builtin(line_split, &g_env.env);
         lexer(line);
         free(line);
         free_env(line_split);
