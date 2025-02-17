@@ -6,7 +6,7 @@
 /*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/05 14:59:17 by mlavergn          #+#    #+#             */
-/*   Updated: 2025/02/16 17:38:41 by mlavergn         ###   ########.fr       */
+/*   Updated: 2025/02/17 18:24:23 by mlavergn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@ void	proceed_cmd(char *str, t_token **head, t_token **current, int *i)
 	t_token	*new;
 
 	start = *i;
-	while (str[*i] && ft_isalnum(str[*i]))
+	while (str[*i] && (ft_isalnum(str[*i]) || str[*i] == '-' || str[*i] == '_' || str[*i] == '='))
 		(*i)++;
 	cmd_str = ft_substr(str, start, *i - start);
 	if (!cmd_str)
@@ -89,6 +89,6 @@ t_token	*lexer(char *str)
 			proceed_cmd(str, &head, &current, &i);
 	}
 	print_tokens(head);
-	free_tokens(head);
+	//free_tokens(head);
 	return (head);
 }
