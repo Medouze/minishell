@@ -6,7 +6,7 @@
 /*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 13:54:10 by mlavergn          #+#    #+#             */
-/*   Updated: 2025/02/16 20:59:30 by mlavergn         ###   ########.fr       */
+/*   Updated: 2025/02/19 21:57:10 by mlavergn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@ int main(int ac, char **av, char **envp)
 {
     char    *line;
     t_shell g_env;
+    t_token *tokens;
     char    **line_split;
     (void)ac;
     (void)av;
@@ -32,7 +33,8 @@ int main(int ac, char **av, char **envp)
         add_history(line);
         line_split = ft_split(line, ' ');
         check_builtin(line_split, &g_env.env);
-        lexer(line);
+        tokens = lexer(line);
+        parse_tokens(tokens);
         free(line);
         free_env(line_split);
     }

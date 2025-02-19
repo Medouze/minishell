@@ -6,7 +6,7 @@
 /*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 13:57:07 by mlavergn          #+#    #+#             */
-/*   Updated: 2025/02/16 20:59:54 by mlavergn         ###   ########.fr       */
+/*   Updated: 2025/02/19 21:55:44 by mlavergn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,22 @@ typedef struct s_shell
 	int		last_exit;
 }	t_shell;
 
+typedef struct s_arg_node
+{
+    char                *arg;
+    struct s_arg_node   *next;
+} t_arg_node;
+
+typedef struct s_simple_cmds
+{
+	char **str;
+	int num_redirections;
+	char *hd_file_name;
+	t_token *redirections;
+	struct s_simple_cmds *next;
+	struct s_simple_cmds *prev;
+} t_simple_cmds;
+
 /*checks*/
 void    check_builtin(char **line, char ***envp);
 char	*check_cmd(char *cmd, char **envp);
@@ -69,5 +85,9 @@ t_token *new_token(t_type type, char *str);
 void    fill_token(t_token **head, t_token **current, t_token *new);
 void	free_tokens(t_token *head);
 void	handle_quotes(char *str, int *i, t_token **current, t_token **head);
+
+/*parser*/
+void			print_parser(t_simple_cmds *cmds);
+t_simple_cmds	*parse_tokens(t_token *tokens);
 
 #endif

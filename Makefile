@@ -6,7 +6,7 @@
 #    By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/12/07 13:53:34 by mlavergn          #+#    #+#              #
-#    Updated: 2025/02/12 16:20:43 by mlavergn         ###   ########.fr        #
+#    Updated: 2025/02/19 21:59:18 by mlavergn         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,13 +14,14 @@ NAME				= 	minishell
 DIR					=	srcs/
 DIR_BUILTIN			= 	srcs/builtin/
 DIR_LEXER			= 	srcs/lexer/
+DIR_PARSER			=	srcs/parser/
 LIBFTDIR			= 	./libft
 CC					= 	cc
 FLAGS				= 	-Wall -Wextra -Werror -fsanitize=address -g
 
 SRCS 		=	${DIR}main.c $(DIR)check.c $(DIR)utils.c $(DIR_BUILTIN)export.c \
 				$(DIR_BUILTIN)unset.c $(DIR_BUILTIN)cd.c $(DIR_BUILTIN)echo.c $(DIR_LEXER)lexer.c \
-				$(DIR_BUILTIN)exit.c $(DIR_BUILTIN)pwd.c $(DIR_LEXER)lexer_utils.c
+				$(DIR_BUILTIN)exit.c $(DIR_BUILTIN)pwd.c $(DIR_LEXER)lexer_utils.c $(DIR_PARSER)parser.c
 OBJS 		= 	$(SRCS:.c=.o)
 LIBFT		= 	${LIBFTDIR}/libft.a
 
