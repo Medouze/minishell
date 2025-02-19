@@ -6,7 +6,7 @@
 /*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/16 17:41:03 by mlavergn          #+#    #+#             */
-/*   Updated: 2025/02/19 22:09:43 by mlavergn         ###   ########.fr       */
+/*   Updated: 2025/02/19 22:14:19 by mlavergn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,39 +15,41 @@
 
 t_simple_cmds *init_simple_cmd()
 {
-    t_simple_cmds *cmd = malloc(sizeof(t_simple_cmds));
+    t_simple_cmds *cmd;
+    
+    cmd = malloc(sizeof(t_simple_cmds));
     if (!cmd)
-        return NULL;
+        return (NULL);
     cmd->str = NULL;
     cmd->num_redirections = 0;
     cmd->hd_file_name = NULL;
     cmd->redirections = NULL;
     cmd->next = NULL;
     cmd->prev = NULL;
-    return cmd;
+    return (cmd);
 }
 
 void add_redirection(t_simple_cmds *cmd, t_token *token)
 {
-    t_token *new_redir = malloc(sizeof(t_token));
+    t_token *new_redir;
+    t_token *last;
+    
+    new_redir = malloc(sizeof(t_token));
     if (!new_redir)
-        return;
+        return ;
     new_redir->type = token->type;
     new_redir->str = token->str;
     new_redir->next = NULL;
-
     if (cmd->redirections)
     {
-        t_token *last = cmd->redirections;
+        last = cmd->redirections;
         while (last->next)
             last = last->next;
         last->next = new_redir;
     }
     else
         cmd->redirections = new_redir;
-
     cmd->num_redirections++;
-
     if (token->type == HEREDOC)
         cmd->hd_file_name = token->str;
 }
@@ -152,7 +154,6 @@ t_simple_cmds *parse_tokens(t_token *tokens)
             current->str = convert_arg_list_to_array(arg_list, arg_count);
             arg_list = NULL;
             arg_count = 0;
-
             current->next = init_simple_cmd();
             if (current->next)
             {
@@ -162,19 +163,17 @@ t_simple_cmds *parse_tokens(t_token *tokens)
         }
         else if (tokens->type == REDIRECT_IN || tokens->type == REDIRECT_OUT ||
             tokens->type == APPEND || tokens->type == HEREDOC)
-   {
-       if (tokens->next)
-       {
-           add_redirection(current, tokens->next);
-           tokens = tokens->next;
-       }
-   }
-
+        {
+            if (tokens->next)
+            {
+                add_redirection(current, tokens->next);
+                tokens = tokens->next;
+            }
+        }
         tokens = tokens->next;
     }
-
     if (current)
         current->str = convert_arg_list_to_array(arg_list, arg_count);
     print_parser(head);
-    return head;
+    return (head);
 }
