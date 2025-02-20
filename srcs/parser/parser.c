@@ -6,7 +6,7 @@
 /*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/16 17:41:03 by mlavergn          #+#    #+#             */
-/*   Updated: 2025/02/19 22:14:19 by mlavergn         ###   ########.fr       */
+/*   Updated: 2025/02/20 19:23:48 by mlavergn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -143,31 +143,33 @@ t_simple_cmds *parse_tokens(t_token *tokens)
             if (!head)
                 head = current;
         }
-
-        if (tokens->type == CMD)
+        if (!ft_strncmp(tokens->str, "\0", 1) == 0)
         {
-            add_argument(&arg_list, tokens->str);
-            arg_count++;
-        }
-        else if (tokens->type == PIPE)
-        {
-            current->str = convert_arg_list_to_array(arg_list, arg_count);
-            arg_list = NULL;
-            arg_count = 0;
-            current->next = init_simple_cmd();
-            if (current->next)
+            if (tokens->type == CMD)
             {
-                current->next->prev = current;
-                current = current->next;
+                add_argument(&arg_list, tokens->str);
+                arg_count++;
             }
-        }
-        else if (tokens->type == REDIRECT_IN || tokens->type == REDIRECT_OUT ||
-            tokens->type == APPEND || tokens->type == HEREDOC)
-        {
-            if (tokens->next)
+            else if (tokens->type == PIPE)
             {
-                add_redirection(current, tokens->next);
-                tokens = tokens->next;
+                current->str = convert_arg_list_to_array(arg_list, arg_count);
+                arg_list = NULL;
+                arg_count = 0;
+                current->next = init_simple_cmd();
+                if (current->next)
+                {
+                    current->next->prev = current;
+                    current = current->next;
+                }
+            }
+            else if (tokens->type == REDIRECT_IN || tokens->type == REDIRECT_OUT ||
+                tokens->type == APPEND || tokens->type == HEREDOC)
+            {
+                if (tokens->next)
+                {
+                    add_redirection(current, tokens->next);
+                    tokens = tokens->next;
+                }
             }
         }
         tokens = tokens->next;
