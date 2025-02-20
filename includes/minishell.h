@@ -6,7 +6,7 @@
 /*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 13:57:07 by mlavergn          #+#    #+#             */
-/*   Updated: 2025/02/20 19:11:19 by mlavergn         ###   ########.fr       */
+/*   Updated: 2025/02/20 20:42:32 by mlavergn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,6 +89,6 @@ void  	expand_dollar(char *str);
 
 /*parser*/
 void			print_parser(t_simple_cmds *cmds);
-t_simple_cmds	*parse_tokens(t_token *tokens);
+void 			parse_tokens(t_token *tokens);
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/16 17:41:03 by mlavergn          #+#    #+#             */
-/*   Updated: 2025/02/20 19:23:48 by mlavergn         ###   ########.fr       */
+/*   Updated: 2025/02/20 20:44:35 by mlavergn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -128,13 +128,55 @@ void print_parser(t_simple_cmds *cmds)
     }
 }
 
-t_simple_cmds *parse_tokens(t_token *tokens)
+void free_simple_cmds(t_simple_cmds *cmds)
+{
+    t_simple_cmds *temp;
+
+    while (cmds)
+    {
+        temp = cmds;
+        cmds = cmds->next;
+
+        // Free the array of strings (str)
+        if (temp->str)
+        {
+            for (int i = 0; temp->str[i]; i++)
+            {
+                free(temp->str[i]);
+                temp->str[i] = NULL;  // Avoid double-free
+            }
+            free(temp->str);
+            temp->str = NULL;  // Avoid double-free
+        }
+
+        // Free the redirections if applicable
+        if (temp->redirections)
+        {
+            free(temp->redirections);  // Assuming redirections was dynamically allocated
+            temp->redirections = NULL; // Avoid double-free
+        }
+
+        // Free the file name for heredoc if applicable
+        if (temp->hd_file_name)
+        {
+            free(temp->hd_file_name);
+            temp->hd_file_name = NULL; // Avoid double-free
+        }
+
+        // Free the current structure
+        free(temp);
+    }
+}
+
+void parse_tokens(t_token *tokens)
 {
     t_simple_cmds *head = NULL;
     t_simple_cmds *current = NULL;
     t_arg_node *arg_list = NULL;
+    t_token     *token_head;
     int arg_count = 0;
 
+    token_head = tokens;
     while (tokens)
     {
         if (!current)
@@ -177,5 +219,7 @@ t_simple_cmds *parse_tokens(t_token *tokens)
     if (current)
         current->str = convert_arg_list_to_array(arg_list, arg_count);
     print_parser(head);
-    return (head);
+    free_tokens(token_head);
+    free_simple_cmds(head);
+    //return (head);
 }
