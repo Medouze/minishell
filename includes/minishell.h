@@ -6,7 +6,7 @@
 /*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 13:57:07 by mlavergn          #+#    #+#             */
-/*   Updated: 2025/02/20 20:42:32 by mlavergn         ###   ########.fr       */
+/*   Updated: 2025/02/20 21:10:52 by mlavergn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,16 +79,18 @@ void    free_env(char **env);
 void	print_error(char *error);
 
 /*lexer*/
-t_token *lexer(char *str);
+t_token *lexer(char *str, t_shell g_env);
 void	handle_token(char *str, t_token **head, t_token **current, int *i);
 t_token *new_token(t_type type, char *str);
 void    fill_token(t_token **head, t_token **current, t_token *new);
 void	free_tokens(t_token *head);
 void	handle_quotes(char *str, int *i, t_token **current, t_token **head);
 void  	expand_dollar(char *str);
+int		check_closed(char *str, char quote);
 
 /*parser*/
-void			print_parser(t_simple_cmds *cmds);
-void 			parse_tokens(t_token *tokens);
+void	print_parser(t_simple_cmds *cmds);
+void 	parse_tokens(t_token *tokens);
+void	expander(t_token **tokens, t_shell g_env);
 
 #endif

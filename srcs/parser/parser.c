@@ -6,7 +6,7 @@
 /*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/16 17:41:03 by mlavergn          #+#    #+#             */
-/*   Updated: 2025/02/20 20:44:35 by mlavergn         ###   ########.fr       */
+/*   Updated: 2025/02/20 20:53:13 by mlavergn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -136,34 +136,26 @@ void free_simple_cmds(t_simple_cmds *cmds)
     {
         temp = cmds;
         cmds = cmds->next;
-
-        // Free the array of strings (str)
         if (temp->str)
         {
             for (int i = 0; temp->str[i]; i++)
             {
                 free(temp->str[i]);
-                temp->str[i] = NULL;  // Avoid double-free
+                temp->str[i] = NULL;
             }
             free(temp->str);
-            temp->str = NULL;  // Avoid double-free
+            temp->str = NULL;
         }
-
-        // Free the redirections if applicable
         if (temp->redirections)
         {
-            free(temp->redirections);  // Assuming redirections was dynamically allocated
-            temp->redirections = NULL; // Avoid double-free
+            free(temp->redirections);
+            temp->redirections = NULL;
         }
-
-        // Free the file name for heredoc if applicable
         if (temp->hd_file_name)
         {
             free(temp->hd_file_name);
-            temp->hd_file_name = NULL; // Avoid double-free
+            temp->hd_file_name = NULL;
         }
-
-        // Free the current structure
         free(temp);
     }
 }

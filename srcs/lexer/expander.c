@@ -6,7 +6,7 @@
 /*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/20 17:39:37 by mlavergn          #+#    #+#             */
-/*   Updated: 2025/02/20 19:25:37 by mlavergn         ###   ########.fr       */
+/*   Updated: 2025/02/20 21:27:28 by mlavergn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,4 +55,31 @@ void expand_dollar(char *str)
     new_str[j] = '\0';
     strcpy(str, new_str);
     free(new_str);
+}
+
+void    handle_quotes_2(t_token *tokens, char **str)
+{
+    if (!check_closed(*str, '\'') || !check_closed(*str, '\"'))
+	{
+        printf("tttt\n");
+		free_tokens(tokens);
+		print_error("Unclosed quotes\n");
+	}
+}
+
+void    expander(t_token **tokens, t_shell g_env)
+{
+    (void)g_env;
+    t_token *current;
+    //char    *new_str;
+
+    current = *tokens;
+    while (current)
+    {
+        if (ft_strchr(current->str, '\'') || ft_strchr(current->str, '\"'))
+        {
+            handle_quotes_2(*tokens, &current->str);
+        }
+        current = current->next;
+    }
 }

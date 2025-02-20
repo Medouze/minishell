@@ -6,7 +6,7 @@
 /*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/05 14:59:17 by mlavergn          #+#    #+#             */
-/*   Updated: 2025/02/20 20:40:50 by mlavergn         ###   ########.fr       */
+/*   Updated: 2025/02/20 21:02:27 by mlavergn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@ void	proceed_cmd(char *str, t_token **head, t_token **current, int *i)
 	t_token	*new;
 
 	start = *i;
-	while (str[*i] && (ft_isalnum(str[*i]) || str[*i] == '-' || str[*i] == '_' || str[*i] == '='))
+	while (str[*i] && (ft_isalnum(str[*i]) || str[*i] == '-' || str[*i] == '_' || str[*i] == '=' || str[*i] == '\'' || str[*i] == '\"' || str[*i] == '$'))
 		(*i)++;
 	cmd_str = ft_substr(str, start, *i - start);
 	if (!cmd_str)
@@ -68,7 +68,7 @@ void	proceed_cmd(char *str, t_token **head, t_token **current, int *i)
 	fill_token(head, current, new);
 }
 
-t_token	*lexer(char *str)
+t_token	*lexer(char *str, t_shell g_env)
 {
 	t_token	*head;
 	t_token	*current;
@@ -83,11 +83,12 @@ t_token	*lexer(char *str)
 			i++;
 		else if (str[i] == '|' || str[i] == '<' || str[i] == '>')
 			handle_token(str, &head, &current, &i);
-		else if (str[i] == '\"' || str[i] == '\'')
-			handle_quotes(str, &i, &current, &head);
+		// else if (str[i] == '\"' || str[i] == '\'')
+		// 	handle_quotes(str, &i, &current, &head);
 		else
 			proceed_cmd(str, &head, &current, &i);
 	}
+	expander(&head, g_env);
 	print_tokens(head);
 	return (head);
 }

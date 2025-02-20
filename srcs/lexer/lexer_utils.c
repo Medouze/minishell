@@ -6,7 +6,7 @@
 /*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/12 16:15:26 by mlavergn          #+#    #+#             */
-/*   Updated: 2025/02/20 20:44:52 by mlavergn         ###   ########.fr       */
+/*   Updated: 2025/02/20 21:28:26 by mlavergn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ void	free_tokens(t_token *head)
 	while (current != NULL)
 	{
 		next = current->next;
-		//free(current->str);
+		free(current->str);
 		free(current);
 		current = next;
 	}
