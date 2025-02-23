@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
+/*   By: lecartuy <lecartuy@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 13:57:07 by mlavergn          #+#    #+#             */
-/*   Updated: 2025/02/20 21:10:52 by mlavergn         ###   ########.fr       */
+/*   Updated: 2025/02/23 11:17:50 by lecartuy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,5 +92,12 @@ int		check_closed(char *str, char quote);
 void	print_parser(t_simple_cmds *cmds);
 void 	parse_tokens(t_token *tokens);
 void	expander(t_token **tokens, t_shell g_env);
+
+/*execution*/
+
+void execute_command(t_token *token, char **env);
+void execute_tokens(t_token *tokens, t_shell *shell);
+void handle_pipe(t_token *tokens, char **env);
+void handle_redirection(t_token *token);
 
 #endif
