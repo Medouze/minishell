@@ -6,7 +6,7 @@
 /*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/11 16:37:39 by mlavergn          #+#    #+#             */
-/*   Updated: 2025/02/16 20:58:07 by mlavergn         ###   ########.fr       */
+/*   Updated: 2025/02/24 20:47:53 by mlavergn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,7 @@ t_shell copy_env(char **envp)
     g_env.env[j] = ft_strdup("_=/usr/bin/env");
     j++;
     g_env.env[j] = NULL;
+    g_env.last_exit = 0;
     return (g_env);
 }
 

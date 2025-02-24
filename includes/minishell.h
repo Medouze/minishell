@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lecartuy <lecartuy@student.s19.be>         +#+  +:+       +#+        */
+/*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 13:57:07 by mlavergn          #+#    #+#             */
-/*   Updated: 2025/02/23 11:17:50 by lecartuy         ###   ########.fr       */
+/*   Updated: 2025/02/24 20:49:20 by mlavergn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,22 +79,21 @@ void    free_env(char **env);
 void	print_error(char *error);
 
 /*lexer*/
-t_token *lexer(char *str, t_shell g_env);
+t_token *lexer(char *str);
 void	handle_token(char *str, t_token **head, t_token **current, int *i);
 t_token *new_token(t_type type, char *str);
 void    fill_token(t_token **head, t_token **current, t_token *new);
 void	free_tokens(t_token *head);
 void	handle_quotes(char *str, int *i, t_token **current, t_token **head);
-void  	expand_dollar(char *str);
 int		check_closed(char *str, char quote);
+void	print_tokens(t_token *head); //delete plus tard
 
 /*parser*/
 void	print_parser(t_simple_cmds *cmds);
 void 	parse_tokens(t_token *tokens);
-void	expander(t_token **tokens, t_shell g_env);
+void	parser2(t_token **tokens, char **env);
 
 /*execution*/
-
 void execute_command(t_token *token, char **env);
 void execute_tokens(t_token *tokens, t_shell *shell);
 void handle_pipe(t_token *tokens, char **env);

@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: lecartuy <lecartuy@student.s19.be>         +#+  +:+       +#+         #
+#    By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/12/07 13:53:34 by mlavergn          #+#    #+#              #
-#    Updated: 2025/02/23 11:57:12 by lecartuy         ###   ########.fr        #
+#    Updated: 2025/02/24 19:19:09 by mlavergn         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -22,7 +22,7 @@ FLAGS				= 	-Wall -Wextra -Werror -fsanitize=address -g
 SRCS 		=	${DIR}main.c $(DIR)check.c $(DIR)utils.c $(DIR_BUILTIN)export.c \
 				$(DIR_BUILTIN)unset.c $(DIR_BUILTIN)cd.c $(DIR_BUILTIN)echo.c $(DIR_LEXER)lexer.c \
 				$(DIR_BUILTIN)exit.c $(DIR_BUILTIN)pwd.c $(DIR_LEXER)lexer_utils.c $(DIR_PARSER)parser.c \
-				$(DIR_LEXER)expander.c
+				$(DIR_PARSER)parser2.c 
 OBJS 		= 	$(SRCS:.c=.o)
 LIBFT		= 	${LIBFTDIR}/libft.a
 

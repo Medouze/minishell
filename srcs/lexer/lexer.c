@@ -6,7 +6,7 @@
 /*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/05 14:59:17 by mlavergn          #+#    #+#             */
-/*   Updated: 2025/02/20 21:02:27 by mlavergn         ###   ########.fr       */
+/*   Updated: 2025/02/24 20:19:17 by mlavergn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ void	print_tokens(t_token *head) // A supprimer par la suite(test)
 	current = head;
 	while (current)
 	{
-		printf("type: %d, value: '%s'\n", current->type, current->str);
+		printf("type: %d, value: %s\n", current->type, current->str);
 		current = current->next;
 	}
 }
@@ -68,7 +68,7 @@ void	proceed_cmd(char *str, t_token **head, t_token **current, int *i)
 	fill_token(head, current, new);
 }
 
-t_token	*lexer(char *str, t_shell g_env)
+t_token	*lexer(char *str)
 {
 	t_token	*head;
 	t_token	*current;
@@ -83,12 +83,11 @@ t_token	*lexer(char *str, t_shell g_env)
 			i++;
 		else if (str[i] == '|' || str[i] == '<' || str[i] == '>')
 			handle_token(str, &head, &current, &i);
-		// else if (str[i] == '\"' || str[i] == '\'')
-		// 	handle_quotes(str, &i, &current, &head);
+		else if (str[i] == '\"' || str[i] == '\'')
+			handle_quotes(str, &i, &current, &head);
 		else
 			proceed_cmd(str, &head, &current, &i);
 	}
-	expander(&head, g_env);
 	print_tokens(head);
 	return (head);
 }

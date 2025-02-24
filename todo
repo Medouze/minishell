@@ -1,4 +1,6 @@
 Gerer le dollar dans le lexer
 Gerer les differents cas d erreurs dans mon parser
 
-check si quotes ferme -> remplace dollars si pas ' -> removes les quotes
+check si quotes ferme -> remplace dollars si pas ' -> removes les quotes (fini ?)
+ne pas expand si ' '
+expand si rien

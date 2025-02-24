@@ -6,7 +6,7 @@
 /*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/12 16:15:26 by mlavergn          #+#    #+#             */
-/*   Updated: 2025/02/20 21:28:26 by mlavergn         ###   ########.fr       */
+/*   Updated: 2025/02/24 21:06:19 by mlavergn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,18 +90,16 @@ void	handle_quotes(char *str, int *i, t_token **current, t_token **head)
 	char	quote_type;
 
 	quote_type = str[*i];
+	start = (*i);
+	(*i)++;
 	if (!check_closed(str, quote_type))
 	{
 		free_tokens(*head);
 		print_error("Unclosed quotes\n");
 	}
-	if (quote_type == '\"')
-		expand_dollar(str);
-	(*i)++;
-	start = *i;
 	while (str[*i] && str[*i] != quote_type)
 		(*i)++;
-	content = ft_substr(str, start, *i - start);
+	content = ft_substr(str, start, ((*i) - start) + 1);
 	new = new_token(CMD, content);
 	free(content);
 	fill_token(head, current, new);
