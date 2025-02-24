@@ -6,7 +6,7 @@
 /*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/24 19:14:06 by mlavergn          #+#    #+#             */
-/*   Updated: 2025/02/24 21:48:55 by mlavergn         ###   ########.fr       */
+/*   Updated: 2025/02/24 23:22:36 by mlavergn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,9 @@ char	*get_word(char *str)
 
 	i = 0;
 	len = 0;
-	while (str[len] && str[len] != 32 && str[len] != '\"')
+	if (!str)
+		return (NULL);
+	while (str[len] && str[len] != 32 && str[len] != '\"' && str[len] != '\'')
 		len++;
 	word = malloc(sizeof(char) * (len + 1));
 	if (!word)
@@ -34,56 +36,51 @@ char	*get_word(char *str)
 	return (word);
 }
 
-// char	*new_value(char *str, char **env)
-// {
-
-// }
-
 char	*extract_word_env(char **env, const char *value)
 {
-    int 	i;
-    size_t	value_len;
+	int		i;
+	size_t	value_len;
 	char	*new_value;
 
 	new_value = NULL;
 	value_len = ft_strlen(value);
 	i = 0;
-    while (env[i])
-    {
-        if (strncmp(env[i], value, value_len) == 0 && env[i][value_len] == '=')
+	while (env[i])
+	{
+		if (strncmp(env[i], value, value_len) == 0 && env[i][value_len] == '=')
 		{
 			new_value = ft_strchr(env[i], '=');
-			break;
+			break ;
 		}
-        i++;
-    }
+		i++;
+	}
 	if (!new_value)
 		return (ft_strdup(""));
 	return (ft_strdup(new_value + 1));
 }
 
-char *ft_strreplace(char *str, char *old, char *new)
+char	*ft_strreplace(char *str, char *old, char *new)
 {
-    char *pos;
-    char *result;
-    size_t len_before, len_old, len_new, len_after;
+	char	*pos;
+	char	*result;
+	size_t	len;
 
-    if (!str || !old || !new)
-        return NULL;
-    pos = ft_strnstr(str, old, ft_strlen(str));
-    if (!pos)  // If 'old' is not found, return a duplicate of the original string
-        return ft_strdup(str);
-    len_before = pos - str;
-    len_old = ft_strlen(old);
-    len_new = ft_strlen(new);
-    len_after = ft_strlen(pos + len_old);
-    result = malloc(len_before + len_new + len_after + 1);
-    if (!result)
-        return NULL;
-    ft_strlcpy(result, str, len_before + 1);  // Copy part before 'old'
-    ft_strlcpy(result + len_before, new, len_new + 1);  // Copy 'new'
-    ft_strlcpy(result + len_before + len_new, pos + len_old, len_after + 1);  // Copy rest of 'str'
-    return (result);
+	pos = ft_strnstr(str, old, ft_strlen(str));
+	if (!str || !old || !new || !pos)
+	{
+		if (str)
+			return (ft_strdup(str));
+		return (NULL);
+	}
+	len = (pos - str) + ft_strlen(new) + ft_strlen(pos + ft_strlen(old));
+	result = malloc(len + 1);
+	if (!result)
+		return (NULL);
+	ft_strlcpy(result, str, pos - str + 1);
+	ft_strlcpy(result + (pos - str), new, ft_strlen(new) + 1);
+	ft_strlcpy(result + (pos - str)
+		+ ft_strlen(new), pos + ft_strlen(old), len + 1);
+	return (result);
 }
 
 void	expand_dollar(char	**str, char **env)
@@ -93,6 +90,8 @@ void	expand_dollar(char	**str, char **env)
 	char	*new_str;
 
 	value = get_word(ft_strchr(*str, '$'));
+	if (!value)
+		return ;
 	extracted_value = extract_word_env(env, value + 1);
 	new_str = ft_strreplace(*str, value, extracted_value);
 	free(*str);
@@ -106,17 +105,17 @@ void	expand_dollar(char	**str, char **env)
 
 void	parser2(t_token **tokens, char **env)
 {
-	(void)env;
 	char	*temp;
 	t_token	*current;
 
 	current = *tokens;
 	while (current)
 	{
+		if (!(current->str[0] == '\''
+				&& current->str[ft_strlen(current->str) - 1] == '\''))
+			expand_dollar(&current->str, env);
 		if (current->str[0] == '\"' || current->str[0] == '\'')
 		{
-			if (current->str[0] == '\"' && ft_strchr(current->str, '$'))
-				expand_dollar(&current->str, env);
 			temp = ft_substr(current->str, 1, ft_strlen(current->str) - 2);
 			free(current->str);
 			current->str = ft_strdup(temp);

@@ -6,7 +6,7 @@
 /*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 13:57:07 by mlavergn          #+#    #+#             */
-/*   Updated: 2025/02/24 20:49:20 by mlavergn         ###   ########.fr       */
+/*   Updated: 2025/02/24 22:54:50 by mlavergn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,7 +85,6 @@ t_token *new_token(t_type type, char *str);
 void    fill_token(t_token **head, t_token **current, t_token *new);
 void	free_tokens(t_token *head);
 void	handle_quotes(char *str, int *i, t_token **current, t_token **head);
-int		check_closed(char *str, char quote);
 void	print_tokens(t_token *head); //delete plus tard
 
 /*parser*/

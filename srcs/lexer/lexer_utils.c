@@ -6,7 +6,7 @@
 /*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/12 16:15:26 by mlavergn          #+#    #+#             */
-/*   Updated: 2025/02/24 21:06:19 by mlavergn         ###   ########.fr       */
+/*   Updated: 2025/02/24 23:06:47 by mlavergn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,20 +66,25 @@ void	handle_token(char *str, t_token **head, t_token **current, int *i)
 		handle_in_out(str, head, current, i);
 }
 
-int	check_closed(char *str, char quote)
+int	check_closed(char *str)
 {
-	int	i;
-	int	in_quote;
+	int		i;
+	char	current_quote;
 
 	i = 0;
-	in_quote = 0;
+	current_quote = 0;
 	while (str[i])
 	{
-		if (str[i] == quote)
-			in_quote = !in_quote;
+		if ((str[i] == '\'' || str[i] == '\"'))
+		{
+			if (!current_quote)
+				current_quote = str[i];
+			else if (str[i] == current_quote)
+				current_quote = 0;
+		}
 		i++;
 	}
-	return (in_quote == 0);
+	return (current_quote == 0);
 }
 
 void	handle_quotes(char *str, int *i, t_token **current, t_token **head)
@@ -92,7 +97,7 @@ void	handle_quotes(char *str, int *i, t_token **current, t_token **head)
 	quote_type = str[*i];
 	start = (*i);
 	(*i)++;
-	if (!check_closed(str, quote_type))
+	if (!check_closed(str))
 	{
 		free_tokens(*head);
 		print_error("Unclosed quotes\n");
