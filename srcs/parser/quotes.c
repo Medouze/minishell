@@ -6,7 +6,7 @@
 /*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/25 14:51:56 by mlavergn          #+#    #+#             */
-/*   Updated: 2025/02/25 17:02:53 by mlavergn         ###   ########.fr       */
+/*   Updated: 2025/02/25 17:08:27 by mlavergn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,13 +58,14 @@ void	remove_quotes_string(char **str)
 	*str = new_str;
 }
 
-
 void	remove_quotes(char **str)
 {
+	char	*temp;
+
 	if (((*str)[0] == '\"' && (*str)[ft_strlen(*str) - 1] == '\"')
 		|| ((*str)[0] == '\'' && (*str)[ft_strlen(*str) - 1] == '\''))
 	{
-		char *temp = ft_substr(*str, 1, ft_strlen(*str) - 2);
+		temp = ft_substr(*str, 1, ft_strlen(*str) - 2);
 		free(*str);
 		*str = ft_strdup(temp);
 		free(temp);
@@ -72,4 +73,3 @@ void	remove_quotes(char **str)
 	else
 		remove_quotes_string(str);
 }
-
