@@ -6,45 +6,65 @@
 /*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/25 14:51:56 by mlavergn          #+#    #+#             */
-/*   Updated: 2025/02/25 15:25:09 by mlavergn         ###   ########.fr       */
+/*   Updated: 2025/02/25 16:48:37 by mlavergn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-void	remove_quotes_string(char **str)
+static void	process_quotes(char c, char *quote_type, char *new_str, int *j)
+{
+	if (!(*quote_type))
+		*quote_type = c;
+	else if (*quote_type == c)
+		*quote_type = 0;
+	else
+		new_str[(*j)++] = c;
+}
+
+static char	*remove_matching_quotes(const char *str)
 {
 	int		i;
-	char	*first_word;
-	char	*second_word;
-	
-	i = 1;
-	if ((*str)[0] == '\"')
+	int		j;
+	char	quote_type;
+	char	*new_str;
+
+	new_str = malloc(ft_strlen(str) + 1);
+	if (!new_str)
+		return (NULL);
+	i = 0;
+	j = 0;
+	quote_type = 0;
+	while (str[i])
 	{
-		while ((*str)[i] != '\"')
-			i++;
+		if (str[i] == '\'' || str[i] == '\"')
+			process_quotes(str[i], &quote_type, new_str, &j);
+		else
+			new_str[j++] = str[i];
+		i++;
 	}
-	else
-	{
-		while ((*str)[i] != '\'')
-			i++;
-	}
-	first_word = ft_substr(*str, 1, i - 1);
-	second_word = ft_substr(*str, i + 1, ft_strlen(*str));
-	free(*str);
-	*str = ft_strjoin(first_word, second_word);
-	free(first_word);
-	free(second_word);
+	new_str[j] = '\0';
+	return (new_str);
 }
+
+void	remove_quotes_string(char **str)
+{
+	char	*new_str;
+
+	new_str = remove_matching_quotes(*str);
+	if (!new_str)
+		return ;
+	free(*str);
+	*str = new_str;
+}
+
 
 void	remove_quotes(char **str)
 {
-	char	*temp;
-
 	if (((*str)[0] == '\"' && (*str)[ft_strlen(*str) - 1] == '\"')
 		|| ((*str)[0] == '\'' && (*str)[ft_strlen(*str) - 1] == '\''))
 	{
-		temp = ft_substr(*str, 1, ft_strlen(*str) - 2);
+		char *temp = ft_substr(*str, 1, ft_strlen(*str) - 2);
 		free(*str);
 		*str = ft_strdup(temp);
 		free(temp);
@@ -52,3 +72,4 @@ void	remove_quotes(char **str)
 	else
 		remove_quotes_string(str);
 }
+

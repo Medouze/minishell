@@ -6,7 +6,7 @@
 /*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 13:57:07 by mlavergn          #+#    #+#             */
-/*   Updated: 2025/02/25 15:01:20 by mlavergn         ###   ########.fr       */
+/*   Updated: 2025/02/25 16:44:32 by mlavergn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,6 +92,7 @@ void	print_parser(t_simple_cmds *cmds);
 void 	parse_tokens(t_token *tokens);
 void	parser2(t_token **tokens, char **env);
 void	remove_quotes(char **str);
+void	expand_dollar(char	**str, char **env);
 
 /*execution*/
 void execute_command(t_token *token, char **env);

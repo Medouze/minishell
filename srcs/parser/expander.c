@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   parser2.c                                          :+:      :+:    :+:   */
+/*   expander.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/02/24 19:14:06 by mlavergn          #+#    #+#             */
-/*   Updated: 2025/02/25 15:01:51 by mlavergn         ###   ########.fr       */
+/*   Created: 2025/02/25 16:42:47 by mlavergn          #+#    #+#             */
+/*   Updated: 2025/02/25 16:54:52 by mlavergn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,41 +83,78 @@ char	*ft_strreplace(char *str, char *old, char *new)
 	return (result);
 }
 
-void	expand_dollar(char	**str, char **env)
+char	*ft_strjoin_free(char *s1, char *s2)
+{
+	char	*new_str;
+
+	if (!s1 || !s2)
+		return (NULL);
+	new_str = ft_strjoin(s1, s2);
+	free(s1);
+	return (new_str);
+}
+
+char	*ft_strjoin_char_free(char *s, char c)
+{
+	char	*new_str;
+	int		len;
+
+	if (!s)
+	{
+		new_str = malloc(2);
+		if (!new_str)
+			return (NULL);
+		new_str[0] = c;
+		new_str[1] = '\0';
+		return (new_str);
+	}
+	len = ft_strlen(s);
+	new_str = malloc(len + 2);
+	if (!new_str)
+		return (NULL);
+	ft_strlcpy(new_str, s, len + 1);
+	new_str[len] = c;
+	new_str[len + 1] = '\0';
+	free(s);
+	return (new_str);
+}
+
+void	replace_dollar_word(char **str, char **new_str, char **env, int *i)
 {
 	char	*value;
 	char	*extracted_value;
-	char	*new_str;
 
-	value = get_word(ft_strchr(*str, '$'));
-	if (!value)
-		return ;
-	extracted_value = extract_word_env(env, value + 1);
-	new_str = ft_strreplace(*str, value, extracted_value);
-	free(*str);
-	*str = ft_strdup(new_str);
-	free(new_str);
-	free(value);
-	free(extracted_value);
-	if (ft_strchr(*str, '$'))
-		expand_dollar(str, env);
+	value = get_word(&(*str)[*i]);
+	if (value)
+	{
+		extracted_value = extract_word_env(env, value + 1);
+		*new_str = ft_strjoin_free(*new_str, extracted_value);
+		*i += ft_strlen(value) - 1;
+		free(value);
+		free(extracted_value);
+	}
 }
 
-void	parser2(t_token **tokens, char **env)
+void	expand_dollar(char	**str, char **env)
 {
-	t_token	*current;
+	char	*new_str;
+	int		i = 0;
+	int		in_single = 0;
+	int		in_double = 0;
 
-	current = *tokens;
-	while (current)
+	new_str = ft_strdup("");
+	while ((*str)[i])
 	{
-		if (!(current->str[0] == '\'' && ft_strchr(current->str + 1, '\'')))
-			expand_dollar(&current->str, env);
-		if (current->str[0] == '\"' || current->str[0] == '\'')
-		{
-			remove_quotes(&current->str);
-		}
-		current = current->next;
+		if ((*str)[i] == '\'' && !in_double)
+			in_single = !in_single;
+		else if ((*str)[i] == '\"' && !in_single)
+			in_double = !in_double;
+		if ((*str)[i] == '$' && !in_single)
+			replace_dollar_word(str, &new_str, env, &i);
+		else
+			new_str = ft_strjoin_char_free(new_str, (*str)[i]);
+		i++;
 	}
-	print_tokens(*tokens);
-	free_tokens(*tokens);
+	free(*str);
+	*str = new_str;
 }
