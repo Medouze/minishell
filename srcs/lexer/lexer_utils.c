@@ -6,7 +6,7 @@
 /*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/12 16:15:26 by mlavergn          #+#    #+#             */
-/*   Updated: 2025/02/24 23:06:47 by mlavergn         ###   ########.fr       */
+/*   Updated: 2025/02/25 14:40:38 by mlavergn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,7 @@ void	handle_in_out(char *str, t_token **head, t_token **current, int *i)
 {
 	t_token	*new;
 
+	new = NULL;
 	if ((str[*i + 1] && str[*i + 1] == '<')
 		|| (str[*i + 1] && str[*i + 1] == '>'))
 	{
@@ -104,9 +105,12 @@ void	handle_quotes(char *str, int *i, t_token **current, t_token **head)
 	}
 	while (str[*i] && str[*i] != quote_type)
 		(*i)++;
-	content = ft_substr(str, start, ((*i) - start) + 1);
+	while (str[*i] && str[*i] != 32)
+		(*i)++;
+	content = ft_substr(str, start, (*i) - start);
 	new = new_token(CMD, content);
 	free(content);
 	fill_token(head, current, new);
-	(*i)++;
+	if (str[*i])
+		(*i)++;
 }

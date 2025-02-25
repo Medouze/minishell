@@ -6,7 +6,7 @@
 /*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/24 19:14:06 by mlavergn          #+#    #+#             */
-/*   Updated: 2025/02/24 23:22:36 by mlavergn         ###   ########.fr       */
+/*   Updated: 2025/02/25 15:01:51 by mlavergn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,21 +105,16 @@ void	expand_dollar(char	**str, char **env)
 
 void	parser2(t_token **tokens, char **env)
 {
-	char	*temp;
 	t_token	*current;
 
 	current = *tokens;
 	while (current)
 	{
-		if (!(current->str[0] == '\''
-				&& current->str[ft_strlen(current->str) - 1] == '\''))
+		if (!(current->str[0] == '\'' && ft_strchr(current->str + 1, '\'')))
 			expand_dollar(&current->str, env);
 		if (current->str[0] == '\"' || current->str[0] == '\'')
 		{
-			temp = ft_substr(current->str, 1, ft_strlen(current->str) - 2);
-			free(current->str);
-			current->str = ft_strdup(temp);
-			free(temp);
+			remove_quotes(&current->str);
 		}
 		current = current->next;
 	}

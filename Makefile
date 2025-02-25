@@ -6,7 +6,7 @@
 #    By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/12/07 13:53:34 by mlavergn          #+#    #+#              #
-#    Updated: 2025/02/24 23:03:45 by mlavergn         ###   ########.fr        #
+#    Updated: 2025/02/25 15:02:50 by mlavergn         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -20,8 +20,9 @@ CC					= 	cc
 FLAGS				= 	-Wall -Wextra -Werror -fsanitize=address -g
 
 SRCS 		=	${DIR}main.c $(DIR)check.c $(DIR)utils.c $(DIR_BUILTIN)export.c \
-				$(DIR_BUILTIN)unset.c $(DIR_BUILTIN)cd.c $(DIR_BUILTIN)echo.c $(DIR_LEXER)lexer.c \
-				$(DIR_BUILTIN)exit.c $(DIR_BUILTIN)pwd.c $(DIR_LEXER)lexer_utils.c $(DIR_PARSER)parser2.c 
+				$(DIR_BUILTIN)unset.c $(DIR_BUILTIN)cd.c $(DIR_BUILTIN)echo.c \
+				$(DIR_LEXER)lexer.c $(DIR_BUILTIN)exit.c $(DIR_BUILTIN)pwd.c \
+				$(DIR_LEXER)lexer_utils.c $(DIR_PARSER)parser2.c $(DIR_PARSER)quotes.c
 OBJS 		= 	$(SRCS:.c=.o)
 LIBFT		= 	${LIBFTDIR}/libft.a
 
