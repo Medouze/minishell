@@ -6,7 +6,7 @@
 /*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/24 19:14:06 by mlavergn          #+#    #+#             */
-/*   Updated: 2025/02/25 16:44:54 by mlavergn         ###   ########.fr       */
+/*   Updated: 2025/02/25 17:05:32 by mlavergn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,9 +20,8 @@ void	parser2(t_token **tokens, char **env)
 	while (current)
 	{
 		expand_dollar(&current->str, env);
-		if (current->str[0] == '\"' || current->str[0] == '\'')
+		if (ft_strchr(current->str, '\"') || ft_strchr(current->str, '\''))
 			remove_quotes(&current->str);
-
 		current = current->next;
 	}
 	print_tokens(*tokens);
