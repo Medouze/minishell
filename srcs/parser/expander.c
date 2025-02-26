@@ -6,7 +6,7 @@
 /*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/25 16:42:47 by mlavergn          #+#    #+#             */
-/*   Updated: 2025/02/25 17:12:09 by mlavergn         ###   ########.fr       */
+/*   Updated: 2025/02/26 16:27:32 by mlavergn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,23 +59,34 @@ char	*extract_word_env(char **env, const char *value)
 	return (ft_strdup(new_value + 1));
 }
 
-void	replace_dollar_word(char **str, char **new_str, char **env, int *i)
+void	replace_dollar_word(char **str, char **new_str, t_shell g_env, int *i)
 {
 	char	*value;
 	char	*extracted_value;
+	char	*first_word;
 
-	value = get_word(&(*str)[*i]);
-	if (value)
+	if ((*str)[*i + 1] == '?')
 	{
-		extracted_value = extract_word_env(env, value + 1);
-		*new_str = ft_strjoin_free(*new_str, extracted_value);
-		*i += ft_strlen(value) - 1;
-		free(value);
-		free(extracted_value);
+		first_word = ft_itoa(g_env.last_exit);
+		*new_str = ft_strjoin_free(*new_str, first_word);
+		free(first_word);
+		(*i)++;
+	}
+	else
+	{
+		value = get_word(&(*str)[*i]);
+		if (value)
+		{
+			extracted_value = extract_word_env(g_env.env, value + 1);
+			*new_str = ft_strjoin_free(*new_str, extracted_value);
+			*i += ft_strlen(value) - 1;
+			free(value);
+			free(extracted_value);
+		}
 	}
 }
 
-void	expand_dollar(char	**str, char **env)
+void	expand_dollar(char	**str, t_shell g_env)
 {
 	char	*new_str;
 	int		i;
@@ -92,8 +103,8 @@ void	expand_dollar(char	**str, char **env)
 			in_single = !in_single;
 		else if ((*str)[i] == '\"' && !in_single)
 			in_double = !in_double;
-		if ((*str)[i] == '$' && !in_single)
-			replace_dollar_word(str, &new_str, env, &i);
+		if ((*str)[i] == '$' && (*str)[i + 1] && !in_single)
+			replace_dollar_word(str, &new_str, g_env, &i);
 		else
 			new_str = ft_strjoin_char_free(new_str, (*str)[i]);
 		i++;

@@ -6,7 +6,7 @@
 /*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/25 14:51:56 by mlavergn          #+#    #+#             */
-/*   Updated: 2025/02/25 17:08:27 by mlavergn         ###   ########.fr       */
+/*   Updated: 2025/02/26 15:10:09 by mlavergn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,4 +72,6 @@ void	remove_quotes(char **str)
 	}
 	else
 		remove_quotes_string(str);
+	if (ft_strchr(*str, '\"'))
+		remove_quotes(str);
 }

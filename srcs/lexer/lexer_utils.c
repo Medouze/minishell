@@ -6,7 +6,7 @@
 /*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/12 16:15:26 by mlavergn          #+#    #+#             */
-/*   Updated: 2025/02/25 14:40:38 by mlavergn         ###   ########.fr       */
+/*   Updated: 2025/02/26 16:20:32 by mlavergn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,8 +103,7 @@ void	handle_quotes(char *str, int *i, t_token **current, t_token **head)
 		free_tokens(*head);
 		print_error("Unclosed quotes\n");
 	}
-	while (str[*i] && str[*i] != quote_type)
-		(*i)++;
+	move_to_closing_quote(str, i, quote_type);
 	while (str[*i] && str[*i] != 32)
 		(*i)++;
 	content = ft_substr(str, start, (*i) - start);

@@ -6,7 +6,7 @@
 /*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 13:57:07 by mlavergn          #+#    #+#             */
-/*   Updated: 2025/02/25 17:09:59 by mlavergn         ###   ########.fr       */
+/*   Updated: 2025/02/26 16:28:17 by mlavergn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,10 @@
 # include <readline/history.h>
 # include "../libft/libft.h"
 # include <readline/history.h>
+
+#ifndef SPE_CHARS
+# define SPE_CHARS " !\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~"
+#endif
 
 typedef enum e_type
 {
@@ -86,13 +90,15 @@ void    fill_token(t_token **head, t_token **current, t_token *new);
 void	free_tokens(t_token *head);
 void	handle_quotes(char *str, int *i, t_token **current, t_token **head);
 void	print_tokens(t_token *head); //delete plus tard
+void	move_to_closing_quote(char *str, int *i, char quote_type);
+int		get_nbr_quotes(char *str, char quote_type);
 
 /*parser*/
 void	print_parser(t_simple_cmds *cmds);
 void 	parse_tokens(t_token *tokens);
-void	parser2(t_token **tokens, char **env);
+void	parser2(t_token **tokens, t_shell g_env);
 void	remove_quotes(char **str);
-void	expand_dollar(char	**str, char **env);
+void	expand_dollar(char	**str, t_shell g_env);
 char	*ft_strjoin_char_free(char *s, char c);
 char	*ft_strjoin_free(char *s1, char *s2);
 char	*ft_strreplace(char *str, char *old, char *new);
