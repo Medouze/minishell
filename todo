@@ -1,4 +1,16 @@
-Gerer les differents cas d erreurs dans le parser
+Détecter les erreurs de syntaxe
+
+    Quotes non fermées
+    Pipes (|) mal placés 
+    Redirections (<, >, >>, <<) incorrectes
+    Opérateurs (||) mal utilisés
+
+Vérifier les caractères interdits / inconnus
+
+Afficher une erreur si un caractère spécial est mal utilisé
+
+
+
 
 
 Exit status https://www.gnu.org/software/bash/manual/html_node/Exit-Status.html
