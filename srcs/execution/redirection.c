@@ -6,19 +6,11 @@
 /*   By: lecartuy <lecartuy@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/18 10:25:48 by lecartuy          #+#    #+#             */
-/*   Updated: 2025/02/23 11:10:31 by lecartuy         ###   ########.fr       */
+/*   Updated: 2025/02/27 15:29:53 by lecartuy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
-
-void handle_redirection(t_token *token)
-{
-    if (token->type == HEREDOC)
-        handle_heredoc(token->next->str);
-    else
-        handle_file_redirection(token);
-}
 
 static void handle_file_redirection(t_token *token)
 {
@@ -58,13 +50,21 @@ static void handle_heredoc(char *delimiter)
     while (1)
     {
         line = readline("> ");
-        if (!line || strcmp(line, delimiter) == 0)
+        if (!line || ft_strncmp(line, delimiter, ft_strlen(delimiter) + 1) == 0)
             break;
-        write(pipe_fd[1], line, strlen(line));
+        write(pipe_fd[1], line, ft_strlen(line));
         write(pipe_fd[1], "\n", 1);
         free(line);
     }
     close(pipe_fd[1]);
     dup2(pipe_fd[0], STDIN_FILENO);
     close(pipe_fd[0]);
+}
+
+void handle_redirection(t_token *token)
+{
+    if (token->type == HEREDOC)
+        handle_heredoc(token->next->str);
+    else
+        handle_file_redirection(token);
 }

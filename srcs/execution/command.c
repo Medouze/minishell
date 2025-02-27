@@ -6,11 +6,26 @@
 /*   By: lecartuy <lecartuy@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/17 11:22:48 by lecartuy          #+#    #+#             */
-/*   Updated: 2025/02/19 15:42:29 by lecartuy         ###   ########.fr       */
+/*   Updated: 2025/02/27 15:17:15 by lecartuy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
+
+static void free_tab(char **tab)
+{
+    int i;
+
+    if (!tab)
+        return;
+    i = 0;
+    while (tab[i])
+    {
+        free(tab[i]);
+        i++;
+    }
+    free(tab);
+}
 
 static char **get_paths(char **env) 
 {
@@ -23,19 +38,19 @@ static char **get_paths(char **env)
     return (NULL);
 }
 
-static  char *find_exec(t_token *token, char **paths) 
+static char *find_exec(char *cmd, char **paths) 
 {
     char *path;
     char *full_path;
 
-    if (!token || !token->str)
+    if (!cmd)
         return (NULL);
-    if (ft_strncmp(token->str, "./", 2) == 0 && access(token->str, X_OK) == 0)
-        return (ft_strdup(token->str));
+    if (ft_strncmp(cmd, "./", 2) == 0 && access(cmd, X_OK) == 0)
+        return (ft_strdup(cmd));
     while (*paths) 
     {
         path = ft_strjoin(*paths, "/");
-        full_path = ft_strjoin(path, token->str);
+        full_path = ft_strjoin(path, cmd);
         free(path);
         if (access(full_path, X_OK) == 0)
             return (full_path);
@@ -44,6 +59,7 @@ static  char *find_exec(t_token *token, char **paths)
     }
     return (NULL);
 }
+
 
 static  char **get_cmd_args(t_token *token)
 {
@@ -89,6 +105,7 @@ void execute_command(t_token *token, char **env)
         free_tab(args);
         free_tab(paths);
         print_error("Error: Command not found");
+        exit(EXIT_FAILURE);
     }
     execve(exec_path, args, env);
     perror("execve failed");
@@ -96,4 +113,5 @@ void execute_command(t_token *token, char **env)
     free_tab(paths);
     exit(0);
 }
+
 
