@@ -6,7 +6,7 @@
 /*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/12 16:15:26 by mlavergn          #+#    #+#             */
-/*   Updated: 2025/02/28 20:05:36 by mlavergn         ###   ########.fr       */
+/*   Updated: 2025/02/28 20:06:58 by mlavergn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,27 +68,6 @@ void	handle_token(char *str, t_token **head, t_token **current, int *i)
 	}
 	else if (str[*i] == '<' || str[*i] == '>')
 		handle_in_out(str, head, current, i);
-}
-
-int	check_closed(char *str)
-{
-	int		i;
-	char	current_quote;
-
-	i = 0;
-	current_quote = 0;
-	while (str[i])
-	{
-		if ((str[i] == '\'' || str[i] == '\"'))
-		{
-			if (!current_quote)
-				current_quote = str[i];
-			else if (str[i] == current_quote)
-				current_quote = 0;
-		}
-		i++;
-	}
-	return (current_quote == 0);
 }
 
 int	handle_quotes(char *str, int *i, t_token **current, t_token **head)
