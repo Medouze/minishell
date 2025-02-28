@@ -6,7 +6,7 @@
 /*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/25 14:51:56 by mlavergn          #+#    #+#             */
-/*   Updated: 2025/02/26 15:10:09 by mlavergn         ###   ########.fr       */
+/*   Updated: 2025/02/28 21:01:22 by mlavergn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,13 +30,17 @@ static char	*remove_matching_quotes(const char *str)
 	char	*new_str;
 
 	new_str = malloc(ft_strlen(str) + 1);
-	if (!new_str)
-		return (NULL);
 	i = 0;
 	j = 0;
 	quote_type = 0;
 	while (str[i])
 	{
+		if (str[i] == '\\' && str[i + 1])
+		{
+			i++;
+			new_str[j++] = str[i++];
+			continue ;
+		}
 		if (str[i] == '\'' || str[i] == '\"')
 			process_quotes(str[i], &quote_type, new_str, &j);
 		else
@@ -72,6 +76,4 @@ void	remove_quotes(char **str)
 	}
 	else
 		remove_quotes_string(str);
-	if (ft_strchr(*str, '\"'))
-		remove_quotes(str);
 }

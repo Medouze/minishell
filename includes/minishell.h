@@ -6,7 +6,7 @@
 /*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 13:57:07 by mlavergn          #+#    #+#             */
-/*   Updated: 2025/02/27 22:05:02 by mlavergn         ###   ########.fr       */
+/*   Updated: 2025/02/28 20:56:51 by mlavergn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@
 # include <fcntl.h>
 
 #ifndef SPE_CHARS
-# define SPE_CHARS "!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~"
+# define SPE_CHARS "!#$%&()*+,-./:;<=>?@[\\]^_`{|}~"
 #endif
 
 typedef enum e_type
