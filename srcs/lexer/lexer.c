@@ -6,7 +6,7 @@
 /*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/05 14:59:17 by mlavergn          #+#    #+#             */
-/*   Updated: 2025/02/28 20:50:25 by mlavergn         ###   ########.fr       */
+/*   Updated: 2025/02/28 21:32:07 by mlavergn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,8 @@ void	proceed_cmd(char *str, t_token **head, t_token **current, int *i)
 	t_token	*new;
 
 	start = *i;
-	while (str[*i] && (ft_isalnum(str[*i]) || ft_strchr(SPE_CHARS, str[*i])))
+	while (str[*i] && (str[*i] == '"' || str[*i] == '\''
+			|| ft_isalnum(str[*i]) || ft_strchr(SPE_CHARS, str[*i])))
 		(*i)++;
 	cmd_str = ft_substr(str, start, *i - start);
 	if (!cmd_str)
@@ -64,7 +65,6 @@ void	proceed_cmd(char *str, t_token **head, t_token **current, int *i)
 		printf("Memory allocation failed\n");
 	}
 	new = new_token(CMD, cmd_str);
-	printf("SORTIE CMD %d\n", *i);
 	free(cmd_str);
 	fill_token(head, current, new);
 }
