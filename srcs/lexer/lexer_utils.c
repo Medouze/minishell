@@ -6,7 +6,7 @@
 /*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/12 16:15:26 by mlavergn          #+#    #+#             */
-/*   Updated: 2025/02/28 20:04:14 by mlavergn         ###   ########.fr       */
+/*   Updated: 2025/02/28 20:05:36 by mlavergn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,10 +94,11 @@ int	check_closed(char *str)
 int	handle_quotes(char *str, int *i, t_token **current, t_token **head)
 {
 	char	buffer[1024];
-	int		buf_index = 0;
+	int		buf_index;
 	char	quote_type;
 	t_token	*new;
 
+	buf_index = 0;
 	quote_type = str[*i];
 	buffer[buf_index++] = str[(*i)++];
 	while (str[*i] && str[*i] != quote_type)
@@ -116,5 +117,3 @@ int	handle_quotes(char *str, int *i, t_token **current, t_token **head)
 	fill_token(head, current, new);
 	return (1);
 }
-
-
