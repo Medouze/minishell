@@ -6,7 +6,7 @@
 /*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/25 16:42:47 by mlavergn          #+#    #+#             */
-/*   Updated: 2025/02/26 16:27:32 by mlavergn         ###   ########.fr       */
+/*   Updated: 2025/02/28 20:01:20 by mlavergn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,9 @@ char	*get_word(char *str)
 	len = 0;
 	if (!str)
 		return (NULL);
-	while (str[len] && str[len] != 32 && str[len] != '\"' && str[len] != '\'')
+	if (str[0] == '$')
+		len++;
+	while (str[len] && str[len] != 32 && !ft_strchr(SPE_CHARS, str[len]))
 		len++;
 	word = malloc(sizeof(char) * (len + 1));
 	if (!word)
@@ -44,6 +46,7 @@ char	*extract_word_env(char **env, const char *value)
 
 	new_value = NULL;
 	value_len = ft_strlen(value);
+	printf("%s\n", value);
 	i = 0;
 	while (env[i])
 	{

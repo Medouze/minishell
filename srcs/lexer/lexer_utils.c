@@ -6,7 +6,7 @@
 /*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/12 16:15:26 by mlavergn          #+#    #+#             */
-/*   Updated: 2025/02/28 01:26:04 by mlavergn         ###   ########.fr       */
+/*   Updated: 2025/02/28 20:04:14 by mlavergn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,26 +93,28 @@ int	check_closed(char *str)
 
 int	handle_quotes(char *str, int *i, t_token **current, t_token **head)
 {
-	int		start;
-	char	*content;
-	t_token	*new;
+	char	buffer[1024];
+	int		buf_index = 0;
 	char	quote_type;
+	t_token	*new;
 
 	quote_type = str[*i];
-	start = (*i);
-	(*i)++;
-	if (!check_closed(str))
+	buffer[buf_index++] = str[(*i)++];
+	while (str[*i] && str[*i] != quote_type)
+		buffer[buf_index++] = str[(*i)++];
+	if (!str[*i])
 	{
 		free_tokens(head);
 		printf("syntax error unclosed quotes\n");
 		return (0);
 	}
-	move_to_closing_quote(str, i, quote_type);
-	content = ft_substr(str, start, (*i) - start);
-	new = new_token(CMD, content);
-	free(content);
+	buffer[buf_index++] = str[(*i)++];
+	buffer[buf_index] = '\0';
+	new = new_token(CMD, buffer);
+	if (!new)
+		return (0);
 	fill_token(head, current, new);
-	if (str[*i])
-		(*i)++;
 	return (1);
 }
+
+
