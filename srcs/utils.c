@@ -6,7 +6,7 @@
 /*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/11 16:37:39 by mlavergn          #+#    #+#             */
-/*   Updated: 2025/02/24 20:47:53 by mlavergn         ###   ########.fr       */
+/*   Updated: 2025/02/27 22:41:20 by mlavergn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,4 +67,18 @@ void    env_cmd(char **myenv)
         printf("%s\n", myenv[i]);
         i++;
     }
+}
+
+int check_only_spaces(char *line)
+{
+    int i;
+
+    i = 0;
+    while (line[i])
+    {
+        if (!((line[i] >= 8 && line[i] <= 13) || line[i] == 32 || line[i] == '\"' || line[i] == '\''))
+           return (0);
+        i++; 
+    }
+    return (1);
 }

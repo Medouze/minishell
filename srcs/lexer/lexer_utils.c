@@ -6,25 +6,28 @@
 /*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/12 16:15:26 by mlavergn          #+#    #+#             */
-/*   Updated: 2025/02/26 16:20:32 by mlavergn         ###   ########.fr       */
+/*   Updated: 2025/02/28 01:26:04 by mlavergn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-void	free_tokens(t_token *head)
+void	free_tokens(t_token **head)
 {
 	t_token	*current;
 	t_token	*next;
 
-	current = head;
-	while (current != NULL)
+	if (!head || !*head)
+		return ;
+	current = *head;
+	while (current)
 	{
 		next = current->next;
 		free(current->str);
 		free(current);
 		current = next;
 	}
+	*head = NULL;
 }
 
 void	handle_in_out(char *str, t_token **head, t_token **current, int *i)
@@ -88,7 +91,7 @@ int	check_closed(char *str)
 	return (current_quote == 0);
 }
 
-void	handle_quotes(char *str, int *i, t_token **current, t_token **head)
+int	handle_quotes(char *str, int *i, t_token **current, t_token **head)
 {
 	int		start;
 	char	*content;
@@ -100,16 +103,16 @@ void	handle_quotes(char *str, int *i, t_token **current, t_token **head)
 	(*i)++;
 	if (!check_closed(str))
 	{
-		free_tokens(*head);
-		print_error("Unclosed quotes\n");
+		free_tokens(head);
+		printf("syntax error unclosed quotes\n");
+		return (0);
 	}
 	move_to_closing_quote(str, i, quote_type);
-	while (str[*i] && str[*i] != 32)
-		(*i)++;
 	content = ft_substr(str, start, (*i) - start);
 	new = new_token(CMD, content);
 	free(content);
 	fill_token(head, current, new);
 	if (str[*i])
 		(*i)++;
+	return (1);
 }

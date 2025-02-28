@@ -6,7 +6,7 @@
 /*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/05 14:59:17 by mlavergn          #+#    #+#             */
-/*   Updated: 2025/02/26 16:28:35 by mlavergn         ###   ########.fr       */
+/*   Updated: 2025/02/27 23:00:31 by mlavergn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ t_token	*new_token(t_type type, char *str)
 		return (NULL);
 	new->str = ft_strdup(str);
 	if (!new->str)
-		print_error("Failed strdup\n");
+		printf("Failed strdup\n");
 	new->type = type;
 	new->next = NULL;
 	return (new);
@@ -60,15 +60,15 @@ void	proceed_cmd(char *str, t_token **head, t_token **current, int *i)
 	cmd_str = ft_substr(str, start, *i - start);
 	if (!cmd_str)
 	{
-		free_tokens(*head);
-		print_error("Memory allocation failed\n");
+		free_tokens(head);
+		printf("Memory allocation failed\n");
 	}
 	new = new_token(CMD, cmd_str);
 	free(cmd_str);
 	fill_token(head, current, new);
 }
 
-t_token	*lexer(char *str)
+t_token	*lexer(char *str, t_shell *g_env)
 {
 	t_token	*head;
 	t_token	*current;
@@ -84,10 +84,15 @@ t_token	*lexer(char *str)
 		else if (str[i] == '|' || str[i] == '<' || str[i] == '>')
 			handle_token(str, &head, &current, &i);
 		else if (str[i] == '\"' || str[i] == '\'')
-			handle_quotes(str, &i, &current, &head);
+		{
+			if (!handle_quotes(str, &i, &current, &head))
+			{
+				g_env->last_exit = 2;
+				break ;
+			}
+		}
 		else
 			proceed_cmd(str, &head, &current, &i);
 	}
-	print_tokens(head);
 	return (head);
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lecartuy <lecartuy@student.s19.be>         +#+  +:+       +#+        */
+/*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 13:57:07 by mlavergn          #+#    #+#             */
-/*   Updated: 2025/02/27 15:30:59 by lecartuy         ###   ########.fr       */
+/*   Updated: 2025/02/27 22:05:02 by mlavergn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@
 # include <fcntl.h>
 
 #ifndef SPE_CHARS
-# define SPE_CHARS " !\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~"
+# define SPE_CHARS "!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~"
 #endif
 
 typedef enum e_type
@@ -82,15 +82,17 @@ void    cd_cmd(char **line, char ***envp);
 /*utils*/
 t_shell	copy_env(char **envp);
 void    free_env(char **env);
-void	print_error(char *error);
+int		check_only_spaces(char *line);
+void    print_error(char *error);
+
 
 /*lexer*/
-t_token *lexer(char *str);
+t_token *lexer(char *str, t_shell *g_env);
 void	handle_token(char *str, t_token **head, t_token **current, int *i);
 t_token *new_token(t_type type, char *str);
 void    fill_token(t_token **head, t_token **current, t_token *new);
-void	free_tokens(t_token *head);
-void	handle_quotes(char *str, int *i, t_token **current, t_token **head);
+void	free_tokens(t_token **head);
+int		handle_quotes(char *str, int *i, t_token **current, t_token **head);
 void	print_tokens(t_token *head); //delete plus tard
 void	move_to_closing_quote(char *str, int *i, char quote_type);
 int		get_nbr_quotes(char *str, char quote_type);
@@ -98,7 +100,7 @@ int		get_nbr_quotes(char *str, char quote_type);
 /*parser*/
 void	print_parser(t_simple_cmds *cmds);
 void 	parse_tokens(t_token *tokens);
-void	parser2(t_token **tokens, t_shell g_env);
+void	parser2(t_token **tokens, t_shell *g_env);
 void	remove_quotes(char **str);
 void	expand_dollar(char	**str, t_shell g_env);
 char	*ft_strjoin_char_free(char *s, char c);

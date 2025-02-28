@@ -6,7 +6,7 @@
 /*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/26 15:40:51 by mlavergn          #+#    #+#             */
-/*   Updated: 2025/02/26 16:28:52 by mlavergn         ###   ########.fr       */
+/*   Updated: 2025/02/27 23:09:02 by mlavergn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ void	move_to_closing_quote(char *str, int *i, char quote_type)
 	int	quote_nbr;
 	int	count;
 
-	count = 0;
+	count = 1;
 	quote_nbr = get_nbr_quotes(str, quote_type);
 	while (str[*i] && count < quote_nbr)
 	{

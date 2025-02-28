@@ -6,7 +6,7 @@
 /*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 13:54:10 by mlavergn          #+#    #+#             */
-/*   Updated: 2025/02/26 15:50:02 by mlavergn         ###   ########.fr       */
+/*   Updated: 2025/02/27 22:41:57 by mlavergn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,9 +15,9 @@
 int main(int ac, char **av, char **envp)
 {
     char    *line;
+    char    **line_split;
     t_token *tokens;
     t_shell g_env;
-    char    **line_split;
     (void)ac;
     (void)av;
     
@@ -25,16 +25,16 @@ int main(int ac, char **av, char **envp)
     while (1)
     {
         line =  readline("minishell>");
-        if (*line == '\0')
+        if (*line == '\0' || check_only_spaces(line))
         {
             free(line);
-            continue;
+            continue ;
         }
+        line_split = ft_split(line, 32);
         add_history(line);
-        line_split = ft_split(line, ' ');
         check_builtin(line_split, &g_env.env);
-        tokens = lexer(line);
-        parser2(&tokens, g_env);
+        tokens = lexer(line, &g_env);
+        parser2(&tokens, &g_env);
         free(line);
         free_env(line_split);
     }
