@@ -6,7 +6,7 @@
 /*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/01 13:12:02 by mlavergn          #+#    #+#             */
-/*   Updated: 2025/03/01 17:35:45 by mlavergn         ###   ########.fr       */
+/*   Updated: 2025/03/01 18:48:41 by mlavergn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -147,7 +147,6 @@ t_simple_cmds *tokenize(t_token *tokens)
 
     while (tokens) 
     {
-		printf("Processing token: %s\n", tokens->str);
 		current = tokens;
 		current_cmd = allocate_new_command(get_nbr_cmd(&tokens));
 		if (!current_cmd)
@@ -157,9 +156,9 @@ t_simple_cmds *tokenize(t_token *tokens)
 			free(current_cmd);
 			return NULL;
 		}
-		while (tokens && (tokens->type >= REDIRECT_IN && tokens->type <= HEREDOC))
-            handle_redir(&exec_token, &tokens);
 		add_command_to_list(&exec_token, current_cmd, &last_cmd);
+        if (tokens && (tokens->type >= REDIRECT_IN && tokens->type <= HEREDOC))
+            handle_redir(&current_cmd, &tokens);
         if (tokens && tokens->type == PIPE)
 			tokens = tokens->next;
     }
