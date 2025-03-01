@@ -1,6 +1,5 @@
 Détecter les erreurs de syntaxe
 
-    Quotes non fermées
     Pipes (|) mal placés 
     Redirections (<, >, >>, <<) incorrectes
     Opérateurs (||) mal utilisés
@@ -8,10 +7,6 @@ Détecter les erreurs de syntaxe
 Vérifier les caractères interdits / inconnus
 
 Afficher une erreur si un caractère spécial est mal utilisé
-
-Fix "test" test "test"
-
-
 
 Exit status https://www.gnu.org/software/bash/manual/html_node/Exit-Status.html
 

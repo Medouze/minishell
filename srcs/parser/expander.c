@@ -6,7 +6,7 @@
 /*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/25 16:42:47 by mlavergn          #+#    #+#             */
-/*   Updated: 2025/02/28 21:00:46 by mlavergn         ###   ########.fr       */
+/*   Updated: 2025/03/01 13:04:12 by mlavergn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,6 +68,8 @@ void	replace_dollar_word(char **str, char **new_str, t_shell g_env, int *i)
 	char	*extracted_value;
 	char	*first_word;
 
+	if (!(*str)[*i + 1] || (*str)[*i + 1] == 32)
+		*new_str = ft_strdup("$");
 	if ((*str)[*i + 1] == '?')
 	{
 		first_word = ft_itoa(g_env.last_exit);

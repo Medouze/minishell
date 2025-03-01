@@ -6,7 +6,7 @@
 /*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/24 19:14:06 by mlavergn          #+#    #+#             */
-/*   Updated: 2025/02/28 01:27:33 by mlavergn         ###   ########.fr       */
+/*   Updated: 2025/03/01 16:22:54 by mlavergn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ int	check_redir_errors(t_token *current)
 			printf("syntax error near unexpected token 'newline'\n");
 			return (1);
 		}
-		else
+		else if (current->next->type == REDIRECT_IN)
 		{
 			printf("syntax error near unexpected token '%s'\n",
 				current->next->str);
@@ -72,11 +72,12 @@ int	check_errors(t_token *tokens)
 
 void	parser2(t_token **tokens, t_shell *g_env)
 {
-	t_token	*current;
+	t_token			*current;
+	t_simple_cmds 	*exec_token;
 
 	if (!(*tokens))
 		return ;
-	print_tokens(*tokens);
+	//print_tokens(*tokens);
 	current = *tokens;
 	while (current)
 	{
@@ -91,5 +92,7 @@ void	parser2(t_token **tokens, t_shell *g_env)
 		current = current->next;
 	}
 	print_tokens(*tokens);
+	exec_token = tokenize(*tokens);
 	free_tokens(tokens);
+	free_simple_cmds(exec_token);
 }

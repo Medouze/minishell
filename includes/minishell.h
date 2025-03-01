@@ -6,7 +6,7 @@
 /*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 13:57:07 by mlavergn          #+#    #+#             */
-/*   Updated: 2025/02/28 21:06:32 by mlavergn         ###   ########.fr       */
+/*   Updated: 2025/03/01 16:22:13 by mlavergn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,12 +58,12 @@ typedef struct s_arg_node
 
 typedef struct s_simple_cmds
 {
-	char **str;
-	int num_redirections;
-	char *hd_file_name;
-	t_token *redirections;
-	struct s_simple_cmds *next;
-	struct s_simple_cmds *prev;
+    char    **args;       // Arguments for the command
+    char    *infile;      // File for input redirection ('<')
+    char    *heredoc;     // Heredoc delimiter ('<<')
+    char    *outfile;     // File for output redirection ('>')
+    int     append;       // 1 if '>>', 0 if '>'
+    struct s_simple_cmds *next;
 } t_simple_cmds;
 
 /*checks*/
@@ -98,14 +98,16 @@ void	move_to_closing_quote(char *str, int *i, char quote_type);
 int		get_nbr_quotes(char *str, char quote_type);
 
 /*parser*/
-void	print_parser(t_simple_cmds *cmds);
-void 	parse_tokens(t_token *tokens);
-void	parser2(t_token **tokens, t_shell *g_env);
-void	remove_quotes(char **str);
-void	expand_dollar(char	**str, t_shell g_env);
-char	*ft_strjoin_char_free(char *s, char c);
-char	*ft_strjoin_free(char *s1, char *s2);
-char	*ft_strreplace(char *str, char *old, char *new);
+void			print_parser(t_simple_cmds *cmds);
+void 			parse_tokens(t_token *tokens);
+void			parser2(t_token **tokens, t_shell *g_env);
+void			remove_quotes(char **str);
+void			expand_dollar(char	**str, t_shell g_env);
+char			*ft_strjoin_char_free(char *s, char c);
+char			*ft_strjoin_free(char *s1, char *s2);
+char			*ft_strreplace(char *str, char *old, char *new);
+t_simple_cmds	*tokenize(t_token *tokens);
+void 			free_simple_cmds(t_simple_cmds *cmd);
 
 /*execution*/
 void execute_command(t_token *token, char **env);
