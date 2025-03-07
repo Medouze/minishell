@@ -6,7 +6,7 @@
 /*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/24 19:14:06 by mlavergn          #+#    #+#             */
-/*   Updated: 2025/03/01 16:22:54 by mlavergn         ###   ########.fr       */
+/*   Updated: 2025/03/07 13:24:15 by mlavergn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,7 +73,7 @@ int	check_errors(t_token *tokens)
 void	parser2(t_token **tokens, t_shell *g_env)
 {
 	t_token			*current;
-	t_simple_cmds 	*exec_token;
+	t_simple_cmds	*exec_token;
 
 	if (!(*tokens))
 		return ;

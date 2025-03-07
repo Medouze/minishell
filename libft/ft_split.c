@@ -6,7 +6,7 @@
 /*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/02 04:31:00 by mlavergn          #+#    #+#             */
-/*   Updated: 2024/12/11 14:35:01 by mlavergn         ###   ########.fr       */
+/*   Updated: 2025/03/07 15:03:38 by mlavergn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,6 +101,9 @@ char	**ft_split(char const *s, char c)
 	if (!str)
 		return (NULL);
 	if (create_str(str, s, c) == NULL)
+	{
+		free(str);
 		return (NULL);
+	}
 	return (str);
 }

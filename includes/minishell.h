@@ -6,7 +6,7 @@
 /*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 13:57:07 by mlavergn          #+#    #+#             */
-/*   Updated: 2025/03/01 16:22:13 by mlavergn         ###   ########.fr       */
+/*   Updated: 2025/03/07 14:07:09 by mlavergn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,6 +78,8 @@ void    env_cmd(char **myenv);
 void    export_env(char **line, char ***envp, char* export);
 void    unset_env(char **line, char ***envp, char *unset);
 void    cd_cmd(char **line, char ***envp);
+void	remove_slash(char **line);
+int		get_pwd_len(char **envp, int *i);
 
 /*utils*/
 t_shell	copy_env(char **envp);
