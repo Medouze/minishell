@@ -6,7 +6,7 @@
 /*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 13:57:07 by mlavergn          #+#    #+#             */
-/*   Updated: 2025/03/07 14:07:09 by mlavergn         ###   ########.fr       */
+/*   Updated: 2025/03/07 17:04:07 by mlavergn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,6 +110,8 @@ char			*ft_strjoin_free(char *s1, char *s2);
 char			*ft_strreplace(char *str, char *old, char *new);
 t_simple_cmds	*tokenize(t_token *tokens);
 void 			free_simple_cmds(t_simple_cmds *cmd);
+void			print_simple_cmds(t_simple_cmds *cmd); // delte later
+int				get_nbr_cmd(t_token **tokens);
 
 /*execution*/
 void execute_command(t_token *token, char **env);

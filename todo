@@ -5,6 +5,7 @@ Détecter les erreurs de syntaxe
     Opérateurs (||) mal utilisés
 
 Vérifier les caractères interdits / inconnus
+Fix cd
 
 Afficher une erreur si un caractère spécial est mal utilisé
 

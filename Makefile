@@ -6,7 +6,7 @@
 #    By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/12/07 13:53:34 by mlavergn          #+#    #+#              #
-#    Updated: 2025/03/07 14:52:14 by mlavergn         ###   ########.fr        #
+#    Updated: 2025/03/07 17:05:02 by mlavergn         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -26,7 +26,8 @@ SRCS 		=	${DIR}main.c $(DIR)check.c $(DIR)utils.c $(DIR_BUILTIN)export.c \
 				$(DIR_LEXER)lexer.c $(DIR_BUILTIN)exit.c $(DIR_BUILTIN)pwd.c \
 				$(DIR_LEXER)lexer_utils.c $(DIR_PARSER)parser.c $(DIR_PARSER)quotes.c \
 				$(DIR_PARSER)expander.c $(DIR_PARSER)expander_utils.c $(DIR_LEXER)quotes_utils.c \
-				$(DIR_PARSER)tokenizer.c $(DIR_EXECUTION)command.c $(DIR_EXECUTION)main_exec.c
+				$(DIR_PARSER)tokenizer.c $(DIR_EXECUTION)command.c $(DIR_EXECUTION)main_exec.c \
+				$(DIR_PARSER)tokenizer_utils.c
 OBJS 		= 	$(SRCS:.c=.o)
 LIBFT		= 	${LIBFTDIR}/libft.a
 
