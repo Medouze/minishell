@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   command.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
+/*   By: lecartuy <lecartuy@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/17 11:22:48 by lecartuy          #+#    #+#             */
-/*   Updated: 2025/02/27 22:04:23 by mlavergn         ###   ########.fr       */
+/*   Updated: 2025/03/08 14:04:29 by lecartuy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,58 +60,81 @@ static char *find_exec(char *cmd, char **paths)
     return (NULL);
 }
 
-
-static  char **get_cmd_args(t_token *token)
+static int redirect_input(t_simple_cmds *cmd)
 {
-    int count;
-    t_token *tmp;
-    char **args;
-    int i;
+    int fd;
 
-    count = 0;
-    tmp = token;
-    while (tmp && tmp->type == CMD) 
+    if (cmd->heredoc)
     {
-        count++;
-        tmp = tmp->next;
+        fd = open(cmd->heredoc, O_RDONLY);
+        if (fd == -1)
+        {
+            perror("Error opening heredoc");
+            return (-1);
+        }
+        dup2(fd, STDIN_FILENO);
+        close(fd);
     }
-    args = malloc((count + 1) * sizeof(char *));
-    if (!args)
-        return (NULL);
-    i = 0;
-    while (token && token->type == CMD) 
+    else if (cmd->infile)
     {
-        args[i] = ft_strdup(token->str);
-        i++;
-        token = token->next;
+        fd = open(cmd->infile, O_RDONLY);
+        if (fd == -1)
+        {
+            perror("Error opening input file");
+            return (-1);
+        }
+        dup2(fd, STDIN_FILENO);
+        close(fd);
     }
-    args[i] = NULL;
-    return (args);
+    return (0);
 }
 
-void execute_command(t_token *token, char **env)
+static int redirect_output(t_simple_cmds *cmd)
 {
-    char **args;
+    int fd;
+
+    if (cmd->outfile)
+    {
+        if (cmd->append)
+            fd = open(cmd->outfile, O_WRONLY | O_CREAT | O_APPEND, 0644);
+        else
+            fd = open(cmd->outfile, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+        if (fd == -1)
+        {
+            perror("Error: opening output file");
+            return (-1);
+        }
+        dup2(fd, STDOUT_FILENO);
+        close(fd);
+    }
+    return (0);
+}
+
+void execute_command(t_simple_cmds *cmd, t_shell *shell)
+{
     char **paths;
     char *exec_path;
 
-    if (!token || token->type != CMD)
+    if (!cmd || !cmd->args || !cmd->args[0])
         return;
-    args = get_cmd_args(token);
-    paths = get_paths(env);
-    exec_path = find_exec(args[0], paths);
+    paths = get_paths(shell->env);
+    exec_path = find_exec(cmd->args[0], paths);
     if (!exec_path)
     {
-        free_tab(args);
         free_tab(paths);
         print_error("Error: Command not found");
-        exit(EXIT_FAILURE);
+        shell->last_exit = 127;
+        _exit(127);
     }
-    execve(exec_path, args, env);
+    if (redirect_input(cmd) == -1 || redirect_output(cmd) == -1)
+    {
+        shell->last_exit = 1;
+        _exit(1);
+    }
+    execve(exec_path, cmd->args, shell->env);
     perror("execve failed");
-    free_tab(args);
+    shell->last_exit = 1;
     free_tab(paths);
-    exit(0);
+    _exit(1);
 }
-
 

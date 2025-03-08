@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
+/*   By: lecartuy <lecartuy@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 13:57:07 by mlavergn          #+#    #+#             */
-/*   Updated: 2025/03/07 17:04:07 by mlavergn         ###   ########.fr       */
+/*   Updated: 2025/03/08 13:55:56 by lecartuy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,9 +114,11 @@ void			print_simple_cmds(t_simple_cmds *cmd); // delte later
 int				get_nbr_cmd(t_token **tokens);
 
 /*execution*/
-void execute_command(t_token *token, char **env);
-void execute_tokens(t_token *tokens, t_shell *shell);
-void handle_pipe(t_token *tokens, char **env);
-void handle_redirection(t_token *token);
+
+void redirect_input_pipeline(const char *infile);
+void redirect_output_pipeline(const char *outfile, int append);
+void handle_pipe(t_simple_cmds *cmds, t_shell *shell);
+void execute_tokens(t_simple_cmds *cmds, t_shell *shell);
+void execute_command(t_simple_cmds *cmd, t_shell *shell);
 
 #endif
