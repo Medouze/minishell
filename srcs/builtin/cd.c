@@ -5,172 +5,230 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/12/13 13:41:03 by mlavergn          #+#    #+#             */
-/*   Updated: 2025/03/07 16:56:35 by mlavergn         ###   ########.fr       */
+/*   Created: 2025/03/10 15:20:49 by mlavergn          #+#    #+#             */
+/*   Updated: 2025/03/10 15:20:53 by mlavergn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-
-// Free memory allocated by ft_split
-void ft_free_split(char **arr) 
+void remove_slash(char **line)
 {
-    int i = 0;
-    if (arr)
-    {
-        while (arr[i])
-        {
-            if (arr[i])
-                free(arr[i++]);
-        }
-        free(arr);
-    }
+    char *new_line;
+    size_t len;
+
+    if (line == NULL || *line == NULL)
+        return;
+    len = ft_strlen(*line);
+    if (len > 0 && (*line)[len - 1] == '/')
+        len--;
+    new_line = malloc(sizeof(char) * (len + 1));
+    if (!new_line)
+        return;
+    ft_strlcpy(new_line, *line, len + 1);
+    free(*line);
+    *line = new_line;
 }
 
-// Get the current PWD from envp
-char *get_pwd(char **envp) 
+char    *get_pwd(char **envp)
 {
-    int i = 0;
-    while (envp[i]) 
+    int     i;
+    char    *pwd;
+
+    i = 0;
+    while (envp[i])
     {
-        if (strncmp(envp[i], "PWD=", 4) == 0)
-            return ft_strdup(envp[i] + 4);
+        if (ft_strncmp(envp[i], "PWD=", 4) == 0)
+        {
+            pwd = ft_strdup(envp[i] + 4);
+            return (pwd);
+        }
         i++;
     }
-    return ft_strdup("/");
+    printf("Couldnt find PATH\n");
+    return (NULL);
 }
 
-// Update environment variables (PWD, OLDPWD)
-void update_env(char ***envp, char *key, char *value) 
+void    change_old_pwd(char ***envp, char *old_pwd)
 {
-    int i = 0;
-    char *new_entry = ft_strjoin(key, value);
-    while ((*envp)[i]) 
+    int i;
+
+    i = 0;
+    while ((*envp)[i])
     {
-        if (strncmp((*envp)[i], key, strlen(key)) == 0) 
+        if (ft_strncmp((*envp)[i], "OLDPWD=", 6) == 0)
         {
             free((*envp)[i]);
-            (*envp)[i] = new_entry;
-            return;
+            (*envp)[i] = ft_strjoin("OLDPWD=", old_pwd);
+            return ;
         }
         i++;
     }
 }
 
-char **allocate_and_copy_array(char **src, int size) {
-    char **new_array = malloc((size + 1) * sizeof(char *));
-    if (!new_array) return NULL;
-    
-    for (int i = 0; i < size; i++) {
-        new_array[i] = ft_strdup(src[i]);
+void    addto_pwd(char ***envp, char *path, char *old_pwd)
+{
+    int     i;
+    char    *new_path;
+    char    *final_path;
+
+    i = 0;
+    final_path = NULL;
+    final_path = ft_strjoin("/", path);
+    new_path = ft_strjoin(old_pwd, final_path);
+    while ((*envp)[i])
+    {
+        if (ft_strncmp((*envp)[i], "PWD=", 4) == 0)
+        {
+            free((*envp)[i]);
+            if (new_path[0] == '/' && new_path[1] == '/')
+                (*envp)[i] = ft_strjoin("PWD=", new_path + 1);
+            else
+                (*envp)[i] = ft_strjoin("PWD=", new_path);
+            free(new_path);
+            free(final_path);
+            change_old_pwd(envp, old_pwd);
+            return ;
+        }
+        i++;
     }
-    new_array[size] = NULL;
-    return new_array;
 }
 
-// Function to process a path part and adjust the array
-void process_path_part(char **new_cwd_parts, int *k, char *part) {
-    if (ft_strncmp(part, "..", 3) == 0) {
-        if (*k > 0) free(new_cwd_parts[--(*k)]);  // Go up one level
-    } else if (ft_strncmp(part, ".", 2) != 0 && part[0] != '\0') {
-        new_cwd_parts[(*k)++] = ft_strdup(part); // Add directory
+void    change_pwd(char ***envp, char *path)
+{
+    int i;
+
+    i = 0;
+    while ((*envp)[i])
+    {
+        if (ft_strncmp((*envp)[i], "PWD=", 4) == 0)
+        {
+            free((*envp)[i]);
+            (*envp)[i] = ft_strjoin("PWD=", path);
+            return ;
+        }
+        i++;
     }
 }
 
-// Function to build the resolved path string
-char *build_resolved_path(char **new_cwd_parts, int k) {
-    char *resolved = ft_strdup("/");
-    for (int i = 0; i < k; i++) {
-        char *tmp = resolved;
-        resolved = ft_strjoin(resolved, new_cwd_parts[i]);
-        free(tmp);
-        if (i < k - 1) {
-            tmp = resolved;
-            resolved = ft_strjoin(resolved, "/");
+void    back_pwd(char ***envp, char *old_pwd)
+{
+    int     pwd_len;
+    int     i;
+    int     j;
+    char    *new_pwd;
+
+    i = 0;
+    pwd_len = 0;
+    while ((*envp)[i])
+    {
+        if (ft_strlen((*envp)[i]) == 5)
+            return ;
+        if (ft_strncmp((*envp)[i], "PWD=", 4) == 0)
+        {
+            pwd_len = ft_strlen((*envp)[i]) - ft_strlen(ft_strrchr((*envp)[i], '/'));
+            break ;
+        }
+        i++;
+    }
+    new_pwd = malloc(sizeof(char) * (pwd_len + 1));
+    j = 0;
+    while (j < pwd_len)
+    {
+        new_pwd[j] = (*envp)[i][j];
+        j++;
+    }
+    new_pwd[j] = '\0';
+    if (ft_strlen(new_pwd) == 4)
+    {
+        free(new_pwd);
+        new_pwd = ft_strdup("PWD=/");
+    }
+    free((*envp)[i]);
+    (*envp)[i] = ft_strdup(new_pwd);
+    free(new_pwd);
+    change_old_pwd(envp, old_pwd);
+}
+
+void    back_absolute_pwd(char ***envp, char *path, char *old_pwd)
+{   
+    char    *new_path;
+    char    *tmp;
+    char    *new_old_pwd;
+
+    new_path = ft_strdup(path);
+    while (1)
+    {
+        if (ft_strncmp(new_path, "../", 3) == 0)
+        {
+            back_pwd(envp, old_pwd);
+            tmp = new_path;
+            new_path = ft_strdup(new_path + 3);
             free(tmp);
         }
+        else
+            break ;
     }
-    return resolved;
+    new_old_pwd = get_pwd(*envp);
+    if (new_path[0] != '\0')
+        addto_pwd(envp, new_path, new_old_pwd);
+    change_old_pwd(envp, old_pwd);
+    free(new_old_pwd);
+    free(new_path);
 }
 
-// Main resolve_path function
-char *resolve_path(char *cwd, char *input) {
-    printf("Resolving path: cwd = '%s', input = '%s'\n", cwd, input);
+void    cd_cmd(char **line, char ***envp)
+{
+    char    *home;
+    char    *old_pwd;
+    char    *pwd;
 
-    char **parts = ft_split(input, '/');
-    char **cwd_parts = ft_split(cwd, '/');
-
-    if (!parts || !cwd_parts) {
-        printf("ft_split() failed!\n");
-        ft_free_split(parts);
-        ft_free_split(cwd_parts);
-        return NULL;
-    }
-
-    int j = 0;
-    while (cwd_parts[j]) j++; // Count depth
-
-    // Allocate a new array for resolved path
-    char **new_cwd_parts = allocate_and_copy_array(cwd_parts, j);
-    if (!new_cwd_parts) return NULL;
-
-    // Process each part of the path
-    int k = j;
-    for (int i = 0; parts[i]; i++) {
-        process_path_part(new_cwd_parts, &k, parts[i]);
-    }
-    
-    char *resolved = build_resolved_path(new_cwd_parts, k);
-    printf("RESOLVED");
-
-    ft_free_split(parts);
-    ft_free_split(cwd_parts);
-    ft_free_split(new_cwd_parts);
-
-    return resolved;
-}
-
-
-// Main cd command implementation
-void cd_cmd(char **args, char ***envp) {
-    char *old_pwd = get_pwd(*envp);
-    char *target;
-
-    // If no argument is passed, use HOME from the environment
-    if (args[1] == NULL) {
-        target = getenv("HOME");
-        if (target == NULL) {
-            printf("minishell: cd: HOME not set\n");
-            free(old_pwd);
-            return;
-        }
-    } else {
-        target = args[1];
-    }
-
-    // Resolve path if not the home directory
-    if (ft_strncmp(target, "/", 1) != 0 && ft_strncmp(target, "~", 1) != 0) {
-        char *resolved_path = resolve_path(old_pwd, target);
-        if (!resolved_path || chdir(resolved_path) == -1) {
-            printf("minishell: cd: %s: No such file or directory\n", target);
-            free(resolved_path);
-            free(old_pwd);
-            return;
-        }
-        free(resolved_path);
-    } else if (chdir(target) == -1) {  // For absolute or home directory path
-        printf("minishell: cd: %s: No such file or directory\n", target);
+    home = getenv("HOME");
+    old_pwd = get_pwd(*envp);
+    if (!line[1] || (line[1] && line[1][0] == '~') || (line[1] && !ft_strncmp(line[1], "~/", 2)))
+    {
+        if (chdir(home) == -1)
+            return ;
+        change_pwd(envp, home);
         free(old_pwd);
-        return;
+        return ;
     }
-
-    // Update PWD and OLDPWD
-    update_env(envp, "PWD=", target);
-    update_env(envp, "OLDPWD=", old_pwd);
-
+    if (line[1] && ft_strncmp(line[1], ".", 5) != 0)
+    {
+        if (line[1][0] == '/')
+            change_pwd(envp, line[1]);
+        else if (ft_strncmp(line[1], "..", 2) == 0)
+        {
+            if (ft_strncmp(line[1], "..", 3) == 0)
+                back_pwd(envp, old_pwd);
+            if (ft_strncmp(line[1], "../", 3) == 0)
+            {
+                if (line[1][ft_strlen(line[1]) - 1] == '/' && line[1][ft_strlen(line[1]) - 2] != '.')
+                    remove_slash(&line[1]);
+                back_absolute_pwd(envp, line[1], old_pwd);
+            }
+        }
+        else
+        {
+            if (line[1][ft_strlen(line[1]) - 1] == '/' && ft_strncmp(line[1], "../", 3))
+                remove_slash(&line[1]);
+            addto_pwd(envp, line[1], old_pwd);
+        }
+        if (chdir(pwd = get_pwd(*envp)) == -1)
+        {
+            // if (ft_strncmp(pwd, "PWD=/", 5))
+            // {
+            //     free(pwd);
+            //     free(old_pwd);
+            //     return;
+            // }
+            printf("minishell: cd: %s: No such file or directory\n", line[1]);
+            change_pwd(envp, old_pwd);
+            free(pwd);
+            free(old_pwd);
+            return ;  
+        }
+        free(pwd);
+    }
     free(old_pwd);
 }
-
-
-

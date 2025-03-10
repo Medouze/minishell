@@ -6,7 +6,7 @@
 /*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/11 17:48:10 by mlavergn          #+#    #+#             */
-/*   Updated: 2025/03/07 14:18:32 by mlavergn         ###   ########.fr       */
+/*   Updated: 2025/03/10 17:11:51 by mlavergn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,18 +37,32 @@ int	valid_line_export(char *export)
 	return (1);
 }
 
-int	check_equal(char *export)
+char	*add_quotes_env(char *envp)
 {
-	int	i;
+	int		i;
+	int		j;
+	int		has_equal;
+	char	*new_str;
 
+	new_str = malloc(sizeof(char) * (ft_strlen(envp) + 3));
 	i = 0;
-	while (export[i])
+	j = 0;
+	has_equal = 0;
+	while (envp[i])
 	{
-		if (export[i] == '=')
-			return (1);
-		i++;
+		if (envp[i] == '=' && !has_equal)
+		{
+			new_str[j++] = envp[i++];
+			new_str[j++] = '\"';
+			has_equal = 1;
+			continue ;
+		}
+		new_str[j++] = envp[i++];
 	}
-	return (0);
+	if (has_equal)
+		new_str[j++] = '\"';
+	new_str[j] = '\0';
+	return (new_str);
 }
 
 void	env_declare(char ***envp)
@@ -56,6 +70,7 @@ void	env_declare(char ***envp)
 	int		i;
 	int		j;
 	char	**new_env;
+	char	*quoted_env;
 
 	i = 0;
 	j = 0;
@@ -64,11 +79,13 @@ void	env_declare(char ***envp)
 	new_env = malloc(sizeof(char *) * (i + 1));
 	while (j < i - 1)
 	{
-		new_env[j] = ft_strjoin("declare -x ", (*envp)[j]);
+		quoted_env = add_quotes_env((*envp)[j]);
+		new_env[j] = ft_strjoin("declare -x ", quoted_env);
+		free(quoted_env);
 		j++;
 	}
 	new_env[j] = NULL;
-	env_cmd(new_env);
+	env_cmd(new_env, 1);
 	free_env(new_env);
 }
 
@@ -107,6 +124,6 @@ void	export_env(char **line, char ***envp, char *export)
 		printf("minishell: export: '%s': not a valid identifier\n", export);
 		return ;
 	}
-	if (export && check_equal(export))
+	if (export)
 		add_line_env(envp, export);
 }

@@ -11,3 +11,7 @@ Afficher une erreur si un caractère spécial est mal utilisé
 
 Exit status https://www.gnu.org/software/bash/manual/html_node/Exit-Status.html
 
+
+exportt remplacer si existe
+cd ~ , cd -
+

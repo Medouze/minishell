@@ -6,7 +6,7 @@
 /*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/07 17:01:45 by mlavergn          #+#    #+#             */
-/*   Updated: 2025/03/07 17:03:34 by mlavergn         ###   ########.fr       */
+/*   Updated: 2025/03/10 16:02:07 by mlavergn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,8 @@ void	free_simple_cmds(t_simple_cmds *cmd)
 	t_simple_cmds	*tmp;
 	int				i;
 
+	if (!cmd)
+		return ;
 	while (cmd)
 	{
 		if (cmd->args)

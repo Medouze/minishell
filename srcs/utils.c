@@ -6,7 +6,7 @@
 /*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/11 16:37:39 by mlavergn          #+#    #+#             */
-/*   Updated: 2025/02/27 22:41:20 by mlavergn         ###   ########.fr       */
+/*   Updated: 2025/03/10 17:14:21 by mlavergn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@ t_shell copy_env(char **envp)
     while (envp[i])
         i++;
     g_env.env = malloc(sizeof(char *) * (i + 1));
+    g_env.hidden_env = malloc(sizeof(char *) * (i + 1));
     while (j < i - 1)
     {
         g_env.env[j] = ft_strdup(envp[j]);
@@ -32,6 +33,13 @@ t_shell copy_env(char **envp)
     j++;
     g_env.env[j] = NULL;
     g_env.last_exit = 0;
+    i = 0;
+    while (g_env.env[i])
+    {
+        g_env.hidden_env[i] = ft_strdup(g_env.env[i]);
+        i++;
+    }
+    g_env.hidden_env[i] = NULL;
     return (g_env);
 }
 
@@ -57,15 +65,27 @@ void    print_error(char *error)
     exit(0);
 }
 
-void    env_cmd(char **myenv)
+void    env_cmd(char **myenv, int export)
 {
     int i;
 
     i = 0;
-    while (myenv[i])
+    if (export)
     {
-        printf("%s\n", myenv[i]);
-        i++;
+        while (myenv[i])
+        {
+            printf("%s\n", myenv[i]);
+            i++;
+        }
+    }
+    else
+    {
+        while (myenv[i])
+        {
+            if (ft_strchr(myenv[i] , '='))
+                printf("%s\n", myenv[i]);
+            i++;
+        }
     }
 }
 

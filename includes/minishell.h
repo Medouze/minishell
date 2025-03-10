@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lecartuy <lecartuy@student.s19.be>         +#+  +:+       +#+        */
+/*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 13:57:07 by mlavergn          #+#    #+#             */
-/*   Updated: 2025/03/08 13:55:56 by lecartuy         ###   ########.fr       */
+/*   Updated: 2025/03/10 17:14:49 by mlavergn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,7 @@ typedef struct s_token
 typedef struct s_shell
 {
 	char	**env;
+	char	**hidden_env;
 	int		last_exit;
 }	t_shell;
 
@@ -67,15 +68,15 @@ typedef struct s_simple_cmds
 } t_simple_cmds;
 
 /*checks*/
-void    check_builtin(char **line, char ***envp);
+void    check_builtin(char **line, char ***env);
 char	*check_cmd(char *cmd, char **envp);
 
 /*built in*/
 void    echo(char **line);
 void    pwd(char **envp);
 void    exit_cmd(char **line, char **envp);
-void    env_cmd(char **myenv);
-void    export_env(char **line, char ***envp, char* export);
+void    env_cmd(char **myenv, int export);
+void	export_env(char **line, char ***envp, char *export);
 void    unset_env(char **line, char ***envp, char *unset);
 void    cd_cmd(char **line, char ***envp);
 void	remove_slash(char **line);
@@ -102,7 +103,7 @@ int		get_nbr_quotes(char *str, char quote_type);
 /*parser*/
 void			print_parser(t_simple_cmds *cmds);
 void 			parse_tokens(t_token *tokens);
-void			parser2(t_token **tokens, t_shell *g_env);
+t_simple_cmds	*parser2(t_token **tokens, t_shell *g_env);
 void			remove_quotes(char **str);
 void			expand_dollar(char	**str, t_shell g_env);
 char			*ft_strjoin_char_free(char *s, char c);

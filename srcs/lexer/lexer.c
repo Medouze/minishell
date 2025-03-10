@@ -6,7 +6,7 @@
 /*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/05 14:59:17 by mlavergn          #+#    #+#             */
-/*   Updated: 2025/02/28 21:32:07 by mlavergn         ###   ########.fr       */
+/*   Updated: 2025/03/10 15:29:39 by mlavergn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,7 +89,7 @@ t_token	*lexer(char *str, t_shell *g_env)
 			if (!handle_quotes(str, &i, &current, &head))
 			{
 				g_env->last_exit = 2;
-				break ;
+				return (NULL);
 			}
 		}
 		else
