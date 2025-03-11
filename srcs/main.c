@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
+/*   By: lecartuy <lecartuy@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 13:54:10 by mlavergn          #+#    #+#             */
-/*   Updated: 2025/03/10 17:08:25 by mlavergn         ###   ########.fr       */
+/*   Updated: 2025/03/11 15:22:21 by lecartuy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 int main(int ac, char **av, char **envp)
 {
     char    *line;
+    int stdout_backup;
     t_token *lexed_token;
     t_simple_cmds   *tokens;
     t_shell g_env;
@@ -47,7 +48,13 @@ int main(int ac, char **av, char **envp)
             free_simple_cmds(tokens);
             continue ;
         }
-        check_builtin(tokens->args, &g_env.env);
+        stdout_backup = handle_redirection(tokens);
+        if (stdout_backup != -1)
+        {
+            if (!check_builtin(tokens->args, &g_env.env))
+                execute_tokens(tokens, &g_env);
+            restore_stdout(stdout_backup);
+        }
         free(line);
         free_tokens(&lexed_token);
         free_simple_cmds(tokens);

@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/12/07 13:57:07 by mlavergn          #+#    #+#             */
-/*   Updated: 2025/03/11 14:46:52 by mlavergn         ###   ########.fr       */
+/*   Created: 2025/03/11 17:10:46 by mlavergn          #+#    #+#             */
+/*   Updated: 2025/03/11 17:10:51 by mlavergn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,7 @@ typedef struct s_simple_cmds
 } t_simple_cmds;
 
 /*checks*/
-void    check_builtin(char **line, char ***env);
+int check_builtin(char **line, char ***envp);
 char	*check_cmd(char *cmd, char **envp);
 
 /*built in*/
@@ -120,8 +120,12 @@ int				get_nbr_cmd(t_token **tokens);
 
 void redirect_input_pipeline(const char *infile);
 void redirect_output_pipeline(const char *outfile, int append);
+int  redirect_input(t_simple_cmds *cmd);
+int  redirect_output(t_simple_cmds *cmd);
 void handle_pipe(t_simple_cmds *cmds, t_shell *shell);
 void execute_tokens(t_simple_cmds *cmds, t_shell *shell);
 void execute_command(t_simple_cmds *cmd, t_shell *shell);
+int handle_redirection(t_simple_cmds *cmd);
+void restore_stdout(int stdout_backup);
 
 #endif

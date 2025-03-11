@@ -6,7 +6,7 @@
 /*   By: lecartuy <lecartuy@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/17 11:22:48 by lecartuy          #+#    #+#             */
-/*   Updated: 2025/03/08 14:04:29 by lecartuy         ###   ########.fr       */
+/*   Updated: 2025/03/11 14:58:52 by lecartuy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,56 +60,6 @@ static char *find_exec(char *cmd, char **paths)
     return (NULL);
 }
 
-static int redirect_input(t_simple_cmds *cmd)
-{
-    int fd;
-
-    if (cmd->heredoc)
-    {
-        fd = open(cmd->heredoc, O_RDONLY);
-        if (fd == -1)
-        {
-            perror("Error opening heredoc");
-            return (-1);
-        }
-        dup2(fd, STDIN_FILENO);
-        close(fd);
-    }
-    else if (cmd->infile)
-    {
-        fd = open(cmd->infile, O_RDONLY);
-        if (fd == -1)
-        {
-            perror("Error opening input file");
-            return (-1);
-        }
-        dup2(fd, STDIN_FILENO);
-        close(fd);
-    }
-    return (0);
-}
-
-static int redirect_output(t_simple_cmds *cmd)
-{
-    int fd;
-
-    if (cmd->outfile)
-    {
-        if (cmd->append)
-            fd = open(cmd->outfile, O_WRONLY | O_CREAT | O_APPEND, 0644);
-        else
-            fd = open(cmd->outfile, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-        if (fd == -1)
-        {
-            perror("Error: opening output file");
-            return (-1);
-        }
-        dup2(fd, STDOUT_FILENO);
-        close(fd);
-    }
-    return (0);
-}
-
 void execute_command(t_simple_cmds *cmd, t_shell *shell)
 {
     char **paths;
@@ -117,24 +67,27 @@ void execute_command(t_simple_cmds *cmd, t_shell *shell)
 
     if (!cmd || !cmd->args || !cmd->args[0])
         return;
-    paths = get_paths(shell->env);
-    exec_path = find_exec(cmd->args[0], paths);
-    if (!exec_path)
+        
+    if (cmd->args[0][0] == '/' || cmd->args[0][0] == '.')
+        exec_path = cmd->args[0];
+    else
     {
-        free_tab(paths);
-        print_error("Error: Command not found");
-        shell->last_exit = 127;
-        _exit(127);
-    }
-    if (redirect_input(cmd) == -1 || redirect_output(cmd) == -1)
-    {
-        shell->last_exit = 1;
-        _exit(1);
+        paths = get_paths(shell->env);
+        exec_path = find_exec(cmd->args[0], paths);
+        if (!exec_path)
+        {
+            free_tab(paths);
+            print_error("Error: Command not found");
+            shell->last_exit = 127;
+            return;
+        }
     }
     execve(exec_path, cmd->args, shell->env);
     perror("execve failed");
     shell->last_exit = 1;
-    free_tab(paths);
+    if (cmd->args[0][0] != '/' && cmd->args[0][0] != '.')
+        free_tab(paths);
     _exit(1);
 }
+
 
