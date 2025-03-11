@@ -6,7 +6,7 @@
 /*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/10 15:20:49 by mlavergn          #+#    #+#             */
-/*   Updated: 2025/03/10 15:20:53 by mlavergn         ###   ########.fr       */
+/*   Updated: 2025/03/11 17:04:49 by mlavergn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,23 +14,19 @@
 
 void remove_slash(char **line)
 {
-    char *new_line;
     size_t len;
 
     if (line == NULL || *line == NULL)
         return;
+
     len = ft_strlen(*line);
     if (len > 0 && (*line)[len - 1] == '/')
-        len--;
-    new_line = malloc(sizeof(char) * (len + 1));
-    if (!new_line)
-        return;
-    ft_strlcpy(new_line, *line, len + 1);
-    free(*line);
-    *line = new_line;
+    {
+        (*line)[len - 1] = '\0';  // Replace the last '/' with null terminator
+    }
 }
 
-char    *get_pwd(char **envp)
+char    *get_var(char **envp, char *line)
 {
     int     i;
     char    *pwd;
@@ -38,9 +34,9 @@ char    *get_pwd(char **envp)
     i = 0;
     while (envp[i])
     {
-        if (ft_strncmp(envp[i], "PWD=", 4) == 0)
+        if (ft_strncmp(envp[i], line, ft_strlen(line)) == 0)
         {
-            pwd = ft_strdup(envp[i] + 4);
+            pwd = ft_strdup(envp[i] + ft_strlen(line) + 1);
             return (pwd);
         }
         i++;
@@ -113,41 +109,21 @@ void    change_pwd(char ***envp, char *path)
 
 void    back_pwd(char ***envp, char *old_pwd)
 {
-    int     pwd_len;
-    int     i;
-    int     j;
-    char    *new_pwd;
+    char *pwd = get_var(*envp, "PWD");
+    char *new_pwd;
+    char *last_slash = ft_strrchr(pwd, '/');
 
-    i = 0;
-    pwd_len = 0;
-    while ((*envp)[i])
+    if (!pwd || ft_strlen(pwd) == 1) // Root case
     {
-        if (ft_strlen((*envp)[i]) == 5)
-            return ;
-        if (ft_strncmp((*envp)[i], "PWD=", 4) == 0)
-        {
-            pwd_len = ft_strlen((*envp)[i]) - ft_strlen(ft_strrchr((*envp)[i], '/'));
-            break ;
-        }
-        i++;
+        free(pwd);
+        return ;
     }
-    new_pwd = malloc(sizeof(char) * (pwd_len + 1));
-    j = 0;
-    while (j < pwd_len)
-    {
-        new_pwd[j] = (*envp)[i][j];
-        j++;
-    }
-    new_pwd[j] = '\0';
-    if (ft_strlen(new_pwd) == 4)
-    {
-        free(new_pwd);
-        new_pwd = ft_strdup("PWD=/");
-    }
-    free((*envp)[i]);
-    (*envp)[i] = ft_strdup(new_pwd);
-    free(new_pwd);
+    new_pwd = ft_substr(pwd, 0, last_slash - pwd); // Trim last dir
+    free(pwd);
+
+    change_pwd(envp, new_pwd);
     change_old_pwd(envp, old_pwd);
+    free(new_pwd);
 }
 
 void    back_absolute_pwd(char ***envp, char *path, char *old_pwd)
@@ -169,7 +145,7 @@ void    back_absolute_pwd(char ***envp, char *path, char *old_pwd)
         else
             break ;
     }
-    new_old_pwd = get_pwd(*envp);
+    new_old_pwd = get_var(*envp, "PWD");
     if (new_path[0] != '\0')
         addto_pwd(envp, new_path, new_old_pwd);
     change_old_pwd(envp, old_pwd);
@@ -177,58 +153,78 @@ void    back_absolute_pwd(char ***envp, char *path, char *old_pwd)
     free(new_path);
 }
 
-void    cd_cmd(char **line, char ***envp)
+void cd_cmd(char **line, char ***envp)
 {
-    char    *home;
-    char    *old_pwd;
-    char    *pwd;
+    char *current_pwd;
+    char *path;
+    char *previous_pwd;
 
-    home = getenv("HOME");
-    old_pwd = get_pwd(*envp);
-    if (!line[1] || (line[1] && line[1][0] == '~') || (line[1] && !ft_strncmp(line[1], "~/", 2)))
+    current_pwd = get_var(*envp, "PWD");  // Dynamically allocated
+    if (line[1])
+        path = ft_strdup(line[1]);  // Always strdup line[1]
+    else
+        path = get_var(*envp, "HOME");  // Dynamically allocated
+    if (!path || ft_strncmp(path, "", 1) == 0)
     {
-        if (chdir(home) == -1)
-            return ;
-        change_pwd(envp, home);
-        free(old_pwd);
-        return ;
+        if (!path)
+            printf("minishell: cd: HOME not set\n");
+        free(current_pwd);
+        free(path);  // Free path if it was allocated
+        return;
     }
-    if (line[1] && ft_strncmp(line[1], ".", 5) != 0)
+    if (ft_strncmp(path, "-", 1) == 0)
     {
-        if (line[1][0] == '/')
-            change_pwd(envp, line[1]);
-        else if (ft_strncmp(line[1], "..", 2) == 0)
+        previous_pwd = get_var(*envp, "OLDPWD");  // Dynamically allocated
+        if (!previous_pwd)
         {
-            if (ft_strncmp(line[1], "..", 3) == 0)
-                back_pwd(envp, old_pwd);
-            if (ft_strncmp(line[1], "../", 3) == 0)
-            {
-                if (line[1][ft_strlen(line[1]) - 1] == '/' && line[1][ft_strlen(line[1]) - 2] != '.')
-                    remove_slash(&line[1]);
-                back_absolute_pwd(envp, line[1], old_pwd);
-            }
+            printf("minishell: cd: OLDPWD not set\n");
+            free(current_pwd);
+            free(path);  // Free path
+            return;
+        }
+        if (chdir(previous_pwd) == -1)
+        {
+            printf("minishell: cd: %s: No such file or directory\n", previous_pwd);
+            free(current_pwd);
+            free(previous_pwd);
+            free(path);  // Free path
+            return;
+        }
+        change_pwd(envp, previous_pwd);
+        free(current_pwd);
+        free(previous_pwd);
+        free(path);  // Free path
+        return;
+    }
+    if (line[1] != NULL)
+        remove_slash(&path);  // Remove trailing slash from the duplicated path
+    if (chdir(path) == -1)
+    {
+        printf("minishell: cd: %s: No such file or directory\n", path);
+        free(current_pwd);
+        free(path);  // Free path
+        return;
+    }
+    if (strncmp(path, ".", 1) == 0)
+    {
+        if (ft_strncmp(path, "..", 2) == 0)
+        {
+            if (ft_strncmp(path, "../", 3) == 0)
+                back_absolute_pwd(envp, path, current_pwd);
+            else
+                back_pwd(envp, current_pwd);
         }
         else
         {
-            if (line[1][ft_strlen(line[1]) - 1] == '/' && ft_strncmp(line[1], "../", 3))
-                remove_slash(&line[1]);
-            addto_pwd(envp, line[1], old_pwd);
+            free(current_pwd);
+            free(path);  // Free path
+            return; 
         }
-        if (chdir(pwd = get_pwd(*envp)) == -1)
-        {
-            // if (ft_strncmp(pwd, "PWD=/", 5))
-            // {
-            //     free(pwd);
-            //     free(old_pwd);
-            //     return;
-            // }
-            printf("minishell: cd: %s: No such file or directory\n", line[1]);
-            change_pwd(envp, old_pwd);
-            free(pwd);
-            free(old_pwd);
-            return ;  
-        }
-        free(pwd);
     }
-    free(old_pwd);
+    else if (path[0] == '/')
+        change_pwd(envp, path);
+    else
+        addto_pwd(envp, path, current_pwd);
+    free(current_pwd);
+    free(path);  // Free path
 }

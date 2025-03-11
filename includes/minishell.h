@@ -6,7 +6,7 @@
 /*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 13:57:07 by mlavergn          #+#    #+#             */
-/*   Updated: 2025/03/10 17:14:49 by mlavergn         ###   ########.fr       */
+/*   Updated: 2025/03/11 14:46:52 by mlavergn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,6 +81,8 @@ void    unset_env(char **line, char ***envp, char *unset);
 void    cd_cmd(char **line, char ***envp);
 void	remove_slash(char **line);
 int		get_pwd_len(char **envp, int *i);
+char	*extract_key(char *line);
+int		replace_line(char ***envp, char *line);
 
 /*utils*/
 t_shell	copy_env(char **envp);

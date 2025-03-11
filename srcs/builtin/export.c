@@ -6,7 +6,7 @@
 /*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/11 17:48:10 by mlavergn          #+#    #+#             */
-/*   Updated: 2025/03/10 17:11:51 by mlavergn         ###   ########.fr       */
+/*   Updated: 2025/03/11 14:47:03 by mlavergn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,19 +97,24 @@ void	add_line_env(char ***envp, char *export)
 
 	i = 0;
 	j = 0;
-	while ((*envp)[i])
-		i++;
-	new_env = malloc(sizeof(char *) * (i + 2));
-	while (j < i - 1)
+	if (replace_line(envp, export) == 1)
+		return ;
+	else
 	{
-		new_env[j] = ft_strdup((*envp)[j]);
-		j++;
+		while ((*envp)[i])
+			i++;
+		new_env = malloc(sizeof(char *) * (i + 2));
+		while (j < i - 1)
+		{
+			new_env[j] = ft_strdup((*envp)[j]);
+			j++;
+		}
+		new_env[j] = ft_strdup(export);
+		new_env[j + 1] = ft_strdup("_=/usr/bin/env");
+		new_env[j + 2] = NULL;
+		free_env(*envp);
+		*envp = new_env;
 	}
-	new_env[j] = ft_strdup(export);
-	new_env[j + 1] = ft_strdup("_=/usr/bin/env");
-	new_env[j + 2] = NULL;
-	free_env(*envp);
-	*envp = new_env;
 }
 
 void	export_env(char **line, char ***envp, char *export)
