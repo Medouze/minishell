@@ -1,0 +1,10 @@
+First line
+Appended line
+Makefile
+includes
+libft
+minishell
+srcs
+test.txt
+test_append.txt
+todo

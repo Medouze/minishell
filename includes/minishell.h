@@ -6,7 +6,7 @@
 /*   By: lecartuy <lecartuy@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 13:57:07 by mlavergn          #+#    #+#             */
-/*   Updated: 2025/03/11 11:53:43 by lecartuy         ###   ########.fr       */
+/*   Updated: 2025/03/11 15:19:52 by lecartuy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,8 +118,12 @@ int				get_nbr_cmd(t_token **tokens);
 
 void redirect_input_pipeline(const char *infile);
 void redirect_output_pipeline(const char *outfile, int append);
+int  redirect_input(t_simple_cmds *cmd);
+int  redirect_output(t_simple_cmds *cmd);
 void handle_pipe(t_simple_cmds *cmds, t_shell *shell);
 void execute_tokens(t_simple_cmds *cmds, t_shell *shell);
 void execute_command(t_simple_cmds *cmd, t_shell *shell);
+int handle_redirection(t_simple_cmds *cmd);
+void restore_stdout(int stdout_backup);
 
 #endif
