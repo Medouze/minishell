@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
+/*   By: lecartuy <lecartuy@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 13:57:07 by mlavergn          #+#    #+#             */
-/*   Updated: 2025/03/10 17:14:49 by mlavergn         ###   ########.fr       */
+/*   Updated: 2025/03/11 11:53:43 by lecartuy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,7 @@ typedef struct s_simple_cmds
 } t_simple_cmds;
 
 /*checks*/
-void    check_builtin(char **line, char ***env);
+int check_builtin(char **line, char ***envp);
 char	*check_cmd(char *cmd, char **envp);
 
 /*built in*/

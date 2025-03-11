@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
+/*   By: lecartuy <lecartuy@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 13:54:10 by mlavergn          #+#    #+#             */
-/*   Updated: 2025/03/10 17:08:25 by mlavergn         ###   ########.fr       */
+/*   Updated: 2025/03/11 11:47:49 by lecartuy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,8 @@ int main(int ac, char **av, char **envp)
             free_simple_cmds(tokens);
             continue ;
         }
-        check_builtin(tokens->args, &g_env.env);
+        if (!check_builtin(tokens->args, &g_env.env))
+            execute_tokens(tokens, &g_env);
         free(line);
         free_tokens(&lexed_token);
         free_simple_cmds(tokens);
