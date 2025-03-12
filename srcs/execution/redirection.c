@@ -6,7 +6,7 @@
 /*   By: lecartuy <lecartuy@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/18 10:25:48 by lecartuy          #+#    #+#             */
-/*   Updated: 2025/03/11 15:18:28 by lecartuy         ###   ########.fr       */
+/*   Updated: 2025/03/12 20:59:02 by lecartuy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,4 +90,3 @@ void redirect_output_pipeline(const char *outfile, int append)
     dup2(fd, STDOUT_FILENO);
     close(fd);
 }
-

@@ -1,0 +1,5 @@
+minishell>First line
+type: 0, value: First
+type: 0, value: line
+Command: First line 
+Error: Command not found

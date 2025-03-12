@@ -6,7 +6,7 @@
 /*   By: lecartuy <lecartuy@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/17 11:22:48 by lecartuy          #+#    #+#             */
-/*   Updated: 2025/03/11 14:58:52 by lecartuy         ###   ########.fr       */
+/*   Updated: 2025/03/12 22:14:12 by lecartuy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,10 +64,12 @@ void execute_command(t_simple_cmds *cmd, t_shell *shell)
 {
     char **paths;
     char *exec_path;
+    pid_t pid;
+    int status;
 
     if (!cmd || !cmd->args || !cmd->args[0])
         return;
-        
+
     if (cmd->args[0][0] == '/' || cmd->args[0][0] == '.')
         exec_path = cmd->args[0];
     else
@@ -82,12 +84,30 @@ void execute_command(t_simple_cmds *cmd, t_shell *shell)
             return;
         }
     }
-    execve(exec_path, cmd->args, shell->env);
-    perror("execve failed");
-    shell->last_exit = 1;
+    pid = fork();
+    if (pid == 0) 
+    {
+        if (redirect_input(cmd) == -1 || redirect_output(cmd) == -1)
+            exit(1);
+        execve(exec_path, cmd->args, shell->env);
+        perror("execve failed");
+        exit(1);
+    }
+    else if (pid > 0)
+    {
+        waitpid(pid, &status, 0);
+        if (WIFEXITED(status))
+            shell->last_exit = WEXITSTATUS(status);
+        if (cmd->args[0][0] != '/' && cmd->args[0][0] != '.')
+            free(exec_path);
+    }
+    else
+        perror("fork failed");
+
     if (cmd->args[0][0] != '/' && cmd->args[0][0] != '.')
         free_tab(paths);
-    _exit(1);
 }
+
+
 
 
