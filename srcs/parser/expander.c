@@ -6,7 +6,7 @@
 /*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/25 16:42:47 by mlavergn          #+#    #+#             */
-/*   Updated: 2025/03/01 13:04:12 by mlavergn         ###   ########.fr       */
+/*   Updated: 2025/03/12 16:42:24 by mlavergn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,4 +116,22 @@ void	expand_dollar(char	**str, t_shell g_env)
 	}
 	free(*str);
 	*str = new_str;
+}
+
+void	expand_tilde(char **path, t_shell g_env)
+{
+	char	*home;
+	char	*expanded;
+
+	home = get_var(g_env.env, "HOME");
+	if (((*path)[1] == '/' && !inside_quotes(*path)) ||
+		((*path)[1] == '\0' && !inside_quotes(*path)))
+	{
+		expanded = ft_strjoin(home, (*path) + 1);
+		free(home);
+		free(*path);
+		*path = expanded;
+		return ;
+	}
+	free(home);
 }

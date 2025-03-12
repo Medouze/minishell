@@ -6,7 +6,7 @@
 /*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/25 17:08:48 by mlavergn          #+#    #+#             */
-/*   Updated: 2025/02/25 17:12:22 by mlavergn         ###   ########.fr       */
+/*   Updated: 2025/03/12 16:36:37 by mlavergn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,4 +70,26 @@ char	*ft_strjoin_char_free(char *s, char c)
 	new_str[len + 1] = '\0';
 	free(s);
 	return (new_str);
+}
+
+int	inside_quotes(char	*str)
+{
+	int		in_single;
+	int		in_double;
+	int		i;
+
+	in_double = 0;
+	in_single = 0;
+	i = 0;
+	while (str[i])
+	{
+		if (str[i] == '\'' && !in_double)
+			in_single = !in_single;
+		else if (str[i] == '"' && !in_single)
+			in_double = !in_double;
+		i++;
+	}
+	if (in_single || in_double)
+		return (1);
+	return (0);
 }

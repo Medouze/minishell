@@ -6,7 +6,7 @@
 /*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/11 17:10:46 by mlavergn          #+#    #+#             */
-/*   Updated: 2025/03/11 17:10:51 by mlavergn         ###   ########.fr       */
+/*   Updated: 2025/03/12 16:35:10 by mlavergn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,6 +83,13 @@ void	remove_slash(char **line);
 int		get_pwd_len(char **envp, int *i);
 char	*extract_key(char *line);
 int		replace_line(char ***envp, char *line);
+char	*get_var(char **envp, char *line);
+void	addto_pwd(char ***envp, char *path, char *old_pwd);
+void	remove_slash(char **line);
+void	change_old_pwd(char ***envp, char *old_pwd);
+void	change_pwd(char ***envp, char *path);
+void	back_pwd(char ***envp, char *old_pwd);
+void	back_absolute_pwd(char ***envp, char *path, char *old_pwd);
 
 /*utils*/
 t_shell	copy_env(char **envp);
@@ -115,6 +122,8 @@ t_simple_cmds	*tokenize(t_token *tokens);
 void 			free_simple_cmds(t_simple_cmds *cmd);
 void			print_simple_cmds(t_simple_cmds *cmd); // delte later
 int				get_nbr_cmd(t_token **tokens);
+void			expand_tilde(char **path, t_shell g_env);
+int				inside_quotes(char	*str);
 
 /*execution*/
 

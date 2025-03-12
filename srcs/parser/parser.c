@@ -6,7 +6,7 @@
 /*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/24 19:14:06 by mlavergn          #+#    #+#             */
-/*   Updated: 2025/03/10 16:04:24 by mlavergn         ###   ########.fr       */
+/*   Updated: 2025/03/12 16:26:30 by mlavergn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,6 +81,7 @@ t_simple_cmds	*parser2(t_token **tokens, t_shell *g_env)
 	current = *tokens;
 	while (current)
 	{
+		expand_tilde(&current->str, (*g_env));
 		expand_dollar(&current->str, (*g_env));
 		if (ft_strchr(current->str, '\"') || ft_strchr(current->str, '\''))
 			remove_quotes(&current->str);

@@ -6,37 +6,35 @@
 /*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/07 17:01:45 by mlavergn          #+#    #+#             */
-/*   Updated: 2025/03/11 15:06:27 by mlavergn         ###   ########.fr       */
+/*   Updated: 2025/03/12 15:50:07 by mlavergn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-void free_simple_cmds(t_simple_cmds *cmd)
+void	free_simple_cmds(t_simple_cmds *cmd)
 {
-    t_simple_cmds *tmp;
-    int i;
+	t_simple_cmds	*tmp;
+	int				i;
 
-    if (!cmd)
-        return;
-
-    while (cmd)
-    {
-        if (cmd->args)
-        {
-            i = 0;
-            while (cmd->args[i])
-            {
-                free(cmd->args[i]);
-                i++;
-            }
-            free(cmd->args);  // Free the args array once done
-        }
-
-        tmp = cmd;         // Save the current cmd to free later
-        cmd = cmd->next;   // Move to the next cmd
-        free(tmp);         // Now free the saved cmd node
-    }
+	if (!cmd)
+		return ;
+	while (cmd)
+	{
+		if (cmd->args)
+		{
+			i = 0;
+			while (cmd->args[i])
+			{
+				free(cmd->args[i]);
+				i++;
+			}
+			free(cmd->args);
+		}
+		tmp = cmd;
+		cmd = cmd->next;
+		free(tmp);
+	}
 }
 
 void	print_simple_cmds(t_simple_cmds *cmd) // DELETE PLUS TARD
