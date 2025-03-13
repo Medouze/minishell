@@ -6,7 +6,7 @@
 /*   By: lecartuy <lecartuy@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/17 11:22:48 by lecartuy          #+#    #+#             */
-/*   Updated: 2025/03/12 22:14:12 by lecartuy         ###   ########.fr       */
+/*   Updated: 2025/03/13 16:50:21 by lecartuy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,6 @@ void execute_command(t_simple_cmds *cmd, t_shell *shell)
 
     if (!cmd || !cmd->args || !cmd->args[0])
         return;
-
     if (cmd->args[0][0] == '/' || cmd->args[0][0] == '.')
         exec_path = cmd->args[0];
     else
@@ -87,6 +86,7 @@ void execute_command(t_simple_cmds *cmd, t_shell *shell)
     pid = fork();
     if (pid == 0) 
     {
+        fprintf(stderr, "Executing command: %s\n", exec_path); // Debugging output
         if (redirect_input(cmd) == -1 || redirect_output(cmd) == -1)
             exit(1);
         execve(exec_path, cmd->args, shell->env);
@@ -103,7 +103,6 @@ void execute_command(t_simple_cmds *cmd, t_shell *shell)
     }
     else
         perror("fork failed");
-
     if (cmd->args[0][0] != '/' && cmd->args[0][0] != '.')
         free_tab(paths);
 }
