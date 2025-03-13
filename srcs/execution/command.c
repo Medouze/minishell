@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   command.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lecartuy <lecartuy@student.s19.be>         +#+  +:+       +#+        */
+/*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/17 11:22:48 by lecartuy          #+#    #+#             */
-/*   Updated: 2025/03/13 16:50:21 by lecartuy         ###   ########.fr       */
+/*   Updated: 2025/03/13 22:27:28 by mlavergn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,6 +86,8 @@ void execute_command(t_simple_cmds *cmd, t_shell *shell)
     pid = fork();
     if (pid == 0) 
     {
+        signal(SIGINT, SIG_DFL);
+        signal(SIGQUIT, SIG_DFL);
         fprintf(stderr, "Executing command: %s\n", exec_path); // Debugging output
         if (redirect_input(cmd) == -1 || redirect_output(cmd) == -1)
             exit(1);
@@ -95,7 +97,11 @@ void execute_command(t_simple_cmds *cmd, t_shell *shell)
     }
     else if (pid > 0)
     {
+        signal(SIGINT, SIG_IGN);
+        signal(SIGQUIT, SIG_IGN);
         waitpid(pid, &status, 0);
+        signal(SIGINT, signal_handler);
+        signal(SIGQUIT, SIG_IGN);
         if (WIFEXITED(status))
             shell->last_exit = WEXITSTATUS(status);
         if (cmd->args[0][0] != '/' && cmd->args[0][0] != '.')

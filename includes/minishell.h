@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lecartuy <lecartuy@student.s19.be>         +#+  +:+       +#+        */
+/*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/11 17:10:46 by mlavergn          #+#    #+#             */
-/*   Updated: 2025/03/12 21:45:36 by lecartuy         ###   ########.fr       */
+/*   Updated: 2025/03/13 22:10:48 by mlavergn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@
 # include "../libft/libft.h"
 # include <readline/history.h>
 # include <fcntl.h>
+# include <signal.h>
 
 #ifndef SPE_CHARS
 # define SPE_CHARS "!#$%&()*+,-./:;<=>?@[\\]^_`{|}~"
@@ -124,6 +125,9 @@ void			print_simple_cmds(t_simple_cmds *cmd); // delte later
 int				get_nbr_cmd(t_token **tokens);
 void			expand_tilde(char **path, t_shell g_env);
 int				inside_quotes(char	*str);
+
+/*SIGNALS */
+void signal_handler(int sig);
 
 /*execution*/
 
