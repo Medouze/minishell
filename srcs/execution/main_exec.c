@@ -6,7 +6,7 @@
 /*   By: lecartuy <lecartuy@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/18 11:18:06 by lecartuy          #+#    #+#             */
-/*   Updated: 2025/03/13 17:24:18 by lecartuy         ###   ########.fr       */
+/*   Updated: 2025/03/18 16:30:43 by lecartuy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,6 @@ void execute_tokens(t_simple_cmds *cmds, t_shell *shell)
 {
     int stdin_backup;
     int stdout_backup;
-
     while (cmds)
     {
         stdin_backup = dup(STDIN_FILENO);
@@ -28,17 +27,24 @@ void execute_tokens(t_simple_cmds *cmds, t_shell *shell)
                 restore_stdout(stdout_backup);
                 dup2(stdin_backup, STDIN_FILENO);
             }
-            else if (cmds->next)
+            if (cmds->next)
+            {
+                fprintf(stderr, "Calling handle_pipe...\n");
                 handle_pipe(cmds, shell);
+            }
             else
                 execute_command(cmds, shell);
-            
+        
             restore_stdout(stdout_backup);
             dup2(stdin_backup, STDIN_FILENO);
             close(stdin_backup);
         }
         cmds = cmds->next;
     }
+    dup2(stdin_backup, STDIN_FILENO);
+    dup2(stdout_backup, STDOUT_FILENO);
+    close(stdin_backup);
+    close(stdout_backup);
 }
 
 

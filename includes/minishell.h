@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
+/*   By: lecartuy <lecartuy@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/11 17:10:46 by mlavergn          #+#    #+#             */
-/*   Updated: 2025/03/13 22:10:48 by mlavergn         ###   ########.fr       */
+/*   Updated: 2025/03/18 15:28:47 by lecartuy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -131,8 +131,8 @@ void signal_handler(int sig);
 
 /*execution*/
 
-void redirect_input_pipeline(const char *infile);
-void redirect_output_pipeline(const char *outfile, int append);
+int redirect_input_pipeline(const char *infile);
+int redirect_output_pipeline(const char *outfile, int append);
 int  redirect_input(t_simple_cmds *cmd);
 int  redirect_output(t_simple_cmds *cmd);
 void handle_pipe(t_simple_cmds *cmds, t_shell *shell);
@@ -140,5 +140,6 @@ void execute_tokens(t_simple_cmds *cmds, t_shell *shell);
 void execute_command(t_simple_cmds *cmd, t_shell *shell);
 int handle_redirection(t_simple_cmds *cmd);
 void restore_stdout(int stdout_backup);
+void execute_command_pipe(t_simple_cmds *cmd, t_shell *shell);
 
 #endif

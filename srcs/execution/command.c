@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   command.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
+/*   By: lecartuy <lecartuy@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/17 11:22:48 by lecartuy          #+#    #+#             */
-/*   Updated: 2025/03/13 22:27:28 by mlavergn         ###   ########.fr       */
+/*   Updated: 2025/03/18 16:36:38 by lecartuy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,9 +78,9 @@ void execute_command(t_simple_cmds *cmd, t_shell *shell)
         if (!exec_path)
         {
             free_tab(paths);
-            print_error("Error: Command not found");
+            perror("Error: Command not found");
             shell->last_exit = 127;
-            return;
+            return ;
         }
     }
     pid = fork();
@@ -88,7 +88,6 @@ void execute_command(t_simple_cmds *cmd, t_shell *shell)
     {
         signal(SIGINT, SIG_DFL);
         signal(SIGQUIT, SIG_DFL);
-        fprintf(stderr, "Executing command: %s\n", exec_path); // Debugging output
         if (redirect_input(cmd) == -1 || redirect_output(cmd) == -1)
             exit(1);
         execve(exec_path, cmd->args, shell->env);
@@ -112,6 +111,38 @@ void execute_command(t_simple_cmds *cmd, t_shell *shell)
     if (cmd->args[0][0] != '/' && cmd->args[0][0] != '.')
         free_tab(paths);
 }
+
+
+void execute_command_pipe(t_simple_cmds *cmd, t_shell *shell)
+{
+    char **paths;
+    char *exec_path;
+    
+    fprintf(stderr, "Executing command: %s\n", cmd->args[0]);
+    if (!cmd || !cmd->args || !cmd->args[0])
+        return;
+    
+    if (cmd->args[0][0] == '/' || cmd->args[0][0] == '.')
+        exec_path = cmd->args[0];
+    else
+    {
+        paths = get_paths(shell->env);
+        exec_path = find_exec(cmd->args[0], paths);
+        if (!exec_path)
+        {
+            free_tab(paths);
+            print_error("Error: Command not found");
+            shell->last_exit = 127;
+            return;
+        }
+    }
+    if (redirect_input(cmd) == -1 || redirect_output(cmd) == -1)
+        exit(1);
+    execve(exec_path, cmd->args, shell->env);
+    perror("execve failed");
+    exit(1);
+}
+
 
 
 

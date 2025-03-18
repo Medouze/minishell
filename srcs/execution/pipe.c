@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipe.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
+/*   By: lecartuy <lecartuy@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/18 10:25:46 by lecartuy          #+#    #+#             */
-/*   Updated: 2025/03/13 21:08:27 by mlavergn         ###   ########.fr       */
+/*   Updated: 2025/03/18 16:38:06 by lecartuy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,8 @@ static void execute_child(t_simple_cmds *cmd, int pipe_fd[][2], int index, int n
         close(pipe_fd[i][1]);
         i++;
     }
-    execute_command(cmd, shell);
+    execute_command_pipe(cmd, shell);
+    exit(EXIT_SUCCESS);
 }
     
 static void launch_child_process(t_simple_cmds *cmd, int pipe_fd[][2], int index, int num_pipes, t_shell *shell)
@@ -65,6 +66,13 @@ static void execute_pipeline(t_simple_cmds *cmds, int pipe_fd[][2], int num_pipe
     {
         launch_child_process(current, pipe_fd, i, num_pipes, shell);
         current = current->next;
+        i++;
+    }
+    i = 0;
+    while (i < num_pipes)
+    {
+        close(pipe_fd[i][0]);
+        close(pipe_fd[i][1]);
         i++;
     }
     while ((pid = wait(&status)) > 0)
@@ -108,12 +116,9 @@ void handle_pipe(t_simple_cmds *cmds, t_shell *shell)
         i++;
     }
     execute_pipeline(cmds, pipe_fd, num_pipes, shell);
-    i = 0;
-    while (i < num_pipes)
-    {
-        close(pipe_fd[i][0]);
-        close(pipe_fd[i][1]);
-        i++;
-    }
 }
+
+
+
+
 
