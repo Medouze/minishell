@@ -11,3 +11,11 @@ Exit status https://www.gnu.org/software/bash/manual/html_node/Exit-Status.html
 
 expend ~
 cd multiples args
+
+
+
+Problèmes à fixer dans l exec :
+
+- redirection multiples qui ne fonctionnent bizarrement pas. (cat < test_append.txt > test_ouput.txt)
+- quand il y a un pipe, ca ne retourne pas au prompt de base (possiblement des fd qui restent ouverts). En conséquences, ca ne fonctionne pas quand il y a plusieurs pipes.
+- implémenter correctement le heredoc.
