@@ -6,7 +6,7 @@
 /*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/01 13:12:02 by mlavergn          #+#    #+#             */
-/*   Updated: 2025/03/07 17:03:40 by mlavergn         ###   ########.fr       */
+/*   Updated: 2025/03/19 00:10:59 by mlavergn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,6 +110,6 @@ t_simple_cmds	*tokenize(t_token *tokens)
 		if (tokens && tokens->type == PIPE)
 			tokens = tokens->next;
 	}
-	print_simple_cmds(exec_token);
+	//print_simple_cmds(exec_token);
 	return (exec_token);
 }

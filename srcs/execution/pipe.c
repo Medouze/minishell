@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipe.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lecartuy <lecartuy@student.s19.be>         +#+  +:+       +#+        */
+/*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/18 10:25:46 by lecartuy          #+#    #+#             */
-/*   Updated: 2025/03/18 16:38:06 by lecartuy         ###   ########.fr       */
+/*   Updated: 2025/03/19 00:35:29 by mlavergn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,26 +15,30 @@
 static void execute_child(t_simple_cmds *cmd, int pipe_fd[][2], int index, int num_pipes, t_shell *shell)
 {
     int i;
-    
+
     i = 0;
     if (cmd->infile)
         redirect_input_pipeline(cmd->infile);
     else if (index > 0)
         dup2(pipe_fd[index - 1][0], STDIN_FILENO);
+
     if (cmd->outfile)
         redirect_output_pipeline(cmd->outfile, cmd->append);
     else if (index < num_pipes)
         dup2(pipe_fd[index][1], STDOUT_FILENO);
+
+    // Close all pipe file descriptors
     while (i < num_pipes)
     {
         close(pipe_fd[i][0]);
         close(pipe_fd[i][1]);
         i++;
     }
+
     execute_command_pipe(cmd, shell);
-    exit(EXIT_SUCCESS);
+    exit(EXIT_SUCCESS);  // Ensure we exit the child process after execution
 }
-    
+
 static void launch_child_process(t_simple_cmds *cmd, int pipe_fd[][2], int index, int num_pipes, t_shell *shell)
 {
     pid_t pid;
@@ -49,7 +53,7 @@ static void launch_child_process(t_simple_cmds *cmd, int pipe_fd[][2], int index
     if (pid == 0)
     {
         execute_child(cmd, pipe_fd, index, num_pipes, shell);
-        exit(EXIT_FAILURE);
+        exit(EXIT_FAILURE);  // Make sure to exit child on failure
     }
 }
 
@@ -59,7 +63,7 @@ static void execute_pipeline(t_simple_cmds *cmds, int pipe_fd[][2], int num_pipe
     int status;
     pid_t pid;
     t_simple_cmds *current;
-    
+
     i = 0;
     current = cmds;
     while (current)
@@ -68,6 +72,7 @@ static void execute_pipeline(t_simple_cmds *cmds, int pipe_fd[][2], int num_pipe
         current = current->next;
         i++;
     }
+
     i = 0;
     while (i < num_pipes)
     {
@@ -75,6 +80,8 @@ static void execute_pipeline(t_simple_cmds *cmds, int pipe_fd[][2], int num_pipe
         close(pipe_fd[i][1]);
         i++;
     }
+
+    // Wait for all child processes
     while ((pid = wait(&status)) > 0)
     {
         if (WIFEXITED(status))
@@ -87,7 +94,7 @@ static void execute_pipeline(t_simple_cmds *cmds, int pipe_fd[][2], int num_pipe
 static int count_pipes(t_simple_cmds *cmds)
 {
     int count;
-    
+
     count = 0;
     while (cmds->next)
     {
@@ -101,9 +108,10 @@ void handle_pipe(t_simple_cmds *cmds, t_shell *shell)
 {
     int num_pipes;
     int i;
+
     num_pipes = count_pipes(cmds);
     int pipe_fd[num_pipes][2];
-    
+
     i = 0;
     while (i < num_pipes)
     {
@@ -117,6 +125,7 @@ void handle_pipe(t_simple_cmds *cmds, t_shell *shell)
     }
     execute_pipeline(cmds, pipe_fd, num_pipes, shell);
 }
+
 
 
 

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   command.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lecartuy <lecartuy@student.s19.be>         +#+  +:+       +#+        */
+/*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/17 11:22:48 by lecartuy          #+#    #+#             */
-/*   Updated: 2025/03/18 16:36:38 by lecartuy         ###   ########.fr       */
+/*   Updated: 2025/03/19 00:12:14 by mlavergn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,7 +118,6 @@ void execute_command_pipe(t_simple_cmds *cmd, t_shell *shell)
     char **paths;
     char *exec_path;
     
-    fprintf(stderr, "Executing command: %s\n", cmd->args[0]);
     if (!cmd || !cmd->args || !cmd->args[0])
         return;
     
