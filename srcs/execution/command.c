@@ -6,7 +6,7 @@
 /*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/17 11:22:48 by lecartuy          #+#    #+#             */
-/*   Updated: 2025/03/19 00:12:14 by mlavergn         ###   ########.fr       */
+/*   Updated: 2025/03/19 01:11:24 by mlavergn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -120,7 +120,8 @@ void execute_command_pipe(t_simple_cmds *cmd, t_shell *shell)
     
     if (!cmd || !cmd->args || !cmd->args[0])
         return;
-    
+    if (check_builtin(cmd->args, &shell->env))
+        return ;
     if (cmd->args[0][0] == '/' || cmd->args[0][0] == '.')
         exec_path = cmd->args[0];
     else
