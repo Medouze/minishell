@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   cd_utils.c                                         :+:      :+:    :+:   */
+/*   cd.c                                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/11 15:40:21 by mlavergn          #+#    #+#             */
-/*   Updated: 2025/03/12 15:43:12 by mlavergn         ###   ########.fr       */
+/*   Updated: 2025/03/19 22:37:55 by mlavergn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,6 +84,7 @@ void	cd_cmd(char **line, char ***envp)
 	char	*current_pwd;
 	char	*path;
 
+	printf("MY CD\n");
 	if (line[1] && line[2])
 	{
 		printf("minishell: cd: too many arguments\n");

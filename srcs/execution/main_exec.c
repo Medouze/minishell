@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main_exec.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lecartuy <lecartuy@student.s19.be>         +#+  +:+       +#+        */
+/*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/18 11:18:06 by lecartuy          #+#    #+#             */
-/*   Updated: 2025/03/19 18:28:59 by lecartuy         ###   ########.fr       */
+/*   Updated: 2025/03/19 22:38:30 by mlavergn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,12 +52,16 @@ void execute_tokens(t_simple_cmds *cmds, t_shell *shell)
         }
         if (backup_fds(&stdin_backup, &stdout_backup) == -1)
             return;
+        ft_handler_signal(2); // 2 to ignore SIGINT
         if (handle_redirection(cmds) != -1)
         {
             if (cmds->args && cmds->args[0])
             {
                 if (check_builtin(cmds->args, &shell->env))
+                {
+                    ft_handler_signal(0);
                     return;
+                }
                 else
                 {
                     fprintf(stderr, "Calling execute_command...\n");
@@ -65,6 +69,7 @@ void execute_tokens(t_simple_cmds *cmds, t_shell *shell)
                 }
             }
         }
+        ft_handler_signal(0);
         restore_fds(stdin_backup, stdout_backup);
         cmds = cmds->next;
     }

@@ -6,7 +6,7 @@
 /*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/18 10:25:46 by lecartuy          #+#    #+#             */
-/*   Updated: 2025/03/19 00:35:29 by mlavergn         ###   ########.fr       */
+/*   Updated: 2025/03/19 22:16:08 by mlavergn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,11 @@
 
 static void execute_child(t_simple_cmds *cmd, int pipe_fd[][2], int index, int num_pipes, t_shell *shell)
 {
-    int i;
+    int i = 0;
 
-    i = 0;
+    // Reset signal handlers to default in child process
+    ft_handler_signal(3); // 3 for default signal behavior (SIGINT and SIGQUIT)
+
     if (cmd->infile)
         redirect_input_pipeline(cmd->infile);
     else if (index > 0)
@@ -27,23 +29,19 @@ static void execute_child(t_simple_cmds *cmd, int pipe_fd[][2], int index, int n
     else if (index < num_pipes)
         dup2(pipe_fd[index][1], STDOUT_FILENO);
 
-    // Close all pipe file descriptors
     while (i < num_pipes)
     {
         close(pipe_fd[i][0]);
         close(pipe_fd[i][1]);
         i++;
     }
-
     execute_command_pipe(cmd, shell);
-    exit(EXIT_SUCCESS);  // Ensure we exit the child process after execution
+    exit(EXIT_SUCCESS);
 }
 
 static void launch_child_process(t_simple_cmds *cmd, int pipe_fd[][2], int index, int num_pipes, t_shell *shell)
 {
-    pid_t pid;
-
-    pid = fork();
+    pid_t pid = fork();
     if (pid == -1)
     {
         shell->last_exit = 1;
@@ -53,7 +51,7 @@ static void launch_child_process(t_simple_cmds *cmd, int pipe_fd[][2], int index
     if (pid == 0)
     {
         execute_child(cmd, pipe_fd, index, num_pipes, shell);
-        exit(EXIT_FAILURE);  // Make sure to exit child on failure
+        exit(EXIT_FAILURE);
     }
 }
 
@@ -80,7 +78,7 @@ static void execute_pipeline(t_simple_cmds *cmds, int pipe_fd[][2], int num_pipe
         close(pipe_fd[i][1]);
         i++;
     }
-
+    ft_handler_signal(2); // 2 to ignore SIGINT
     // Wait for all child processes
     while ((pid = wait(&status)) > 0)
     {
@@ -89,6 +87,7 @@ static void execute_pipeline(t_simple_cmds *cmds, int pipe_fd[][2], int num_pipe
         else if (WIFSIGNALED(status))
             shell->last_exit = 128 + WTERMSIG(status);
     }
+    ft_handler_signal(0); // 0 for default shell behavior
 }
 
 static int count_pipes(t_simple_cmds *cmds)

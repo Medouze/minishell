@@ -6,7 +6,7 @@
 /*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/24 19:14:06 by mlavergn          #+#    #+#             */
-/*   Updated: 2025/03/19 00:11:10 by mlavergn         ###   ########.fr       */
+/*   Updated: 2025/03/19 22:35:15 by mlavergn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,7 +81,8 @@ t_simple_cmds	*parser2(t_token **tokens, t_shell *g_env)
 	current = *tokens;
 	while (current)
 	{
-		expand_tilde(&current->str, (*g_env));
+		if (ft_strncmp(current->str, "~", 100) == 0)
+			expand_tilde(&current->str, (*g_env));
 		expand_dollar(&current->str, (*g_env));
 		if (ft_strchr(current->str, '\"') || ft_strchr(current->str, '\''))
 			remove_quotes(&current->str);
@@ -92,7 +93,7 @@ t_simple_cmds	*parser2(t_token **tokens, t_shell *g_env)
 		}
 		current = current->next;
 	}
-	///print_tokens(*tokens);
+	print_tokens(*tokens);
 	exec_token = tokenize(*tokens);
 	return (exec_token);
 }

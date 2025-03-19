@@ -1,2 +1,0 @@
-Output redirection
-to: output.txt (fd = 7)

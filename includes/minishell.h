@@ -3,15 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lecartuy <lecartuy@student.s19.be>         +#+  +:+       +#+        */
+/*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/11 17:10:46 by mlavergn          #+#    #+#             */
-/*   Updated: 2025/03/19 18:26:39 by lecartuy         ###   ########.fr       */
+/*   Updated: 2025/03/19 22:16:53 by mlavergn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MINISHELL_H
 # define MINISHELL_H
+# define _POSIX_C_SOURCE 200809L
 
 # include <stdlib.h>
 # include <stdio.h>
@@ -24,7 +25,7 @@
 # include <fcntl.h>
 # include <signal.h>
 
-#ifndef SPE_CHARS
+# ifndef SPE_CHARS
 # define SPE_CHARS "!#$%&()*+,-./:;<=>?@[\\]^_`{|}~"
 #endif
 
@@ -140,5 +141,11 @@ void execute_tokens(t_simple_cmds *cmds, t_shell *shell);
 void execute_command(t_simple_cmds *cmd, t_shell *shell);
 int handle_redirection(t_simple_cmds *cmd);
 void execute_command_pipe(t_simple_cmds *cmd, t_shell *shell);
+
+/*signals*/
+
+void	ft_sig_handling(int sig);
+void	ft_sig_heredoc(int sig);
+void	ft_handler_signal(int pick);
 
 #endif
