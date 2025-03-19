@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   command.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
+/*   By: lecartuy <lecartuy@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/17 11:22:48 by lecartuy          #+#    #+#             */
-/*   Updated: 2025/03/19 01:11:24 by mlavergn         ###   ########.fr       */
+/*   Updated: 2025/03/19 18:03:07 by lecartuy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,8 +88,7 @@ void execute_command(t_simple_cmds *cmd, t_shell *shell)
     {
         signal(SIGINT, SIG_DFL);
         signal(SIGQUIT, SIG_DFL);
-        if (redirect_input(cmd) == -1 || redirect_output(cmd) == -1)
-            exit(1);
+        fprintf(stderr, "executing the command...\n");
         execve(exec_path, cmd->args, shell->env);
         perror("execve failed");
         exit(1);
@@ -136,8 +135,8 @@ void execute_command_pipe(t_simple_cmds *cmd, t_shell *shell)
             return;
         }
     }
-    if (redirect_input(cmd) == -1 || redirect_output(cmd) == -1)
-        exit(1);
+    // if (redirect_input(cmd) == -1 || redirect_output(cmd) == -1)
+    //     exit(1);
     execve(exec_path, cmd->args, shell->env);
     perror("execve failed");
     exit(1);

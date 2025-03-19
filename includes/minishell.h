@@ -6,7 +6,7 @@
 /*   By: lecartuy <lecartuy@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/11 17:10:46 by mlavergn          #+#    #+#             */
-/*   Updated: 2025/03/18 15:28:47 by lecartuy         ###   ########.fr       */
+/*   Updated: 2025/03/19 18:26:39 by lecartuy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -139,7 +139,6 @@ void handle_pipe(t_simple_cmds *cmds, t_shell *shell);
 void execute_tokens(t_simple_cmds *cmds, t_shell *shell);
 void execute_command(t_simple_cmds *cmd, t_shell *shell);
 int handle_redirection(t_simple_cmds *cmd);
-void restore_stdout(int stdout_backup);
 void execute_command_pipe(t_simple_cmds *cmd, t_shell *shell);
 
 #endif

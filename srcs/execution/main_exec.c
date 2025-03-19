@@ -3,65 +3,72 @@
 /*                                                        :::      ::::::::   */
 /*   main_exec.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
+/*   By: lecartuy <lecartuy@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/18 11:18:06 by lecartuy          #+#    #+#             */
-/*   Updated: 2025/03/19 01:08:46 by mlavergn         ###   ########.fr       */
+/*   Updated: 2025/03/19 18:28:59 by lecartuy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
+static void restore_fds(int stdin_backup, int stdout_backup)
+{
+    if (stdin_backup != -1)
+    {
+        dup2(stdin_backup, STDIN_FILENO);
+        close(stdin_backup);
+    }
+    if (stdout_backup != -1)
+    {
+        dup2(stdout_backup, STDOUT_FILENO);
+        close(stdout_backup);
+    }
+}
+
+static int backup_fds(int *stdin_backup, int *stdout_backup)
+{
+    *stdin_backup = dup(STDIN_FILENO);
+    *stdout_backup = dup(STDOUT_FILENO);
+    if (*stdin_backup == -1 || *stdout_backup == -1)
+    {
+        perror("Failed to backup fds");
+        return (-1);
+    }
+    return (0);
+}
+
 void execute_tokens(t_simple_cmds *cmds, t_shell *shell) 
 {
     int stdin_backup;
     int stdout_backup;
+
     while (cmds)
     {
-        stdin_backup = dup(STDIN_FILENO);
-        stdout_backup = handle_redirection(cmds);
-        if (stdout_backup != -1)
+        if (cmds->next && !(cmds->infile || cmds->outfile || cmds->heredoc))
         {
-            if (cmds->next)
-            {
-                handle_pipe(cmds, shell);
-                return ;
-            }
-            else
+            handle_pipe(cmds, shell);
+            return;
+        }
+        if (backup_fds(&stdin_backup, &stdout_backup) == -1)
+            return;
+        if (handle_redirection(cmds) != -1)
+        {
+            if (cmds->args && cmds->args[0])
             {
                 if (check_builtin(cmds->args, &shell->env))
-                    ;
+                    return;
                 else
+                {
+                    fprintf(stderr, "Calling execute_command...\n");
                     execute_command(cmds, shell);
+                }
             }
-            restore_stdout(stdout_backup);
-            dup2(stdin_backup, STDIN_FILENO);
-            close(stdin_backup);
         }
+        restore_fds(stdin_backup, stdout_backup);
         cmds = cmds->next;
     }
-    dup2(stdin_backup, STDIN_FILENO);
-    dup2(stdout_backup, STDOUT_FILENO);
-    close(stdin_backup);
-    close(stdout_backup);
 }
 
-int handle_redirection(t_simple_cmds *cmd)
-{
-    int stdout_backup;
 
-    stdout_backup = dup(STDOUT_FILENO);
-    if (redirect_input(cmd) == -1 || redirect_output(cmd) == -1)
-    {
-        close(stdout_backup);
-        return (-1);
-    }
-    return (stdout_backup);
-}
-
-void restore_stdout(int stdout_backup)
-{
-    dup2(stdout_backup, STDOUT_FILENO);
-    close(stdout_backup);
-}
 

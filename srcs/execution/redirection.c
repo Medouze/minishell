@@ -6,7 +6,7 @@
 /*   By: lecartuy <lecartuy@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/18 10:25:48 by lecartuy          #+#    #+#             */
-/*   Updated: 2025/03/18 15:28:23 by lecartuy         ###   ########.fr       */
+/*   Updated: 2025/03/19 18:26:08 by lecartuy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,6 +68,12 @@ int redirect_output(t_simple_cmds *cmd)
     return (0);
 }
 
+int handle_redirection(t_simple_cmds *cmd)
+{
+    if (redirect_input(cmd) == -1 || redirect_output(cmd) == -1)
+        return (-1);
+    return (0);
+}
 
 int redirect_input_pipeline(const char *infile)
 {
