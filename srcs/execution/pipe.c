@@ -6,7 +6,7 @@
 /*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/18 10:25:46 by lecartuy          #+#    #+#             */
-/*   Updated: 2025/03/19 22:16:08 by mlavergn         ###   ########.fr       */
+/*   Updated: 2025/03/20 11:49:18 by mlavergn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,7 +85,12 @@ static void execute_pipeline(t_simple_cmds *cmds, int pipe_fd[][2], int num_pipe
         if (WIFEXITED(status))
             shell->last_exit = WEXITSTATUS(status);
         else if (WIFSIGNALED(status))
+        {
             shell->last_exit = 128 + WTERMSIG(status);
+            if (WTERMSIG(status) == SIGINT)
+                write(STDOUT_FILENO, "\n", 1);
+        }
+        
     }
     ft_handler_signal(0); // 0 for default shell behavior
 }
