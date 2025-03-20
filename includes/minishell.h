@@ -6,7 +6,7 @@
 /*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/11 17:10:46 by mlavergn          #+#    #+#             */
-/*   Updated: 2025/03/19 22:16:53 by mlavergn         ###   ########.fr       */
+/*   Updated: 2025/03/20 13:47:03 by mlavergn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -126,6 +126,7 @@ void			print_simple_cmds(t_simple_cmds *cmd); // delte later
 int				get_nbr_cmd(t_token **tokens);
 void			expand_tilde(char **path, t_shell g_env);
 int				inside_quotes(char	*str);
+void			in_quotes(char **str, int i, int *in_double, int *in_single);
 
 /*SIGNALS */
 void signal_handler(int sig);

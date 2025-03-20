@@ -6,7 +6,7 @@
 /*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/25 16:42:47 by mlavergn          #+#    #+#             */
-/*   Updated: 2025/03/12 16:42:24 by mlavergn         ###   ########.fr       */
+/*   Updated: 2025/03/20 13:58:43 by mlavergn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,10 @@ void	replace_dollar_word(char **str, char **new_str, t_shell g_env, int *i)
 	char	*first_word;
 
 	if (!(*str)[*i + 1] || (*str)[*i + 1] == 32)
+	{
 		*new_str = ft_strdup("$");
+		return ;
+	}
 	if ((*str)[*i + 1] == '?')
 	{
 		first_word = ft_itoa(g_env.last_exit);
@@ -91,7 +94,7 @@ void	replace_dollar_word(char **str, char **new_str, t_shell g_env, int *i)
 	}
 }
 
-void	expand_dollar(char	**str, t_shell g_env)
+void	expand_dollar(char **str, t_shell g_env)
 {
 	char	*new_str;
 	int		i;
@@ -104,14 +107,17 @@ void	expand_dollar(char	**str, t_shell g_env)
 	new_str = ft_strdup("");
 	while ((*str)[i])
 	{
-		if ((*str)[i] == '\'' && !in_double)
-			in_single = !in_single;
-		else if ((*str)[i] == '\"' && !in_single)
-			in_double = !in_double;
-		if ((*str)[i] == '$' && (*str)[i + 1] && !in_single)
+		in_quotes(str, i, &in_double, &in_single);
+		if ((*str)[i] == '$' && ft_isdigit((*str)[i + 1]) && !in_single)
+		{
+			i += 2;
+			continue;
+		}
+		else if ((*str)[i] == '$' && (*str)[i + 1] && !in_single)
 			replace_dollar_word(str, &new_str, g_env, &i);
 		else
 			new_str = ft_strjoin_char_free(new_str, (*str)[i]);
+		
 		i++;
 	}
 	free(*str);

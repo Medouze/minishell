@@ -6,7 +6,7 @@
 /*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/25 17:08:48 by mlavergn          #+#    #+#             */
-/*   Updated: 2025/03/12 16:36:37 by mlavergn         ###   ########.fr       */
+/*   Updated: 2025/03/20 13:48:45 by mlavergn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,4 +92,12 @@ int	inside_quotes(char	*str)
 	if (in_single || in_double)
 		return (1);
 	return (0);
+}
+
+void	in_quotes(char **str, int i, int *in_double, int *in_single)
+{
+	if ((*str)[i] == '\'' && !(*in_double))
+			*in_single = !(*in_single);
+	else if ((*str)[i] == '\"' && !(*in_single))
+		*in_double = !(*in_double);
 }
