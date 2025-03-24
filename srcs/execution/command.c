@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   command.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
+/*   By: lecartuy <lecartuy@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/17 11:22:48 by lecartuy          #+#    #+#             */
-/*   Updated: 2025/03/19 21:40:07 by mlavergn         ###   ########.fr       */
+/*   Updated: 2025/03/24 18:39:31 by lecartuy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,10 +84,10 @@ void execute_command(t_simple_cmds *cmd, t_shell *shell)
             return;
         }
     }
-
     pid = fork();
     if (pid == 0)
-    {
+    {   
+        fprintf(stderr, "execution of command...\n");
         execve(exec_path, cmd->args, shell->env);
         perror("execve failed");
         exit(1);
@@ -105,7 +105,6 @@ void execute_command(t_simple_cmds *cmd, t_shell *shell)
     if (cmd->args[0][0] != '/' && cmd->args[0][0] != '.')
         free_tab(paths);
 }
-
 
 
 void execute_command_pipe(t_simple_cmds *cmd, t_shell *shell)

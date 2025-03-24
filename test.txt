@@ -1,2 +1,4 @@
-Input redirection
-pattern
+first line
+second
+third line
+forth

@@ -6,7 +6,7 @@
 /*   By: lecartuy <lecartuy@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/18 10:25:48 by lecartuy          #+#    #+#             */
-/*   Updated: 2025/03/19 18:26:08 by lecartuy         ###   ########.fr       */
+/*   Updated: 2025/03/24 18:37:17 by lecartuy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,20 +15,9 @@
 int redirect_input(t_simple_cmds *cmd)
 {
     int fd;
-
+    
     if (cmd->heredoc)
-    {
-        fd = open(cmd->heredoc, O_RDONLY);
-        if (fd == -1)
-        {
-            perror("Error opening heredoc");
-            return (-1);
-        }
-        printf("Redirecting input from heredoc: %s (fd = %d)\n", cmd->heredoc, fd);
-        if (dup2(fd, STDIN_FILENO) == -1)
-            perror("dup2 for input failed");
-        close(fd);
-    }
+        ;
     else if (cmd->infile)
     {
         fd = open(cmd->infile, O_RDONLY);
@@ -48,13 +37,17 @@ int redirect_input(t_simple_cmds *cmd)
 int redirect_output(t_simple_cmds *cmd)
 {
     int fd;
-
+    
     if (cmd->outfile)
     {
+        fprintf(stderr, "Attempting to redirect output to: %s\n", cmd->outfile);
         if (cmd->append)
             fd = open(cmd->outfile, O_WRONLY | O_CREAT | O_APPEND, 0644);
         else
+        {
             fd = open(cmd->outfile, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+            
+        }
         if (fd == -1)
         {
             perror("Error opening output file");
@@ -70,7 +63,9 @@ int redirect_output(t_simple_cmds *cmd)
 
 int handle_redirection(t_simple_cmds *cmd)
 {
-    if (redirect_input(cmd) == -1 || redirect_output(cmd) == -1)
+    if (redirect_input(cmd) == -1)
+        return (-1);
+    if (redirect_output(cmd) == -1)
         return (-1);
     return (0);
 }
