@@ -6,7 +6,7 @@
 /*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/01 13:12:02 by mlavergn          #+#    #+#             */
-/*   Updated: 2025/03/19 00:10:59 by mlavergn         ###   ########.fr       */
+/*   Updated: 2025/03/25 13:49:43 by mlavergn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,33 +33,6 @@ t_simple_cmds	*allocate_new_command(int len)
 	return (new_cmd);
 }
 
-int	fill_args(t_simple_cmds *cmd, t_token *tokens)
-{
-	int	i;
-	int	j;
-
-	i = 0;
-	j = 0;
-	while (tokens && tokens->type == CMD)
-	{
-		cmd->args[i] = ft_strdup(tokens->str);
-		if (!cmd->args[i])
-		{
-			while (j < i)
-			{
-				free(cmd->args[j]);
-				j++;
-			}
-			free(cmd->args);
-			return (-1);
-		}
-		i++;
-		tokens = tokens->next;
-	}
-	cmd->args[i] = NULL;
-	return (0);
-}
-
 void	add_command_to_list(t_simple_cmds **exec_token,
 	t_simple_cmds *current_cmd, t_simple_cmds **last_cmd)
 {
@@ -70,46 +43,85 @@ void	add_command_to_list(t_simple_cmds **exec_token,
 	*last_cmd = current_cmd;
 }
 
-void	handle_redir(t_simple_cmds **exec_token, t_token **tokens)
+void handle_redir(t_simple_cmds **exec_token, t_token **tokens)
 {
-	if ((*tokens)->type == REDIRECT_IN)
-		(*exec_token)->infile = (*tokens)->next->str;
-	if ((*tokens)->type == REDIRECT_OUT)
-		(*exec_token)->outfile = (*tokens)->next->str;
-	if ((*tokens)->type == APPEND)
-	{
-		(*exec_token)->outfile = (*tokens)->next->str;
-		(*exec_token)->append = 1;
-	}
-	if ((*tokens)->type == HEREDOC)
-		(*exec_token)->heredoc = (*tokens)->next->str;
-	*tokens = (*tokens)->next->next;
+    // Handle redirection cases (input, output, append, heredoc)
+    if ((*tokens)->type == REDIRECT_IN)
+    {
+        (*exec_token)->infile = (*tokens)->next->str;
+        *tokens = (*tokens)->next->next;  // Skip the redirection token and the file name token
+    }
+    else if ((*tokens)->type == REDIRECT_OUT)
+    {
+        (*exec_token)->outfile = (*tokens)->next->str;
+        *tokens = (*tokens)->next->next;  // Skip the redirection token and the file name token
+    }
+    else if ((*tokens)->type == APPEND)
+    {
+        (*exec_token)->outfile = (*tokens)->next->str;
+        (*exec_token)->append = 1;
+        *tokens = (*tokens)->next->next;  // Skip the append token and the file name token
+    }
+    else if ((*tokens)->type == HEREDOC)
+    {
+        (*exec_token)->heredoc = (*tokens)->next->str;
+        *tokens = (*tokens)->next->next;  // Skip the heredoc token and the delimiter token
+    }
 }
 
-// Main function to tokenize the input
-t_simple_cmds	*tokenize(t_token *tokens)
+// Updated fill_args function to stop when encountering redirection or pipe tokens
+int fill_args(t_simple_cmds *cmd, t_token *tokens)
 {
-	t_simple_cmds	*exec_token;
-	t_simple_cmds	*current_cmd;
-	t_simple_cmds	*last_cmd;
-	t_token			*current;
+    int i = 0;
 
-	exec_token = NULL;
-	current_cmd = NULL;
-	last_cmd = NULL;
-	while (tokens)
-	{
-		current = tokens;
-		current_cmd = allocate_new_command(get_nbr_cmd(&tokens));
-		if (!current_cmd)
-			return (NULL);
-		fill_args(current_cmd, current);
+    // Collect arguments until a redirection or pipe token is encountered
+    while (tokens && (tokens->type == CMD))
+    {
+        cmd->args[i] = ft_strdup(tokens->str);
+        if (!cmd->args[i])
+        {
+            // If memory allocation fails, free all previously allocated args
+            for (int j = 0; j < i; j++)
+                free(cmd->args[j]);
+            free(cmd->args);
+            return -1;
+        }
+        i++;
+        tokens = tokens->next;
+    }
+    cmd->args[i] = NULL;  // Null-terminate the args array
+    return 0;
+}
+
+// Updated tokenize function to treat redirection as part of a single command
+t_simple_cmds *tokenize(t_token *tokens)
+{
+    t_simple_cmds *exec_token = NULL;
+    t_simple_cmds *current_cmd = NULL;
+    t_simple_cmds *last_cmd = NULL;
+    t_token *current = NULL;
+
+    while (tokens)
+    {
+        current = tokens;
+        current_cmd = allocate_new_command(get_nbr_cmd(&tokens));
+        if (!current_cmd)
+            return NULL;
+        if (fill_args(current_cmd, current) == -1)
+        {
+            free(current_cmd);
+            return NULL;
+        }
 		add_command_to_list(&exec_token, current_cmd, &last_cmd);
-		if (tokens && (tokens->type >= REDIRECT_IN && tokens->type <= HEREDOC))
-			handle_redir(&current_cmd, &tokens);
-		if (tokens && tokens->type == PIPE)
-			tokens = tokens->next;
-	}
-	//print_simple_cmds(exec_token);
-	return (exec_token);
+		while (tokens && (tokens->type == REDIRECT_IN || tokens->type == REDIRECT_OUT || tokens->type == APPEND || tokens->type == HEREDOC))
+        {
+            handle_redir(&current_cmd, &tokens);
+        }
+        if (tokens && tokens->type == PIPE)
+        {
+			printf("next\n\n\n");
+            tokens = tokens->next;
+        }
+    }
+    return exec_token;
 }

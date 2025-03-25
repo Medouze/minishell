@@ -6,7 +6,7 @@
 /*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/18 10:25:46 by lecartuy          #+#    #+#             */
-/*   Updated: 2025/03/20 11:49:18 by mlavergn         ###   ########.fr       */
+/*   Updated: 2025/03/25 13:59:28 by mlavergn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,9 +16,7 @@ static void execute_child(t_simple_cmds *cmd, int pipe_fd[][2], int index, int n
 {
     int i = 0;
 
-    // Reset signal handlers to default in child process
-    ft_handler_signal(3); // 3 for default signal behavior (SIGINT and SIGQUIT)
-
+    ft_handler_signal(3);
     if (cmd->infile)
         redirect_input_pipeline(cmd->infile);
     else if (index > 0)
@@ -79,7 +77,6 @@ static void execute_pipeline(t_simple_cmds *cmds, int pipe_fd[][2], int num_pipe
         i++;
     }
     ft_handler_signal(2); // 2 to ignore SIGINT
-    // Wait for all child processes
     while ((pid = wait(&status)) > 0)
     {
         if (WIFEXITED(status))

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   redirection.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lecartuy <lecartuy@student.s19.be>         +#+  +:+       +#+        */
+/*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/18 10:25:48 by lecartuy          #+#    #+#             */
-/*   Updated: 2025/03/24 18:37:17 by lecartuy         ###   ########.fr       */
+/*   Updated: 2025/03/25 12:41:12 by mlavergn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,26 +37,30 @@ int redirect_input(t_simple_cmds *cmd)
 int redirect_output(t_simple_cmds *cmd)
 {
     int fd;
-    
+
     if (cmd->outfile)
     {
-        fprintf(stderr, "Attempting to redirect output to: %s\n", cmd->outfile);
+        fprintf(stderr, "[DEBUG] Attempting to redirect output to: %s\n", cmd->outfile);
         if (cmd->append)
             fd = open(cmd->outfile, O_WRONLY | O_CREAT | O_APPEND, 0644);
         else
-        {
             fd = open(cmd->outfile, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-            
-        }
+
         if (fd == -1)
         {
-            perror("Error opening output file");
+            perror("[ERROR] Failed to open output file");
             return (-1);
         }
-        printf("Redirecting output to: %s (fd = %d)\n", cmd->outfile, fd);
+
+        fprintf(stderr, "[DEBUG] Opened file %s with fd %d\n", cmd->outfile, fd);
+        
         if (dup2(fd, STDOUT_FILENO) == -1)
-            perror("dup2 for output failed");
-        close(fd);
+        {
+            perror("[ERROR] dup2 for output failed");
+            close(fd);
+            return (-1);
+        }
+        fprintf(stderr, "[DEBUG] Successfully redirected stdout\n");
     }
     return (0);
 }
