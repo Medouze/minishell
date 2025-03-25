@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   redirection.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
+/*   By: lecartuy <lecartuy@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/18 10:25:48 by lecartuy          #+#    #+#             */
-/*   Updated: 2025/03/25 12:41:12 by mlavergn         ###   ########.fr       */
+/*   Updated: 2025/03/25 19:55:44 by lecartuy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,9 +15,41 @@
 int redirect_input(t_simple_cmds *cmd)
 {
     int fd;
-    
+    int pipe_fd[2];
+    char *line;
+
     if (cmd->heredoc)
-        ;
+    {
+        if (pipe(pipe_fd) == -1)
+        {
+            perror("pipe");
+            return (-1);
+        }
+        printf("Handling heredoc with delimiter: %s\n", cmd->heredoc);
+        while (1)
+        {
+            line = readline("> ");
+            if (!line)
+                break; // EOF or read error
+            // If the line matches the delimiter, stop reading
+            if (ft_strncmp(line, cmd->heredoc, ft_strlen(cmd->heredoc) + 1) == 0)
+            {
+                free(line);
+                break;
+            }
+            write(pipe_fd[1], line, ft_strlen(line));
+            write(pipe_fd[1], "\n", 1);
+            free(line);
+        }
+        close(pipe_fd[1]); 
+        if (dup2(pipe_fd[0], STDIN_FILENO) == -1)
+        {
+            perror("dup2 for heredoc failed");
+            close(pipe_fd[0]);
+            return (-1);
+        }
+        close(pipe_fd[0]);
+    }
     else if (cmd->infile)
     {
         fd = open(cmd->infile, O_RDONLY);

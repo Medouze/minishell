@@ -1,10 +1,7 @@
-e
-
-e
-e
-e
-e
-e
-
-
-minishell> 
+test
+line 
+line two
+line threetest
+line 
+line two
+line three
