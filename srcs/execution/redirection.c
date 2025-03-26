@@ -6,7 +6,7 @@
 /*   By: lecartuy <lecartuy@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/18 10:25:48 by lecartuy          #+#    #+#             */
-/*   Updated: 2025/03/25 19:55:44 by lecartuy         ###   ########.fr       */
+/*   Updated: 2025/03/26 19:51:44 by lecartuy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,8 +30,7 @@ int redirect_input(t_simple_cmds *cmd)
         {
             line = readline("> ");
             if (!line)
-                break; // EOF or read error
-            // If the line matches the delimiter, stop reading
+                break; 
             if (ft_strncmp(line, cmd->heredoc, ft_strlen(cmd->heredoc) + 1) == 0)
             {
                 free(line);
@@ -58,7 +57,6 @@ int redirect_input(t_simple_cmds *cmd)
             perror("Error opening input file");
             return (-1);
         }
-        printf("Redirecting input from: %s (fd = %d)\n", cmd->infile, fd);
         if (dup2(fd, STDIN_FILENO) == -1)
             perror("dup2 for input failed");
         close(fd);
@@ -72,7 +70,6 @@ int redirect_output(t_simple_cmds *cmd)
 
     if (cmd->outfile)
     {
-        fprintf(stderr, "[DEBUG] Attempting to redirect output to: %s\n", cmd->outfile);
         if (cmd->append)
             fd = open(cmd->outfile, O_WRONLY | O_CREAT | O_APPEND, 0644);
         else
@@ -83,16 +80,13 @@ int redirect_output(t_simple_cmds *cmd)
             perror("[ERROR] Failed to open output file");
             return (-1);
         }
-
-        fprintf(stderr, "[DEBUG] Opened file %s with fd %d\n", cmd->outfile, fd);
-        
         if (dup2(fd, STDOUT_FILENO) == -1)
         {
             perror("[ERROR] dup2 for output failed");
             close(fd);
             return (-1);
         }
-        fprintf(stderr, "[DEBUG] Successfully redirected stdout\n");
+        //close(fd);
     }
     return (0);
 }

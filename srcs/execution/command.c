@@ -6,7 +6,7 @@
 /*   By: lecartuy <lecartuy@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/17 11:22:48 by lecartuy          #+#    #+#             */
-/*   Updated: 2025/03/24 18:39:31 by lecartuy         ###   ########.fr       */
+/*   Updated: 2025/03/26 19:54:38 by lecartuy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,7 +106,6 @@ void execute_command(t_simple_cmds *cmd, t_shell *shell)
         free_tab(paths);
 }
 
-
 void execute_command_pipe(t_simple_cmds *cmd, t_shell *shell)
 {
     char **paths;
@@ -130,8 +129,6 @@ void execute_command_pipe(t_simple_cmds *cmd, t_shell *shell)
             return;
         }
     }
-    // if (redirect_input(cmd) == -1 || redirect_output(cmd) == -1)
-    //     exit(1);
     execve(exec_path, cmd->args, shell->env);
     perror("execve failed");
     exit(1);

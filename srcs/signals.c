@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   signals.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
+/*   By: lecartuy <lecartuy@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/19 21:11:23 by mlavergn          #+#    #+#             */
-/*   Updated: 2025/03/19 22:25:54 by mlavergn         ###   ########.fr       */
+/*   Updated: 2025/03/26 20:03:48 by lecartuy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ void ft_sig_handling(int sig)
 
     if (sig == SIGINT)
     {
-        // Disable ISIG to suppress ^C
+        // Restore default terminal behavior
         if (tcgetattr(STDIN_FILENO, &term) == -1)
         {
             perror("tcgetattr");
@@ -32,16 +32,18 @@ void ft_sig_handling(int sig)
             return;
         }
 
-        // Print a newline
+        // Close stdout to avoid writing prompt to file
+        if (isatty(STDOUT_FILENO) == 0) // If output is redirected
+            close(STDOUT_FILENO);
+
+        // Print a newline and reset the prompt
         write(STDOUT_FILENO, "\n", 1);
+        rl_on_new_line();
+        rl_replace_line("", 0);
+        rl_redisplay();
 
-        // Display the prompt
-        rl_on_new_line(); // Tell readline to move to a new line
-        rl_replace_line("", 0); // Clear the current input line
-        rl_redisplay(); // Redisplay the prompt
-
-        // Restore ISIG after handling the signal
-        term.c_lflag |= ISIG; // Re-enable ISIG
+        // Re-enable terminal signals
+        term.c_lflag |= ISIG;
         if (tcsetattr(STDIN_FILENO, TCSANOW, &term) == -1)
         {
             perror("tcsetattr");
@@ -49,6 +51,7 @@ void ft_sig_handling(int sig)
         }
     }
 }
+
 
 void	ft_sig_heredoc(int sig)
 {
