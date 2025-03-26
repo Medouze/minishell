@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main_exec.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
+/*   By: lecartuy <lecartuy@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/18 11:18:06 by lecartuy          #+#    #+#             */
-/*   Updated: 2025/03/25 13:59:02 by mlavergn         ###   ########.fr       */
+/*   Updated: 2025/03/26 20:35:40 by lecartuy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,15 @@ static int backup_fds(int *stdin_backup, int *stdout_backup)
     return (0);
 }
 
+int handle_redirection(t_simple_cmds *cmd)
+{
+    if (redirect_input(cmd) == -1)
+        return (-1);
+    if (redirect_output(cmd) == -1)
+        return (-1);
+    return (0);
+}
+
 void execute_tokens(t_simple_cmds *cmds, t_shell *shell) 
 {
     int stdin_backup;
@@ -46,8 +55,7 @@ void execute_tokens(t_simple_cmds *cmds, t_shell *shell)
     while (cmds)
     {
         fprintf(stderr, "[DEBUG] Processing command: %s\n", cmds->args[0]);
-
-        if (cmds->next && !(cmds->infile || cmds->outfile || cmds->heredoc))
+        if (cmds->next)
         {
             fprintf(stderr, "[DEBUG] Handling pipe...\n");
             handle_pipe(cmds, shell);

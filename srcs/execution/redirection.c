@@ -6,48 +6,55 @@
 /*   By: lecartuy <lecartuy@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/18 10:25:48 by lecartuy          #+#    #+#             */
-/*   Updated: 2025/03/26 19:51:44 by lecartuy         ###   ########.fr       */
+/*   Updated: 2025/03/26 20:36:34 by lecartuy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-int redirect_input(t_simple_cmds *cmd)
+static int handle_heredoc(t_simple_cmds *cmd)
 {
-    int fd;
     int pipe_fd[2];
     char *line;
 
+    if (pipe(pipe_fd) == -1)
+    {
+        perror("pipe");
+        return (-1);
+    }
+    while (1)
+    {
+        line = readline("> ");
+        if (!line)
+            break;
+        if (ft_strncmp(line, cmd->heredoc, ft_strlen(cmd->heredoc) + 1) == 0)
+        {
+            free(line);
+            break;
+        }
+        write(pipe_fd[1], line, ft_strlen(line));
+        write(pipe_fd[1], "\n", 1);
+        free(line);
+    }
+    close(pipe_fd[1]); 
+    if (dup2(pipe_fd[0], STDIN_FILENO) == -1)
+    {
+        perror("dup2 for heredoc failed");
+        close(pipe_fd[0]);
+        return (-1);
+    }
+    close(pipe_fd[0]);
+    return (0);
+}
+
+int redirect_input(t_simple_cmds *cmd)
+{
+    int fd;
+
     if (cmd->heredoc)
     {
-        if (pipe(pipe_fd) == -1)
-        {
-            perror("pipe");
+        if (handle_heredoc(cmd) == -1)
             return (-1);
-        }
-        printf("Handling heredoc with delimiter: %s\n", cmd->heredoc);
-        while (1)
-        {
-            line = readline("> ");
-            if (!line)
-                break; 
-            if (ft_strncmp(line, cmd->heredoc, ft_strlen(cmd->heredoc) + 1) == 0)
-            {
-                free(line);
-                break;
-            }
-            write(pipe_fd[1], line, ft_strlen(line));
-            write(pipe_fd[1], "\n", 1);
-            free(line);
-        }
-        close(pipe_fd[1]); 
-        if (dup2(pipe_fd[0], STDIN_FILENO) == -1)
-        {
-            perror("dup2 for heredoc failed");
-            close(pipe_fd[0]);
-            return (-1);
-        }
-        close(pipe_fd[0]);
     }
     else if (cmd->infile)
     {
@@ -58,11 +65,16 @@ int redirect_input(t_simple_cmds *cmd)
             return (-1);
         }
         if (dup2(fd, STDIN_FILENO) == -1)
+        {
             perror("dup2 for input failed");
+            close(fd);
+            return (-1);
+        }
         close(fd);
     }
     return (0);
 }
+
 
 int redirect_output(t_simple_cmds *cmd)
 {
@@ -91,22 +103,15 @@ int redirect_output(t_simple_cmds *cmd)
     return (0);
 }
 
-int handle_redirection(t_simple_cmds *cmd)
-{
-    if (redirect_input(cmd) == -1)
-        return (-1);
-    if (redirect_output(cmd) == -1)
-        return (-1);
-    return (0);
-}
-
 int redirect_input_pipeline(const char *infile)
 {
-    int fd = open(infile, O_RDONLY);
+    int fd;
+    
+    fd = open(infile, O_RDONLY);
     if (fd == -1)
     {
         perror("Error: opening input file");
-        return -1;
+        return (-1);
     }
     if (dup2(fd, STDIN_FILENO) == -1)
     {
@@ -115,7 +120,7 @@ int redirect_input_pipeline(const char *infile)
         return -1;
     }
     close(fd);
-    return 0;
+    return (0);
 }
 
 int redirect_output_pipeline(const char *outfile, int append)

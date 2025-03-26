@@ -6,7 +6,7 @@
 /*   By: lecartuy <lecartuy@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/19 21:11:23 by mlavergn          #+#    #+#             */
-/*   Updated: 2025/03/26 20:03:48 by lecartuy         ###   ########.fr       */
+/*   Updated: 2025/03/26 20:13:20 by lecartuy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,6 @@ void ft_sig_handling(int sig)
         }
     }
 }
-
 
 void	ft_sig_heredoc(int sig)
 {
