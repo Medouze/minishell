@@ -6,7 +6,7 @@
 /*   By: lecartuy <lecartuy@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/18 11:18:06 by lecartuy          #+#    #+#             */
-/*   Updated: 2025/03/26 20:35:40 by lecartuy         ###   ########.fr       */
+/*   Updated: 2025/03/26 21:06:40 by lecartuy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,14 +38,6 @@ static int backup_fds(int *stdin_backup, int *stdout_backup)
     return (0);
 }
 
-int handle_redirection(t_simple_cmds *cmd)
-{
-    if (redirect_input(cmd) == -1)
-        return (-1);
-    if (redirect_output(cmd) == -1)
-        return (-1);
-    return (0);
-}
 
 void execute_tokens(t_simple_cmds *cmds, t_shell *shell) 
 {

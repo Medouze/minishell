@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipe.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
+/*   By: lecartuy <lecartuy@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/18 10:25:46 by lecartuy          #+#    #+#             */
-/*   Updated: 2025/03/25 13:59:28 by mlavergn         ###   ########.fr       */
+/*   Updated: 2025/03/26 21:06:24 by lecartuy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,19 +14,18 @@
 
 static void execute_child(t_simple_cmds *cmd, int pipe_fd[][2], int index, int num_pipes, t_shell *shell)
 {
-    int i = 0;
-
+    int i;
+    
+    i = 0;
     ft_handler_signal(3);
-    if (cmd->infile)
-        redirect_input_pipeline(cmd->infile);
+    if (redirect_input(cmd) == -1)
+        exit(EXIT_FAILURE);
     else if (index > 0)
         dup2(pipe_fd[index - 1][0], STDIN_FILENO);
-
-    if (cmd->outfile)
-        redirect_output_pipeline(cmd->outfile, cmd->append);
+    if (redirect_output(cmd) == -1)
+        exit(EXIT_FAILURE);
     else if (index < num_pipes)
         dup2(pipe_fd[index][1], STDOUT_FILENO);
-
     while (i < num_pipes)
     {
         close(pipe_fd[i][0]);
