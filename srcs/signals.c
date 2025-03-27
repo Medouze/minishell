@@ -6,50 +6,35 @@
 /*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/19 21:11:23 by mlavergn          #+#    #+#             */
-/*   Updated: 2025/03/27 12:22:50 by mlavergn         ###   ########.fr       */
+/*   Updated: 2025/03/27 12:25:12 by mlavergn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 #include <termios.h>
 
-void ft_sig_handling(int sig)
+static void	restore_terminal(struct termios *term)
 {
-    struct termios term;
+	if (tcsetattr(STDIN_FILENO, TCSANOW, term) == -1)
+	{
+		perror("tcsetattr");
+	}
+}
 
-    if (sig == SIGINT)
-    {
-        // Restore default terminal behavior
-        if (tcgetattr(STDIN_FILENO, &term) == -1)
-        {
-            perror("tcgetattr");
-            return;
-        }
-        term.c_lflag &= ~ISIG; // Disable ISIG
-        if (tcsetattr(STDIN_FILENO, TCSANOW, &term) == -1)
-        {
-            perror("tcsetattr");
-            return;
-        }
-
-        // Close stdout to avoid writing prompt to file
-        if (isatty(STDOUT_FILENO) == 0) // If output is redirected
-            close(STDOUT_FILENO);
-
-        // Print a newline and reset the prompt
-        write(STDOUT_FILENO, "\n", 1);
-        rl_on_new_line();
-        rl_replace_line("", 0);
-        rl_redisplay();
-
-        // Re-enable terminal signals
-        term.c_lflag |= ISIG;
-        if (tcsetattr(STDIN_FILENO, TCSANOW, &term) == -1)
-        {
-            perror("tcsetattr");
-            return;
-        }
-    }
+static void	handle_sigint(struct termios *term)
+{
+	term->c_lflag &= ~ISIG;
+	if (tcsetattr(STDIN_FILENO, TCSANOW, term) == -1)
+	{
+		perror("tcsetattr");
+		return ;
+	}
+	if (isatty(STDOUT_FILENO) == 0)
+		close(STDOUT_FILENO);
+	write(STDOUT_FILENO, "\n", 1);
+	rl_on_new_line();
+	rl_replace_line("", 0);
+	rl_redisplay();
 }
 
 void	ft_sig_heredoc(int sig)

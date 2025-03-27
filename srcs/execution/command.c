@@ -6,7 +6,7 @@
 /*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/27 12:20:31 by mlavergn          #+#    #+#             */
-/*   Updated: 2025/03/27 12:22:27 by mlavergn         ###   ########.fr       */
+/*   Updated: 2025/03/27 12:25:39 by mlavergn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,11 +115,6 @@ void execute_command(t_simple_cmds *cmd, t_shell *shell)
         free_tab(paths);
 }
 
-<<<<<<< HEAD
-
-
-=======
->>>>>>> 1fa9ddadd842e1dabe11628daefb4756e0e095a4
 void execute_command_pipe(t_simple_cmds *cmd, t_shell *shell)
 {
     char **paths;
