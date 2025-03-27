@@ -6,7 +6,7 @@
 /*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/10 15:20:49 by mlavergn          #+#    #+#             */
-/*   Updated: 2025/03/27 16:21:02 by mlavergn         ###   ########.fr       */
+/*   Updated: 2025/03/27 21:03:12 by mlavergn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,8 +62,8 @@ void	change_pwd(char ***envp, char *path)
 	char	*old_pwd;
 	int		i;
 
-	old_pwd = get_var(*envp, "PWD"); // Store old PWD
-	change_old_pwd(envp, old_pwd);   // Update OLDPWD
+	old_pwd = get_var(*envp, "PWD");
+	change_old_pwd(envp, old_pwd);
 	free(old_pwd);
 	i = 0;
 	while ((*envp)[i])

@@ -6,36 +6,29 @@
 /*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/19 21:11:23 by mlavergn          #+#    #+#             */
-/*   Updated: 2025/03/27 15:36:27 by mlavergn         ###   ########.fr       */
+/*   Updated: 2025/03/27 21:02:53 by mlavergn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 #include <termios.h>
 
-void handle_sigquit(int sig) 
-{
-	(void)sig;
-    // Handle SIGQUIT, for example, print a message and return
-    printf("Caught SIGQUIT, ignoring core dump.\n");
-}
-
 void	ft_sig_handling(int sig)
 {
 	struct termios	term;
 
 	if (sig != SIGINT)
-		return;
+		return ;
 	if (tcgetattr(STDIN_FILENO, &term) == -1)
 	{
 		perror("tcgetattr");
-		return;
+		return ;
 	}
 	term.c_lflag &= ~ISIG;
 	if (tcsetattr(STDIN_FILENO, TCSANOW, &term) == -1)
 	{
 		perror("tcsetattr");
-		return;
+		return ;
 	}
 	if (isatty(STDOUT_FILENO) == 0)
 		close(STDOUT_FILENO);
