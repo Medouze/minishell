@@ -6,7 +6,7 @@
 /*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/24 19:14:06 by mlavergn          #+#    #+#             */
-/*   Updated: 2025/03/25 20:50:00 by mlavergn         ###   ########.fr       */
+/*   Updated: 2025/03/27 16:25:49 by mlavergn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,7 +80,7 @@ t_simple_cmds	*parser2(t_token **tokens, t_shell *g_env)
 	current = *tokens;
 	while (current)
 	{
-		if (ft_strncmp(current->str, "~", 100) == 0)
+		if (ft_strncmp(current->str, "~", 1) == 0)
 			expand_tilde(&current->str, (*g_env));
 		expand_dollar(&current->str, (*g_env));
 		if (ft_strchr(current->str, '\"') || ft_strchr(current->str, '\''))

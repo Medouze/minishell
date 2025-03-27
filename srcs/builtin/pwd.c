@@ -6,7 +6,7 @@
 /*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/12 14:56:33 by mlavergn          #+#    #+#             */
-/*   Updated: 2025/03/07 14:18:11 by mlavergn         ###   ########.fr       */
+/*   Updated: 2025/03/27 16:17:08 by mlavergn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,10 @@ void	pwd(char **envp)
 	{
 		if (ft_strncmp(envp[i], "PWD=", 4) == 0)
 		{
-			printf("%s\n", envp[i] + 4);
+			if (envp[i][4] == '\0')
+				printf("/\n");
+			else
+				printf("%s\n", envp[i] + 4);
 			return ;
 		}
 		i++;

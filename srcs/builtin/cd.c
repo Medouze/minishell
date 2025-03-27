@@ -6,7 +6,7 @@
 /*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/11 15:40:21 by mlavergn          #+#    #+#             */
-/*   Updated: 2025/03/19 22:42:07 by mlavergn         ###   ########.fr       */
+/*   Updated: 2025/03/27 16:23:30 by mlavergn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,10 +36,14 @@ void	handle_cd_oldpwd(char ***envp, char *path, char *current_pwd)
 		free(path);
 		return ;
 	}
+	printf("%s\n", previous_pwd);
 	if (chdir(previous_pwd) == -1)
 		printf("minishell: cd: %s: No such file or directory\n", previous_pwd);
 	else
+	{
+		change_old_pwd(envp, current_pwd);
 		change_pwd(envp, previous_pwd);
+	}
 	free(current_pwd);
 	free(previous_pwd);
 	free(path);
@@ -64,6 +68,8 @@ void	process_cd_path(char ***envp, char *path, char *current_pwd)
 		change_pwd(envp, path);
 	else
 		addto_pwd(envp, path, current_pwd);
+
+	change_old_pwd(envp, current_pwd); // Ensure OLDPWD is updated
 	free(current_pwd);
 	free(path);
 }
