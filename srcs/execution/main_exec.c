@@ -6,7 +6,7 @@
 /*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/18 11:18:06 by lecartuy          #+#    #+#             */
-/*   Updated: 2025/03/25 20:39:34 by mlavergn         ###   ########.fr       */
+/*   Updated: 2025/03/27 12:21:45 by mlavergn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,7 @@ static int backup_fds(int *stdin_backup, int *stdout_backup)
     return (0);
 }
 
+
 void execute_tokens(t_simple_cmds *cmds, t_shell *shell) 
 {
     int stdin_backup;
@@ -45,8 +46,10 @@ void execute_tokens(t_simple_cmds *cmds, t_shell *shell)
 
     while (cmds)
     {
-        if (cmds->next && !(cmds->infile || cmds->outfile || cmds->heredoc))
+        fprintf(stderr, "[DEBUG] Processing command: %s\n", cmds->args[0]);
+        if (cmds->next)
         {
+            fprintf(stderr, "[DEBUG] Handling pipe...\n");
             handle_pipe(cmds, shell);
             return;
         }
@@ -54,24 +57,28 @@ void execute_tokens(t_simple_cmds *cmds, t_shell *shell)
             return;
         if (handle_redirection(cmds) != -1)
         {
+            fprintf(stderr, "[DEBUG] Redirection successful\n");
             if (cmds->args && cmds->args[0])
             {
+                fprintf(stderr, "[DEBUG] Checking for built-in command: %s\n", cmds->args[0]);
                 if (check_builtin(cmds->args, &shell->env))
                 {
+                    fprintf(stderr, "[DEBUG] Built-in executed\n");
                     restore_fds(stdin_backup, stdout_backup);
                     ft_handler_signal(0);
                     return;
                 }
                 else
+                {
+                    fprintf(stderr, "[DEBUG] Calling execute_command...\n");
                     execute_command(cmds, shell);
+                    fprintf(stderr, "[DEBUG] Finished execute_command\n");
+                }
             }
         }
+        fprintf(stderr, "[DEBUG] Restoring file descriptors\n");
         ft_handler_signal(0);
         restore_fds(stdin_backup, stdout_backup);
         cmds = cmds->next;
     }
 }
-
-
-
-
