@@ -6,7 +6,7 @@
 /*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/11 17:48:10 by mlavergn          #+#    #+#             */
-/*   Updated: 2025/03/11 14:47:03 by mlavergn         ###   ########.fr       */
+/*   Updated: 2025/03/27 11:40:11 by mlavergn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ int	valid_line_export(char *export)
 			if (equal_count > 1)
 				return (0);
 		}
-		else if (!(ft_isalnum(export[i])) || export[i] == '_')
+		else if (!(ft_isalnum(export[i]) || export[i] == '_'))
 			return (0);
 		i++;
 	}

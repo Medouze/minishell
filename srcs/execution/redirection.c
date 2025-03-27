@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   redirection.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lecartuy <lecartuy@student.s19.be>         +#+  +:+       +#+        */
+/*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/18 10:25:48 by lecartuy          #+#    #+#             */
-/*   Updated: 2025/03/25 19:55:44 by lecartuy         ###   ########.fr       */
+/*   Updated: 2025/03/25 20:47:18 by mlavergn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,6 @@ int redirect_output(t_simple_cmds *cmd)
 
     if (cmd->outfile)
     {
-        fprintf(stderr, "[DEBUG] Attempting to redirect output to: %s\n", cmd->outfile);
         if (cmd->append)
             fd = open(cmd->outfile, O_WRONLY | O_CREAT | O_APPEND, 0644);
         else
@@ -83,16 +82,12 @@ int redirect_output(t_simple_cmds *cmd)
             perror("[ERROR] Failed to open output file");
             return (-1);
         }
-
-        fprintf(stderr, "[DEBUG] Opened file %s with fd %d\n", cmd->outfile, fd);
-        
         if (dup2(fd, STDOUT_FILENO) == -1)
         {
             perror("[ERROR] dup2 for output failed");
             close(fd);
             return (-1);
         }
-        fprintf(stderr, "[DEBUG] Successfully redirected stdout\n");
     }
     return (0);
 }

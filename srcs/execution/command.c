@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   command.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lecartuy <lecartuy@student.s19.be>         +#+  +:+       +#+        */
+/*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/17 11:22:48 by lecartuy          #+#    #+#             */
-/*   Updated: 2025/03/24 18:39:31 by lecartuy         ###   ########.fr       */
+/*   Updated: 2025/03/27 11:34:39 by mlavergn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,9 +84,14 @@ void execute_command(t_simple_cmds *cmd, t_shell *shell)
             return;
         }
     }
+
     pid = fork();
     if (pid == 0)
     {   
+        signal(SIGINT, SIG_DFL);
+        signal(SIGQUIT, SIG_DFL);
+        if (redirect_output(cmd) == -1)
+            exit(1);
         fprintf(stderr, "execution of command...\n");
         execve(exec_path, cmd->args, shell->env);
         perror("execve failed");
@@ -95,16 +100,21 @@ void execute_command(t_simple_cmds *cmd, t_shell *shell)
     else if (pid > 0)
     {
         waitpid(pid, &status, 0);
-        if (WIFEXITED(status))
+        if (WIFSIGNALED(status))
+        {
+            shell->last_exit = 128 + WTERMSIG(status);
+            if (WTERMSIG(status) == SIGINT)
+                write(STDOUT_FILENO, "\n", 1);
+        }
+        else if (WIFEXITED(status))
             shell->last_exit = WEXITSTATUS(status);
-        if (cmd->args[0][0] != '/' && cmd->args[0][0] != '.')
-            free(exec_path);
     }
     else
         perror("fork failed");
     if (cmd->args[0][0] != '/' && cmd->args[0][0] != '.')
         free_tab(paths);
 }
+
 
 
 void execute_command_pipe(t_simple_cmds *cmd, t_shell *shell)
@@ -125,7 +135,7 @@ void execute_command_pipe(t_simple_cmds *cmd, t_shell *shell)
         if (!exec_path)
         {
             free_tab(paths);
-            print_error("Error: Command not found");
+            print_error("Error: Command not found\n");
             shell->last_exit = 127;
             return;
         }

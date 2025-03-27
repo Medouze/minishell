@@ -6,7 +6,7 @@
 /*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/25 16:42:47 by mlavergn          #+#    #+#             */
-/*   Updated: 2025/03/20 13:58:43 by mlavergn         ###   ########.fr       */
+/*   Updated: 2025/03/27 11:50:14 by mlavergn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,8 +24,7 @@ char	*get_word(char *str)
 		return (NULL);
 	if (str[0] == '$')
 		len++;
-	while (str[len] && str[len] != 32 && !ft_strchr(SPE_CHARS, str[len])
-		&& str[len] != '\'' && str[len] != '"')
+	while (str[len] && (ft_isalnum(str[len]) || str[len] == '_'))
 		len++;
 	word = malloc(sizeof(char) * (len + 1));
 	if (!word)
@@ -65,33 +64,24 @@ char	*extract_word_env(char **env, const char *value)
 void	replace_dollar_word(char **str, char **new_str, t_shell g_env, int *i)
 {
 	char	*value;
-	char	*extracted_value;
-	char	*first_word;
+	char	*to_add;
 
-	if (!(*str)[*i + 1] || (*str)[*i + 1] == 32)
+	if (!(*str)[*i + 1] || (*str)[*i + 1] == ' ')
+		to_add = ft_strdup("$");
+	else if ((*str)[*i + 1] == '?')
 	{
-		*new_str = ft_strdup("$");
-		return ;
-	}
-	if ((*str)[*i + 1] == '?')
-	{
-		first_word = ft_itoa(g_env.last_exit);
-		*new_str = ft_strjoin_free(*new_str, first_word);
-		free(first_word);
+		to_add = ft_itoa(g_env.last_exit);
 		(*i)++;
 	}
 	else
 	{
 		value = get_word(&(*str)[*i]);
-		if (value)
-		{
-			extracted_value = extract_word_env(g_env.env, value + 1);
-			*new_str = ft_strjoin_free(*new_str, extracted_value);
-			*i += ft_strlen(value) - 1;
-			free(value);
-			free(extracted_value);
-		}
+		to_add = extract_word_env(g_env.env, value + 1);
+		*i += ft_strlen(value) - 1;
+		free(value);
 	}
+	*new_str = ft_strjoin_free(*new_str, to_add);
+	free(to_add);
 }
 
 void	expand_dollar(char **str, t_shell g_env)
@@ -111,13 +101,12 @@ void	expand_dollar(char **str, t_shell g_env)
 		if ((*str)[i] == '$' && ft_isdigit((*str)[i + 1]) && !in_single)
 		{
 			i += 2;
-			continue;
+			continue ;
 		}
 		else if ((*str)[i] == '$' && (*str)[i + 1] && !in_single)
 			replace_dollar_word(str, &new_str, g_env, &i);
 		else
 			new_str = ft_strjoin_char_free(new_str, (*str)[i]);
-		
 		i++;
 	}
 	free(*str);

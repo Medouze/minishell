@@ -6,7 +6,7 @@
 /*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/24 19:14:06 by mlavergn          #+#    #+#             */
-/*   Updated: 2025/03/25 13:02:07 by mlavergn         ###   ########.fr       */
+/*   Updated: 2025/03/25 20:50:00 by mlavergn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,7 +77,6 @@ t_simple_cmds	*parser2(t_token **tokens, t_shell *g_env)
 
 	if (!(*tokens))
 		return (NULL);
-	//print_tokens(*tokens);
 	current = *tokens;
 	while (current)
 	{
@@ -93,8 +92,6 @@ t_simple_cmds	*parser2(t_token **tokens, t_shell *g_env)
 		}
 		current = current->next;
 	}
-	print_tokens(*tokens);
 	exec_token = tokenize(*tokens);
-	print_simple_cmds(exec_token);
 	return (exec_token);
 }

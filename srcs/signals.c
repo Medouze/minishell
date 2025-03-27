@@ -6,48 +6,40 @@
 /*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/19 21:11:23 by mlavergn          #+#    #+#             */
-/*   Updated: 2025/03/19 22:25:54 by mlavergn         ###   ########.fr       */
+/*   Updated: 2025/03/27 11:04:14 by mlavergn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 #include <termios.h>
 
-void ft_sig_handling(int sig)
+void	set_terminal_flag(int flag)
 {
-    struct termios term;
+	struct termios	term;
 
-    if (sig == SIGINT)
-    {
-        // Disable ISIG to suppress ^C
-        if (tcgetattr(STDIN_FILENO, &term) == -1)
-        {
-            perror("tcgetattr");
-            return;
-        }
-        term.c_lflag &= ~ISIG; // Disable ISIG
-        if (tcsetattr(STDIN_FILENO, TCSANOW, &term) == -1)
-        {
-            perror("tcsetattr");
-            return;
-        }
+	if (tcgetattr(STDIN_FILENO, &term) == -1)
+	{
+		perror("tcgetattr");
+		return ;
+	}
+	term.c_lflag = flag;
+	if (tcsetattr(STDIN_FILENO, TCSANOW, &term) == -1)
+	{
+		perror("tcsetattr");
+	}
+}
 
-        // Print a newline
-        write(STDOUT_FILENO, "\n", 1);
-
-        // Display the prompt
-        rl_on_new_line(); // Tell readline to move to a new line
-        rl_replace_line("", 0); // Clear the current input line
-        rl_redisplay(); // Redisplay the prompt
-
-        // Restore ISIG after handling the signal
-        term.c_lflag |= ISIG; // Re-enable ISIG
-        if (tcsetattr(STDIN_FILENO, TCSANOW, &term) == -1)
-        {
-            perror("tcsetattr");
-            return;
-        }
-    }
+void	ft_sig_handling(int sig)
+{
+	if (sig == SIGINT)
+	{
+		set_terminal_flag(ISIG);
+		write(STDOUT_FILENO, "\n", 1);
+		rl_on_new_line();
+		rl_replace_line("", 0);
+		rl_redisplay();
+		set_terminal_flag(ISIG | ECHO | ICANON);
+	}
 }
 
 void	ft_sig_heredoc(int sig)
