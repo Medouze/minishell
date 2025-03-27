@@ -6,7 +6,7 @@
 /*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/27 12:20:31 by mlavergn          #+#    #+#             */
-/*   Updated: 2025/03/27 12:25:39 by mlavergn         ###   ########.fr       */
+/*   Updated: 2025/03/27 15:16:47 by mlavergn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,6 +111,8 @@ void execute_command(t_simple_cmds *cmd, t_shell *shell)
     }
     else
         perror("fork failed");
+    if (exec_path != cmd->args[0])
+        free(exec_path);
     if (cmd->args[0][0] != '/' && cmd->args[0][0] != '.')
         free_tab(paths);
 }
