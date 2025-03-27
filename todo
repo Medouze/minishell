@@ -11,8 +11,8 @@ Exit status https://www.gnu.org/software/bash/manual/html_node/Exit-Status.html
 
 expend ~
 cd multiples args
-
-
+handle $ in heredoc 
+$ and nbr
 
 Problèmes à fixer dans l exec :
 
