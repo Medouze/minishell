@@ -6,7 +6,7 @@
 /*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/27 12:20:31 by mlavergn          #+#    #+#             */
-/*   Updated: 2025/03/27 15:16:47 by mlavergn         ###   ########.fr       */
+/*   Updated: 2025/03/27 15:37:03 by mlavergn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,6 +99,8 @@ void execute_command(t_simple_cmds *cmd, t_shell *shell)
     }
     else if (pid > 0)
     {
+        signal(SIGINT, SIG_IGN);
+        signal(SIGQUIT, SIG_IGN);
         waitpid(pid, &status, 0);
         if (WIFSIGNALED(status))
         {

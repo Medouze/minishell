@@ -6,7 +6,7 @@
 /*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/11 17:10:46 by mlavergn          #+#    #+#             */
-/*   Updated: 2025/03/27 12:04:50 by mlavergn         ###   ########.fr       */
+/*   Updated: 2025/03/27 15:35:57 by mlavergn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -142,5 +142,6 @@ void			execute_command_pipe(t_simple_cmds *cmd, t_shell *shell);
 void			ft_sig_handling(int sig);
 void			ft_sig_heredoc(int sig);
 void			ft_handler_signal(int pick);
+void			handle_sigquit(int sig);
 
 #endif
