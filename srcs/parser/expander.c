@@ -6,7 +6,7 @@
 /*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/25 16:42:47 by mlavergn          #+#    #+#             */
-/*   Updated: 2025/03/27 15:06:32 by mlavergn         ###   ########.fr       */
+/*   Updated: 2025/03/27 15:41:42 by mlavergn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,14 +76,11 @@ void	replace_dollar_word(char **str, char **new_str, t_shell g_env, int *i)
 	else
 	{
 		value = get_word(&(*str)[*i]);
-		printf("%s\n", value);
 		to_add = extract_word_env(g_env.env, value + 1);
-		printf("%s\n", to_add);
 		*i += ft_strlen(value) - 1;
 		free(value);
 	}
 	*new_str = ft_strjoin_free(*new_str, to_add);
-	printf("%s\n", *new_str);
 	free(to_add);
 }
 

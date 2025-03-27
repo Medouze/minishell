@@ -6,13 +6,13 @@
 /*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/18 10:25:48 by lecartuy          #+#    #+#             */
-/*   Updated: 2025/03/27 12:46:16 by mlavergn         ###   ########.fr       */
+/*   Updated: 2025/03/27 15:39:59 by mlavergn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-static int handle_heredoc(t_simple_cmds *cmd)
+static int handle_heredoc(t_simple_cmds *cmd, t_shell *shell)
 {
     int pipe_fd[2];
     char *line;
@@ -32,6 +32,7 @@ static int handle_heredoc(t_simple_cmds *cmd)
             free(line);
             break;
         }
+        expand_dollar(&line, *shell);
         write(pipe_fd[1], line, ft_strlen(line));
         write(pipe_fd[1], "\n", 1);
         free(line);
@@ -47,13 +48,13 @@ static int handle_heredoc(t_simple_cmds *cmd)
     return (0);
 }
 
-int redirect_input(t_simple_cmds *cmd)
+int redirect_input(t_simple_cmds *cmd, t_shell *shell)
 {
     int fd;
 
     if (cmd->heredoc)
     {
-        if (handle_heredoc(cmd) == -1)
+        if (handle_heredoc(cmd, shell) == -1)
             return (-1);
     }
     else if (cmd->infile)
@@ -103,9 +104,9 @@ int redirect_output(t_simple_cmds *cmd)
     return (0);
 }
 
-int handle_redirection(t_simple_cmds *cmd)
+int handle_redirection(t_simple_cmds *cmd, t_shell *shell)
 {
-    if (redirect_input(cmd) == -1)
+    if (redirect_input(cmd, shell) == -1)
         return (-1);
     if (redirect_output(cmd) == -1)
         return (-1);

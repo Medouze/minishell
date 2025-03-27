@@ -6,7 +6,7 @@
 /*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/18 10:25:46 by lecartuy          #+#    #+#             */
-/*   Updated: 2025/03/27 15:20:16 by mlavergn         ###   ########.fr       */
+/*   Updated: 2025/03/27 15:40:42 by mlavergn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ static void execute_child(t_simple_cmds *cmd, int pipe_fd[][2], int index, int n
     
     i = 0;
     ft_handler_signal(3);
-    if (redirect_input(cmd) == -1)
+    if (redirect_input(cmd, shell) == -1)
         exit(EXIT_FAILURE);
     else if (index > 0)
         dup2(pipe_fd[index - 1][0], STDIN_FILENO);
