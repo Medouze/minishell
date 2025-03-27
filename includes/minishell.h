@@ -6,7 +6,7 @@
 /*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/11 17:10:46 by mlavergn          #+#    #+#             */
-/*   Updated: 2025/03/27 15:40:24 by mlavergn         ###   ########.fr       */
+/*   Updated: 2025/03/27 17:04:17 by mlavergn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,7 @@ typedef struct s_simple_cmds
 }	t_simple_cmds;
 
 /*checks*/
-int				check_builtin(char **line, char ***envp);
+int				check_builtin(char **line, char ***envp, int *last_exit);
 char			*check_cmd(char *cmd, char **envp);
 
 /*built in*/

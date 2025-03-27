@@ -6,7 +6,7 @@
 /*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/27 12:20:31 by mlavergn          #+#    #+#             */
-/*   Updated: 2025/03/27 16:52:32 by mlavergn         ###   ########.fr       */
+/*   Updated: 2025/03/27 17:07:55 by mlavergn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,7 +77,10 @@ void execute_command(t_simple_cmds *cmd, t_shell *shell)
     {
         paths = get_paths(shell->env);
         if (!paths)
+        {
+            printf("minishell: No such file or directory\n");
             return ;
+        }
         exec_path = find_exec(cmd->args[0], paths);
         if (!exec_path)
         {
@@ -129,7 +132,7 @@ void execute_command_pipe(t_simple_cmds *cmd, t_shell *shell)
     
     if (!cmd || !cmd->args || !cmd->args[0])
         return;
-    if (check_builtin(cmd->args, &shell->env))
+    if (check_builtin(cmd->args, &shell->env, &shell->last_exit))
         return ;
     if (cmd->args[0][0] == '/' || cmd->args[0][0] == '.')
         exec_path = cmd->args[0];

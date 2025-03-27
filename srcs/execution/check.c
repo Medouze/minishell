@@ -6,7 +6,7 @@
 /*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/11 13:10:04 by mlavergn          #+#    #+#             */
-/*   Updated: 2025/03/27 16:53:41 by mlavergn         ###   ########.fr       */
+/*   Updated: 2025/03/27 17:06:25 by mlavergn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,15 +73,12 @@ int	path_exist(char **env)
     return (0);
 }
 
-int	check_builtin(char **line, char ***envp)
+int	check_builtin(char **line, char ***envp, int *last_exit)
 {
-	if (!path_exist(*envp) && ft_strncmp(line[0], "export", 7))
-		printf("minishell: No such file or directory\n");
 	if (check_echo_pwd_exit(line, envp)
 		|| check_env_export_unset(line, envp) || check_cd(line, envp))
 	{
-		if (!path_exist(*envp))
-			return (2);
+		*last_exit = 0;
 		return (1);
 	}
 	return (0);

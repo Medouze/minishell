@@ -6,7 +6,7 @@
 /*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/18 11:18:06 by lecartuy          #+#    #+#             */
-/*   Updated: 2025/03/27 16:37:52 by mlavergn         ###   ########.fr       */
+/*   Updated: 2025/03/27 17:04:26 by mlavergn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@ void execute_tokens(t_simple_cmds *cmds, t_shell *shell)
         {
             if (cmds->args && cmds->args[0])
             {
-                if (check_builtin(cmds->args, &shell->env))
+                if (check_builtin(cmds->args, &shell->env, &shell->last_exit))
                 {
                     restore_fds(stdin_backup, stdout_backup);
                     ft_handler_signal(0);
