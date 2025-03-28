@@ -3,31 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   command.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
+/*   By: lecartuy <lecartuy@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/27 12:20:31 by mlavergn          #+#    #+#             */
-/*   Updated: 2025/03/27 17:07:55 by mlavergn         ###   ########.fr       */
+/*   Updated: 2025/03/28 19:07:19 by lecartuy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-static void free_tab(char **tab)
-{
-    int i;
-
-    if (!tab)
-        return;
-    i = 0;
-    while (tab[i])
-    {
-        free(tab[i]);
-        i++;
-    }
-    free(tab);
-}
-
-static char **get_paths(char **env) 
+char **get_paths(char **env) 
 {
     while (*env) 
     {
@@ -38,7 +23,7 @@ static char **get_paths(char **env)
     return (NULL);
 }
 
-static char *find_exec(char *cmd, char **paths) 
+char *find_exec(char *cmd, char **paths) 
 {
     char *path;
     char *full_path;
@@ -60,98 +45,67 @@ static char *find_exec(char *cmd, char **paths)
     return (NULL);
 }
 
-void execute_command(t_simple_cmds *cmd, t_shell *shell)
+static char *get_exec_path(t_simple_cmds *cmd, t_shell *shell)
 {
     char **paths;
     char *exec_path;
-    pid_t pid;
-    int status;
-
-    exec_path = NULL;
-    if (!cmd || !cmd->args || !cmd->args[0])
-        return;
 
     if (cmd->args[0][0] == '/' || cmd->args[0][0] == '.')
-        exec_path = cmd->args[0];
-    else
+        return (cmd->args[0]);
+    paths = get_paths(shell->env);
+    if (!paths)
     {
-        paths = get_paths(shell->env);
-        if (!paths)
-        {
-            printf("minishell: No such file or directory\n");
-            return ;
-        }
-        exec_path = find_exec(cmd->args[0], paths);
-        if (!exec_path)
-        {
-            free_tab(paths);
-            perror("Error: Command not found");
-            shell->last_exit = 127;
-            return;
-        }
+        printf("minishell: No such file or directory\n");
+        return (NULL);
     }
-
-    pid = fork();
-    if (pid == 0)
-    {   
-        signal(SIGINT, SIG_DFL);
-        signal(SIGQUIT, SIG_DFL);
-        if (redirect_output(cmd) == -1)
-            exit(1);
-        fprintf(stderr, "execution of command...\n");
-        execve(exec_path, cmd->args, shell->env);
-        perror("execve failed");
-        exit(1);
-    }
-    else if (pid > 0)
+    exec_path = find_exec(cmd->args[0], paths);
+    if (!exec_path)
     {
-        signal(SIGINT, SIG_IGN);
-        signal(SIGQUIT, SIG_IGN);
-        waitpid(pid, &status, 0);
-        if (WIFSIGNALED(status))
-        {
-            shell->last_exit = 128 + WTERMSIG(status);
-            if (WTERMSIG(status) == SIGINT)
-                write(STDOUT_FILENO, "\n", 1);
-        }
-        else if (WIFEXITED(status))
-            shell->last_exit = WEXITSTATUS(status);
-    }
-    else
-        perror("fork failed");
-    if (exec_path != cmd->args[0])
-        free(exec_path);
-    if (cmd->args[0][0] != '/' && cmd->args[0][0] != '.')
         free_tab(paths);
+        perror("Error: Command not found");
+        shell->last_exit = 127;
+        return (NULL);
+    }
+    free_tab(paths);
+    return (exec_path);
 }
 
-void execute_command_pipe(t_simple_cmds *cmd, t_shell *shell)
+static void launch_exec(char *exec_path, t_simple_cmds *cmd, t_shell *shell)
 {
-    char **paths;
-    char *exec_path;
-    
-    if (!cmd || !cmd->args || !cmd->args[0])
-        return;
-    if (check_builtin(cmd->args, &shell->env, &shell->last_exit))
-        return ;
-    if (cmd->args[0][0] == '/' || cmd->args[0][0] == '.')
-        exec_path = cmd->args[0];
-    else
-    {
-        paths = get_paths(shell->env);
-        exec_path = find_exec(cmd->args[0], paths);
-        if (!exec_path)
-        {
-            free_tab(paths);
-            print_error("Error: Command not found\n");
-            shell->last_exit = 127;
-            return;
-        }
-    }
+    if (redirect_output(cmd) == -1)
+        exit(1);
     execve(exec_path, cmd->args, shell->env);
     perror("execve failed");
     exit(1);
 }
+
+void execute_command(t_simple_cmds *cmd, t_shell *shell)
+{
+    char *exec_path;
+    pid_t pid;
+
+    if (!cmd || !cmd->args || !cmd->args[0])
+        return;
+    exec_path = get_exec_path(cmd, shell);
+    if (!exec_path)
+        return;
+    pid = fork();
+    if (pid == 0)
+    {
+        signal(SIGINT, SIG_DFL);
+        signal(SIGQUIT, SIG_DFL);
+        launch_exec(exec_path, cmd, shell);
+    }
+    else if (pid > 0)
+        handle_exec_exit(pid, shell);
+    else
+        perror("fork failed");
+    if (exec_path != cmd->args[0])
+        free(exec_path);
+}
+
+
+
 
 
 

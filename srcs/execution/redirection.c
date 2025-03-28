@@ -3,41 +3,42 @@
 /*                                                        :::      ::::::::   */
 /*   redirection.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
+/*   By: lecartuy <lecartuy@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/18 10:25:48 by lecartuy          #+#    #+#             */
-/*   Updated: 2025/03/28 16:24:22 by mlavergn         ###   ########.fr       */
+/*   Updated: 2025/03/28 20:37:31 by lecartuy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-static int handle_heredoc(t_simple_cmds *cmd, t_shell *shell)
+static int read_heredoc_input(int fd, t_simple_cmds *cmd, t_shell *shell)
 {
-    int pipe_fd[2];
     char *line;
 
-    if (pipe(pipe_fd) == -1)
-    {
-        perror("pipe");
-        return (-1);
-    }
     while (1)
     {
         line = readline("> ");
-        if (!line)
+        if (!line || ft_strncmp(line, cmd->heredoc, ft_strlen(cmd->heredoc) + 1) == 0)
             break;
-        if (ft_strncmp(line, cmd->heredoc, ft_strlen(cmd->heredoc) + 1) == 0)
-        {
-            free(line);
-            break;
-        }
         expand_dollar(&line, *shell);
-        write(pipe_fd[1], line, ft_strlen(line));
-        write(pipe_fd[1], "\n", 1);
+        write(fd, line, ft_strlen(line));
+        write(fd, "\n", 1);
         free(line);
     }
-    close(pipe_fd[1]); 
+    free(line);
+    close(fd);
+    return (0);
+}
+
+static int handle_heredoc(t_simple_cmds *cmd, t_shell *shell)
+{
+    int pipe_fd[2];
+
+    if (pipe(pipe_fd) == -1)
+        return (perror("pipe"), -1);
+    if (read_heredoc_input(pipe_fd[1], cmd, shell) == -1)
+        return (-1);
     if (dup2(pipe_fd[0], STDIN_FILENO) == -1)
     {
         perror("dup2 for heredoc failed");
@@ -76,7 +77,6 @@ int redirect_input(t_simple_cmds *cmd, t_shell *shell)
     return (0);
 }
 
-
 int redirect_output(t_simple_cmds *cmd)
 {
     int fd;
@@ -88,13 +88,11 @@ int redirect_output(t_simple_cmds *cmd)
             fd = open(out->filename, O_WRONLY | O_CREAT | O_APPEND, 0644);
         else
             fd = open(out->filename, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-
         if (fd == -1)
         {
             perror("Failed to open output file");
             return (-1);
         }
-
         if (dup2(fd, STDOUT_FILENO) == -1)
         {
             perror("dup2 for output failed");
@@ -104,7 +102,6 @@ int redirect_output(t_simple_cmds *cmd)
         close(fd);
         out = out->next;
     }
-
     return (0);
 }
 

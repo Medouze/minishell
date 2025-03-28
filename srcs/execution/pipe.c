@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipe.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
+/*   By: lecartuy <lecartuy@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/18 10:25:46 by lecartuy          #+#    #+#             */
-/*   Updated: 2025/03/27 15:40:42 by mlavergn         ###   ########.fr       */
+/*   Updated: 2025/03/28 19:06:58 by lecartuy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,8 +55,6 @@ static void launch_child_process(t_simple_cmds *cmd, int pipe_fd[][2], int index
 static void execute_pipeline(t_simple_cmds *cmds, int pipe_fd[][2], int num_pipes, t_shell *shell)
 {
     int i;
-    int status;
-    pid_t pid;
     t_simple_cmds *current;
 
     i = 0;
@@ -67,7 +65,6 @@ static void execute_pipeline(t_simple_cmds *cmds, int pipe_fd[][2], int num_pipe
         current = current->next;
         i++;
     }
-
     i = 0;
     while (i < num_pipes)
     {
@@ -75,20 +72,7 @@ static void execute_pipeline(t_simple_cmds *cmds, int pipe_fd[][2], int num_pipe
         close(pipe_fd[i][1]);
         i++;
     }
-    ft_handler_signal(2); // 2 to ignore SIGINT
-    while ((pid = wait(&status)) > 0)
-    {
-        if (WIFEXITED(status))
-            shell->last_exit = WEXITSTATUS(status);
-        else if (WIFSIGNALED(status))
-        {
-            shell->last_exit = 128 + WTERMSIG(status);
-            if (WTERMSIG(status) == SIGINT)
-                write(STDOUT_FILENO, "\n", 1);
-        }
-        
-    }
-    ft_handler_signal(0); // 0 for default shell behavior
+    wait_for_children(shell);
 }
 
 static int count_pipes(t_simple_cmds *cmds)

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main_exec.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
+/*   By: lecartuy <lecartuy@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/18 11:18:06 by lecartuy          #+#    #+#             */
-/*   Updated: 2025/03/27 17:04:26 by mlavergn         ###   ########.fr       */
+/*   Updated: 2025/03/28 19:01:13 by lecartuy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,8 +38,18 @@ static int backup_fds(int *stdin_backup, int *stdout_backup)
     return (0);
 }
 
+static int execute_command_builtin(t_simple_cmds *cmds, t_shell *shell)
+{
+    if (cmds->args && cmds->args[0])
+    {
+        if (check_builtin(cmds->args, &shell->env, &shell->last_exit))
+            return (1);
+        execute_command(cmds, shell);
+    }
+    return (0);
+}
 
-void execute_tokens(t_simple_cmds *cmds, t_shell *shell) 
+void execute_tokens(t_simple_cmds *cmds, t_shell *shell)
 {
     int stdin_backup;
     int stdout_backup;
@@ -47,25 +57,13 @@ void execute_tokens(t_simple_cmds *cmds, t_shell *shell)
     while (cmds)
     {
         if (cmds->next)
-        {
-            handle_pipe(cmds, shell);
-            return ;
-        }
+            return (handle_pipe(cmds, shell));
         if (backup_fds(&stdin_backup, &stdout_backup) == -1)
             return;
         if (handle_redirection(cmds, shell) != -1)
         {
-            if (cmds->args && cmds->args[0])
-            {
-                if (check_builtin(cmds->args, &shell->env, &shell->last_exit))
-                {
-                    restore_fds(stdin_backup, stdout_backup);
-                    ft_handler_signal(0);
-                    return ;
-                }
-                else
-                    execute_command(cmds, shell);
-            }
+            if (execute_command_builtin(cmds, shell))
+                return (restore_fds(stdin_backup, stdout_backup));
         }
         ft_handler_signal(0);
         restore_fds(stdin_backup, stdout_backup);
