@@ -6,15 +6,27 @@
 /*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/07 17:01:45 by mlavergn          #+#    #+#             */
-/*   Updated: 2025/03/28 22:59:13 by mlavergn         ###   ########.fr       */
+/*   Updated: 2025/03/29 00:04:24 by mlavergn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
+void	free_outfiles(t_outfile *outfiles)
+{
+	t_outfile	*tmp;
+
+	while (outfiles)
+	{
+		tmp = outfiles;
+		outfiles = outfiles->next;
+		free(tmp->filename);
+		free(tmp);
+	}
+}
+
 void	free_simple_cmds(t_simple_cmds *cmd)
 {
-	t_outfile		*tmp;
 	t_heredoc		*tmph;
 	t_simple_cmds	*temp;
 	int				i;
@@ -28,13 +40,8 @@ void	free_simple_cmds(t_simple_cmds *cmd)
 				free(cmd->args[i++]);
 			free(cmd->args);
 		}
-		while (cmd->outfiles)
-		{
-			tmp = cmd->outfiles;
-			cmd->outfiles = cmd->outfiles->next;
-			free(tmp->filename);
-			free(tmp);
-		}
+		if (cmd->outfiles)
+			free_outfiles(cmd->outfiles);
 		while (cmd->heredocs)
 		{
 			tmph = cmd->heredocs;
@@ -60,30 +67,25 @@ int	get_nbr_cmd(t_token **tokens)
 	return (len);
 }
 
-void add_heredoc(t_heredoc **heredocs, char *delimiter)
+void	add_heredoc(t_heredoc **heredocs, char *delimiter)
 {
-    t_heredoc *new_heredoc = malloc(sizeof(t_heredoc));
-    if (!new_heredoc)
-        return;
+	t_heredoc	*new_heredoc;
+	t_heredoc	*current;
 
-    new_heredoc->delimiter = delimiter;
-    new_heredoc->next = NULL;
-
-    // If the heredocs list is empty, make the new heredoc the first element
-    if (*heredocs == NULL)
-    {
-        *heredocs = new_heredoc;
-    }
-    else
-    {
-        // Otherwise, find the last node and add the new heredoc to the end
-        t_heredoc *current = *heredocs;
-        while (current->next)
-        {
-            current = current->next;
-        }
-        current->next = new_heredoc;
-    }
+	new_heredoc = malloc(sizeof(t_heredoc));
+	if (!new_heredoc)
+		return ;
+	new_heredoc->delimiter = delimiter;
+	new_heredoc->next = NULL;
+	if (*heredocs == NULL)
+		*heredocs = new_heredoc;
+	else
+	{
+		current = *heredocs;
+		while (current->next)
+			current = current->next;
+		current->next = new_heredoc;
+	}
 }
 
 void	add_outfile(t_outfile **outfiles, char *filename, int append)
@@ -107,5 +109,3 @@ void	add_outfile(t_outfile **outfiles, char *filename, int append)
 		tmp->next = new;
 	}
 }
-
-

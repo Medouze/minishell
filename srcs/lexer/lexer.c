@@ -6,7 +6,7 @@
 /*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/05 14:59:17 by mlavergn          #+#    #+#             */
-/*   Updated: 2025/03/28 23:07:13 by mlavergn         ###   ########.fr       */
+/*   Updated: 2025/03/29 00:21:00 by mlavergn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,26 +48,26 @@ void	print_tokens(t_token *head) // A supprimer par la suite(test)
 	}
 }
 
-void proceed_cmd(char *str, t_token **head, t_token **current, int *i)
+void	proceed_cmd(char *str, t_token **head, t_token **current, int *i)
 {
-    int     start;
-    char    *cmd_str;
-    t_token *new;
+	int		start;
+	char	*cmd_str;
+	t_token	*new;
 
-    start = *i;
-    while (str[*i] && (str[*i] == '"' || str[*i] == '\'' 
-            || ft_isalnum(str[*i]) || ft_strchr(SPE_CHARS, str[*i])))
-        (*i)++;
-    cmd_str = ft_substr(str, start, *i - start);
-    if (!cmd_str)
-    {
-        free_tokens(head);
-        printf("Memory allocation failed\n");
-        return;
-    }
-    new = new_token(CMD, cmd_str);
-    free(cmd_str);
-    fill_token(head, current, new);
+	start = *i;
+	while (str[*i] && (str[*i] == '"' || str[*i] == '\''
+			|| ft_isalnum(str[*i]) || ft_strchr(SPE_CHARS, str[*i])))
+		(*i)++;
+	cmd_str = ft_substr(str, start, *i - start);
+	if (!cmd_str)
+	{
+		free_tokens(head);
+		printf("Memory allocation failed\n");
+		return ;
+	}
+	new = new_token(CMD, cmd_str);
+	free(cmd_str);
+	fill_token(head, current, new);
 }
 
 t_token	*lexer(char *str, t_shell *g_env)
@@ -96,6 +96,5 @@ t_token	*lexer(char *str, t_shell *g_env)
 		else
 			proceed_cmd(str, &head, &current, &i);
 	}
-	print_tokens(head);
 	return (head);
 }
