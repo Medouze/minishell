@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   redirection.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lecartuy <lecartuy@student.s19.be>         +#+  +:+       +#+        */
+/*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/18 10:25:48 by lecartuy          #+#    #+#             */
-/*   Updated: 2025/03/28 20:37:31 by lecartuy         ###   ########.fr       */
+/*   Updated: 2025/03/28 22:36:19 by mlavergn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,19 +14,25 @@
 
 static int read_heredoc_input(int fd, t_simple_cmds *cmd, t_shell *shell)
 {
-    char *line;
+    t_heredoc *current = cmd->heredocs;
 
-    while (1)
+    while (current)
     {
-        line = readline("> ");
-        if (!line || ft_strncmp(line, cmd->heredoc, ft_strlen(cmd->heredoc) + 1) == 0)
-            break;
-        expand_dollar(&line, *shell);
-        write(fd, line, ft_strlen(line));
-        write(fd, "\n", 1);
+        char *line;
+
+        while (1)
+        {
+            line = readline("> ");
+            if (!line || ft_strncmp(line, current->delimiter, ft_strlen(current->delimiter) + 1) == 0)
+                break;
+            expand_dollar(&line, *shell);
+            write(fd, line, ft_strlen(line));
+            write(fd, "\n", 1);
+            free(line);
+        }
         free(line);
+        current = current->next;
     }
-    free(line);
     close(fd);
     return (0);
 }
@@ -53,7 +59,7 @@ int redirect_input(t_simple_cmds *cmd, t_shell *shell)
 {
     int fd;
 
-    if (cmd->heredoc)
+    if (cmd->heredocs)
     {
         if (handle_heredoc(cmd, shell) == -1)
             return (-1);

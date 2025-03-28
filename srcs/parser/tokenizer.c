@@ -6,7 +6,7 @@
 /*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/01 13:12:02 by mlavergn          #+#    #+#             */
-/*   Updated: 2025/03/28 16:36:02 by mlavergn         ###   ########.fr       */
+/*   Updated: 2025/03/28 22:23:23 by mlavergn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,10 +61,10 @@ void	handle_redir(t_simple_cmds *exec_cmd, t_token **tokens)
 		*tokens = (*tokens)->next->next;
 	}
 	else if ((*tokens)->type == HEREDOC)
-	{
-		exec_cmd->heredoc = (*tokens)->next->str;
-		*tokens = (*tokens)->next->next;
-	}
+    {
+        add_heredoc(&exec_cmd->heredocs, (*tokens)->next->str);
+        *tokens = (*tokens)->next->next;
+    }
 }
 
 int	fill_args(t_simple_cmds *cmd, t_token *tokens)

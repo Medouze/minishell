@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lecartuy <lecartuy@student.s19.be>         +#+  +:+       +#+        */
+/*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/11 17:10:46 by mlavergn          #+#    #+#             */
-/*   Updated: 2025/03/28 19:07:44 by lecartuy         ###   ########.fr       */
+/*   Updated: 2025/03/28 22:23:36 by mlavergn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,12 @@ typedef struct s_token
 	struct s_token	*next;
 }	t_token;
 
+typedef struct s_heredoc
+{
+    char            *delimiter;
+    struct s_heredoc *next;
+}	t_heredoc;
+
 typedef struct s_shell
 {
 	char	**env;
@@ -70,7 +76,7 @@ typedef struct s_simple_cmds
 {
     char                **args;
     char                *infile;
-    char                *heredoc;
+    t_heredoc           *heredocs;
     t_outfile           *outfiles;
     struct s_simple_cmds *next;
 }   t_simple_cmds;
@@ -119,6 +125,7 @@ void			move_to_closing_quote(char *str, int *i, char quote_type);
 int				get_nbr_quotes(char *str, char quote_type);
 
 /*parser*/
+void			add_heredoc(t_heredoc **heredocs, char *delimiter);
 void   			add_outfile(t_outfile **outfiles, char *filename, int append);
 t_simple_cmds	*parser2(t_token **tokens, t_shell *g_env);
 void			remove_quotes(char **str);

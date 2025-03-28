@@ -6,7 +6,7 @@
 /*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/07 17:01:45 by mlavergn          #+#    #+#             */
-/*   Updated: 2025/03/28 16:35:37 by mlavergn         ###   ########.fr       */
+/*   Updated: 2025/03/28 22:42:50 by mlavergn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 void	free_simple_cmds(t_simple_cmds *cmd)
 {
 	t_outfile		*tmp;
+	t_heredoc		*tmph;
 	t_simple_cmds	*temp;
 	int				i;
 
@@ -34,6 +35,12 @@ void	free_simple_cmds(t_simple_cmds *cmd)
 			free(tmp->filename);
 			free(tmp);
 		}
+		while (cmd->heredocs)
+		{
+			tmph = cmd->heredocs;
+			cmd->heredocs = cmd->heredocs->next;
+			free(tmph);
+		}
 		temp = cmd;
 		cmd = cmd->next;
 		free(temp);
@@ -51,6 +58,16 @@ int	get_nbr_cmd(t_token **tokens)
 		*tokens = (*tokens)->next;
 	}
 	return (len);
+}
+
+void add_heredoc(t_heredoc **heredocs, char *delimiter)
+{
+    t_heredoc *new_heredoc = malloc(sizeof(t_heredoc));
+    if (!new_heredoc)
+        return;
+    new_heredoc->delimiter = delimiter;
+    new_heredoc->next = *heredocs;
+    *heredocs = new_heredoc;
 }
 
 void	add_outfile(t_outfile **outfiles, char *filename, int append)
@@ -74,3 +91,5 @@ void	add_outfile(t_outfile **outfiles, char *filename, int append)
 		tmp->next = new;
 	}
 }
+
+
