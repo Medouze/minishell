@@ -6,7 +6,7 @@
 /*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/18 10:25:48 by lecartuy          #+#    #+#             */
-/*   Updated: 2025/03/27 15:39:59 by mlavergn         ###   ########.fr       */
+/*   Updated: 2025/03/28 16:24:22 by mlavergn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,27 +80,31 @@ int redirect_input(t_simple_cmds *cmd, t_shell *shell)
 int redirect_output(t_simple_cmds *cmd)
 {
     int fd;
+    t_outfile *out = cmd->outfiles;
 
-    if (cmd->outfile)
+    while (out)
     {
-        if (cmd->append)
-            fd = open(cmd->outfile, O_WRONLY | O_CREAT | O_APPEND, 0644);
+        if (out->append)
+            fd = open(out->filename, O_WRONLY | O_CREAT | O_APPEND, 0644);
         else
-            fd = open(cmd->outfile, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+            fd = open(out->filename, O_WRONLY | O_CREAT | O_TRUNC, 0644);
 
         if (fd == -1)
         {
-            perror("[ERROR] Failed to open output file");
+            perror("Failed to open output file");
             return (-1);
         }
+
         if (dup2(fd, STDOUT_FILENO) == -1)
         {
-            perror("[ERROR] dup2 for output failed");
+            perror("dup2 for output failed");
             close(fd);
             return (-1);
         }
-        //close(fd);
+        close(fd);
+        out = out->next;
     }
+
     return (0);
 }
 

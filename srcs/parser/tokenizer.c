@@ -6,7 +6,7 @@
 /*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/01 13:12:02 by mlavergn          #+#    #+#             */
-/*   Updated: 2025/03/27 11:24:30 by mlavergn         ###   ########.fr       */
+/*   Updated: 2025/03/28 16:19:44 by mlavergn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,29 +43,28 @@ void	add_command_to_list(t_simple_cmds **exec_token,
 	*last_cmd = current_cmd;
 }
 
-void	handle_redir(t_simple_cmds **exec_token, t_token **tokens)
+void    handle_redir(t_simple_cmds *exec_cmd, t_token **tokens)
 {
-	if ((*tokens)->type == REDIRECT_IN)
-	{
-		(*exec_token)->infile = (*tokens)->next->str;
-		*tokens = (*tokens)->next->next;
-	}
-	else if ((*tokens)->type == REDIRECT_OUT)
-	{
-		(*exec_token)->outfile = (*tokens)->next->str;
-		*tokens = (*tokens)->next->next;
-	}
-	else if ((*tokens)->type == APPEND)
-	{
-		(*exec_token)->outfile = (*tokens)->next->str;
-		(*exec_token)->append = 1;
-		*tokens = (*tokens)->next->next;
-	}
-	else if ((*tokens)->type == HEREDOC)
-	{
-		(*exec_token)->heredoc = (*tokens)->next->str;
-		*tokens = (*tokens)->next->next;
-	}
+    if ((*tokens)->type == REDIRECT_IN)
+    {
+        exec_cmd->infile = (*tokens)->next->str;
+        *tokens = (*tokens)->next->next;
+    }
+    else if ((*tokens)->type == REDIRECT_OUT)
+    {
+        add_outfile(&exec_cmd->outfiles, (*tokens)->next->str, 0);
+        *tokens = (*tokens)->next->next;
+    }
+    else if ((*tokens)->type == APPEND)
+    {
+        add_outfile(&exec_cmd->outfiles, (*tokens)->next->str, 1);
+        *tokens = (*tokens)->next->next;
+    }
+    else if ((*tokens)->type == HEREDOC)
+    {
+        exec_cmd->heredoc = (*tokens)->next->str;
+        *tokens = (*tokens)->next->next;
+    }
 }
 
 int	fill_args(t_simple_cmds *cmd, t_token *tokens)
@@ -95,6 +94,43 @@ int	fill_args(t_simple_cmds *cmd, t_token *tokens)
 	return (0);
 }
 
+#include <stdio.h>
+
+void print_cmds(t_simple_cmds *cmds)
+{
+    while (cmds)
+    {
+        printf("Command: ");
+        if (cmds->args)
+        {
+            for (int i = 0; cmds->args[i]; i++)
+                printf("%s ", cmds->args[i]);
+        }
+        printf("\n");
+
+        if (cmds->infile)
+            printf("  Input file: %s\n", cmds->infile);
+
+        if (cmds->heredoc)
+            printf("  Heredoc: %s\n", cmds->heredoc);
+
+        if (cmds->outfiles)
+        {
+            t_outfile *out = cmds->outfiles;
+            printf("  Output files:\n");
+            while (out)
+            {
+                printf("    - %s (%s)\n", out->filename, out->append ? "APPEND" : "OVERWRITE");
+                out = out->next;
+            }
+        }
+        printf("\n");
+
+        cmds = cmds->next;
+    }
+}
+
+
 t_simple_cmds	*tokenize(t_token *tokens)
 {
 	t_simple_cmds	*exec_token;
@@ -117,9 +153,10 @@ t_simple_cmds	*tokenize(t_token *tokens)
 		add_command_to_list(&exec_token, current_cmd, &last_cmd);
 		while (tokens && (tokens->type >= REDIRECT_IN
 				&& tokens->type <= HEREDOC))
-			handle_redir(&current_cmd, &tokens);
+			handle_redir(current_cmd, &tokens);
 		if (tokens && tokens->type == PIPE)
 			tokens = tokens->next;
 	}
+	print_cmds(exec_token);
 	return (exec_token);
 }

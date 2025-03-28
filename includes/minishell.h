@@ -6,7 +6,7 @@
 /*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/11 17:10:46 by mlavergn          #+#    #+#             */
-/*   Updated: 2025/03/27 17:04:17 by mlavergn         ###   ########.fr       */
+/*   Updated: 2025/03/28 16:15:46 by mlavergn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,15 +59,21 @@ typedef struct s_arg_node
 	struct s_arg_node	*next;
 }	t_arg_node;
 
+typedef struct s_outfile
+{
+    char                *filename;
+    int                 append;  // 1 if ">>", 0 if ">"
+    struct s_outfile    *next;
+}   t_outfile;
+
 typedef struct s_simple_cmds
 {
-	char					**args;
-	char					*infile;
-	char					*heredoc;
-	char					*outfile;
-	int						append;
-	struct s_simple_cmds	*next;
-}	t_simple_cmds;
+    char                **args;
+    char                *infile;
+    char                *heredoc;
+    t_outfile           *outfiles;
+    struct s_simple_cmds *next;
+}   t_simple_cmds;
 
 /*checks*/
 int				check_builtin(char **line, char ***envp, int *last_exit);
@@ -113,6 +119,7 @@ void			move_to_closing_quote(char *str, int *i, char quote_type);
 int				get_nbr_quotes(char *str, char quote_type);
 
 /*parser*/
+void   			add_outfile(t_outfile **outfiles, char *filename, int append);
 t_simple_cmds	*parser2(t_token **tokens, t_shell *g_env);
 void			remove_quotes(char **str);
 void			expand_dollar(char	**str, t_shell g_env);
