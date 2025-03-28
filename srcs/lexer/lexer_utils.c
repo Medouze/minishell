@@ -6,7 +6,7 @@
 /*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/12 16:15:26 by mlavergn          #+#    #+#             */
-/*   Updated: 2025/03/28 22:01:02 by mlavergn         ###   ########.fr       */
+/*   Updated: 2025/03/28 23:45:56 by mlavergn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,29 +91,40 @@ int	check_closed(char *str)
 	return (current_quote == 0);
 }
 
-int	handle_quotes(char *str, int *i, t_token **current, t_token **head)
+int handle_quotes(char *str, int *i, t_token **current, t_token **head)
 {
-	char	buffer[1024];
-	int		buf_index;
-	char	quote_type;
-	t_token	*new;
+    char buffer[1024];
+    int buf_index = 0;
+    //char quote_type = str[*i];
 
-	buf_index = 0;
-	quote_type = str[*i];  
-	(*i)++;
-	while (str[*i] && str[*i] != quote_type)
-		buffer[buf_index++] = str[(*i)++];
-	if (!str[*i])
+	if (!check_closed(str))
 	{
-		free_tokens(head);
-		printf("syntax error unclosed quotes\n");
+		printf("minishell: unclosed quotes\n");
 		return (0);
 	}
-	(*i)++;
-	buffer[buf_index] = '\0';
-	new = new_token(CMD, buffer);
-	if (!new)
-		return (0);
-	fill_token(head, current, new);
-	return (1);
+    while (str[*i]) {
+        // If we find the same quote type, just skip it (i.e., treat it as part of the string)
+        // If we find another quote (of a different type), treat it as part of the string
+        if (str[*i] == '"' || str[*i] == '\'') {
+            buffer[buf_index++] = str[*i];
+            (*i)++;
+        } 
+        // Otherwise, it's regular text; add it to the buffer
+        else {
+            buffer[buf_index++] = str[*i];
+            (*i)++;
+        }
+    }
+
+    // Add a null-terminator to the buffer
+    buffer[buf_index] = '\0';
+
+    // Create a new token with the concatenated string
+    t_token *new = new_token(CMD, buffer);
+    if (!new) return 0;
+
+    // Add the new token to the list
+    fill_token(head, current, new);
+    return 1;
 }
+
