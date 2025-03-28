@@ -6,7 +6,7 @@
 /*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/07 17:01:45 by mlavergn          #+#    #+#             */
-/*   Updated: 2025/03/28 22:42:50 by mlavergn         ###   ########.fr       */
+/*   Updated: 2025/03/28 22:59:13 by mlavergn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,9 +65,25 @@ void add_heredoc(t_heredoc **heredocs, char *delimiter)
     t_heredoc *new_heredoc = malloc(sizeof(t_heredoc));
     if (!new_heredoc)
         return;
+
     new_heredoc->delimiter = delimiter;
-    new_heredoc->next = *heredocs;
-    *heredocs = new_heredoc;
+    new_heredoc->next = NULL;
+
+    // If the heredocs list is empty, make the new heredoc the first element
+    if (*heredocs == NULL)
+    {
+        *heredocs = new_heredoc;
+    }
+    else
+    {
+        // Otherwise, find the last node and add the new heredoc to the end
+        t_heredoc *current = *heredocs;
+        while (current->next)
+        {
+            current = current->next;
+        }
+        current->next = new_heredoc;
+    }
 }
 
 void	add_outfile(t_outfile **outfiles, char *filename, int append)

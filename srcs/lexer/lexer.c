@@ -6,7 +6,7 @@
 /*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/05 14:59:17 by mlavergn          #+#    #+#             */
-/*   Updated: 2025/03/10 15:29:39 by mlavergn         ###   ########.fr       */
+/*   Updated: 2025/03/28 23:04:11 by mlavergn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,5 +95,6 @@ t_token	*lexer(char *str, t_shell *g_env)
 		else
 			proceed_cmd(str, &head, &current, &i);
 	}
+	print_tokens(head);
 	return (head);
 }

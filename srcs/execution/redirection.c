@@ -6,7 +6,7 @@
 /*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/18 10:25:48 by lecartuy          #+#    #+#             */
-/*   Updated: 2025/03/28 22:36:19 by mlavergn         ###   ########.fr       */
+/*   Updated: 2025/03/28 22:52:25 by mlavergn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,12 +14,13 @@
 
 static int read_heredoc_input(int fd, t_simple_cmds *cmd, t_shell *shell)
 {
-    t_heredoc *current = cmd->heredocs;
+    t_heredoc *current;
+    char *line;
 
+    current = cmd->heredocs;
     while (current)
     {
-        char *line;
-
+        printf("%s\n",current->delimiter);
         while (1)
         {
             line = readline("> ");
@@ -30,6 +31,7 @@ static int read_heredoc_input(int fd, t_simple_cmds *cmd, t_shell *shell)
             write(fd, "\n", 1);
             free(line);
         }
+        printf("test\n");
         free(line);
         current = current->next;
     }

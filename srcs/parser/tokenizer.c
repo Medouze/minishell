@@ -6,7 +6,7 @@
 /*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/01 13:12:02 by mlavergn          #+#    #+#             */
-/*   Updated: 2025/03/28 22:23:23 by mlavergn         ###   ########.fr       */
+/*   Updated: 2025/03/28 23:04:06 by mlavergn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,6 +94,62 @@ int	fill_args(t_simple_cmds *cmd, t_token *tokens)
 	return (0);
 }
 
+#include <stdio.h>
+
+void print_outfiles(t_outfile *outfiles)
+{
+    while (outfiles)
+    {
+        printf("Output file: %s, Append: %d\n", outfiles->filename, outfiles->append);
+        outfiles = outfiles->next;
+    }
+}
+
+void print_heredocs(t_heredoc *heredocs)
+{
+    while (heredocs)
+    {
+        printf("Heredoc delimiter: %s\n", heredocs->delimiter);
+        heredocs = heredocs->next;
+    }
+}
+
+void print_simple_cmd(t_simple_cmds *cmd)
+{
+    while (cmd)
+    {
+        // Print args
+        printf("Arguments: ");
+        for (int i = 0; cmd->args && cmd->args[i]; i++)
+        {
+            printf("%s ", cmd->args[i]);
+        }
+        printf("\n");
+
+        // Print input file
+        if (cmd->infile)
+        {
+            printf("Input file: %s\n", cmd->infile);
+        }
+
+        // Print heredocs
+        if (cmd->heredocs)
+        {
+            print_heredocs(cmd->heredocs);
+        }
+
+        // Print output files
+        if (cmd->outfiles)
+        {
+            print_outfiles(cmd->outfiles);
+        }
+
+        // Move to the next command in the list
+        cmd = cmd->next;
+    }
+}
+
+
 t_simple_cmds	*tokenize(t_token *tokens)
 {
 	t_simple_cmds	*exec_token;
@@ -120,5 +176,6 @@ t_simple_cmds	*tokenize(t_token *tokens)
 		if (tokens && tokens->type == PIPE)
 			tokens = tokens->next;
 	}
+	print_simple_cmd(exec_token);
 	return (exec_token);
 }
