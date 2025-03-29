@@ -141,6 +141,7 @@ int				inside_quotes(char	*str);
 void			in_quotes(char **str, int i, int *in_double, int *in_single);
 
 /*execution*/
+char			*find_last_heredoc(t_heredoc *heredocs);
 int				redirect_input(t_simple_cmds *cmd, t_shell *shell);
 int				redirect_output(t_simple_cmds *cmd);
 void			handle_pipe(t_simple_cmds *cmds, t_shell *shell);

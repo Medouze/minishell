@@ -14,24 +14,25 @@
 
 static int read_heredoc_input(int fd, t_simple_cmds *cmd, t_shell *shell)
 {
-    t_heredoc *current;
+    t_heredoc   *current;   
     char *line;
 
     current = cmd->heredocs;
     while (current)
     {
-        printf("%s\n",current->delimiter);
         while (1)
         {
             line = readline("> ");
             if (!line || ft_strncmp(line, current->delimiter, ft_strlen(current->delimiter) + 1) == 0)
                 break;
             expand_dollar(&line, *shell);
-            write(fd, line, ft_strlen(line));
-            write(fd, "\n", 1);
+            if (ft_strncmp(current->delimiter, find_last_heredoc(cmd->heredocs), ft_strlen(current->delimiter) + 1) == 0)
+            {
+                write(fd, line, ft_strlen(line));
+                write(fd, "\n", 1);
+            }
             free(line);
         }
-        printf("test\n");
         free(line);
         current = current->next;
     }

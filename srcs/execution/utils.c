@@ -91,3 +91,17 @@ void execute_command_pipe(t_simple_cmds *cmd, t_shell *shell)
     perror("execve failed");
     exit(1);
 }
+
+char    *find_last_heredoc(t_heredoc *heredocs)
+{
+    t_heredoc   *current;
+
+    current = heredocs;
+    while(current)
+    {
+        if (current->next == NULL)
+            return (current->delimiter);
+        current = current->next;
+    }
+    return (NULL);
+}
