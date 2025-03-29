@@ -48,8 +48,8 @@ typedef struct s_token
 
 typedef struct s_heredoc
 {
-    char            *delimiter;
-    struct s_heredoc *next;
+	char				*delimiter;
+	struct s_heredoc	*next;
 }	t_heredoc;
 
 typedef struct s_shell
@@ -67,19 +67,19 @@ typedef struct s_arg_node
 
 typedef struct s_outfile
 {
-    char                *filename;
-    int                 append;  // 1 if ">>", 0 if ">"
-    struct s_outfile    *next;
-}   t_outfile;
+	char				*filename;
+	int					append;
+	struct s_outfile	*next;
+}	t_outfile;
 
 typedef struct s_simple_cmds
 {
-    char                **args;
-    char                *infile;
-    t_heredoc           *heredocs;
-    t_outfile           *outfiles;
-    struct s_simple_cmds *next;
-}   t_simple_cmds;
+	char					**args;
+	char					*infile;
+	t_heredoc				*heredocs;
+	t_outfile				*outfiles;
+	struct s_simple_cmds	*next;
+}	t_simple_cmds;
 
 /*checks*/
 int				check_builtin(char **line, char ***envp, int *last_exit);
@@ -126,7 +126,7 @@ int				get_nbr_quotes(char *str, char quote_type);
 
 /*parser*/
 void			add_heredoc(t_heredoc **heredocs, char *delimiter);
-void   			add_outfile(t_outfile **outfiles, char *filename, int append);
+void			add_outfile(t_outfile **outfiles, char *filename, int append);
 t_simple_cmds	*parser2(t_token **tokens, t_shell *g_env);
 void			remove_quotes(char **str);
 void			expand_dollar(char	**str, t_shell g_env);
@@ -149,12 +149,12 @@ void			execute_tokens(t_simple_cmds *cmds, t_shell *shell);
 void			execute_command(t_simple_cmds *cmd, t_shell *shell);
 int				handle_redirection(t_simple_cmds *cmd, t_shell *shell);
 void			execute_command_pipe(t_simple_cmds *cmd, t_shell *shell);
-void 			free_tab(char **tab);
-void 			wait_for_children(t_shell *shell);
-void 			handle_exec_exit(pid_t pid, t_shell *shell);
-void 			execute_command_pipe(t_simple_cmds *cmd, t_shell *shell);
+void			free_tab(char **tab);
+void			wait_for_children(t_shell *shell);
+void			handle_exec_exit(pid_t pid, t_shell *shell);
+void			execute_command_pipe(t_simple_cmds *cmd, t_shell *shell);
 char			**get_paths(char **env);
-char 			*find_exec(char *cmd, char **paths);
+char			*find_exec(char *cmd, char **paths);
 
 /*signals*/
 

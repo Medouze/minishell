@@ -62,15 +62,15 @@ int	check_cd(char **line, char ***envp)
 	return (0);
 }
 
-int	path_exist(char **env) 
+int	path_exist(char **env)
 {
-    while (*env) 
-    {
-        if (ft_strncmp(*env, "PATH=", 5) == 0)
-            return (1);
-        env++;
-    }
-    return (0);
+	while (*env)
+	{
+		if (ft_strncmp(*env, "PATH=", 5) == 0)
+			return (1);
+		env++;
+	}
+	return (0);
 }
 
 int	check_builtin(char **line, char ***envp, int *last_exit)
