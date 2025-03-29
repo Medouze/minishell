@@ -6,7 +6,7 @@
 /*   By: lecartuy <lecartuy@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/27 12:20:31 by mlavergn          #+#    #+#             */
-/*   Updated: 2025/03/28 19:07:19 by lecartuy         ###   ########.fr       */
+/*   Updated: 2025/03/29 15:40:25 by lecartuy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,11 +72,13 @@ static char	*get_exec_path(t_simple_cmds *cmd, t_shell *shell)
 
 static void	launch_exec(char *exec_path, t_simple_cmds *cmd, t_shell *shell)
 {
-	if (redirect_output(cmd) == -1)
-		exit(1);
 	execve(exec_path, cmd->args, shell->env);
-	perror("execve failed");
-	exit(1);
+	if (errno == EACCES)
+		exit(126);
+	else if (errno == ENOENT)
+		exit(127);
+	else
+		exit(1);
 }
 
 void	execute_command(t_simple_cmds *cmd, t_shell *shell)
