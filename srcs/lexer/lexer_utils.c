@@ -94,8 +94,8 @@ int	check_closed(char *str)
 int	handle_quotes(char *str, int *i, t_token **current, t_token **head)
 {
 	char	buffer[1024];
-	int		buf_index;
 	t_token	*new;
+	int		buf_index;
 
 	buf_index = 0;
 	if (!check_closed(str))
@@ -107,10 +107,12 @@ int	handle_quotes(char *str, int *i, t_token **current, t_token **head)
 	while (str[*i])
 	{
 		if (str[*i] == '"' || str[*i] == '\'')
-			buffer[buf_index++] = str[*i];
+			copy_quoted_content(buffer, &buf_index, str, i);
+		else if (str[*i] == ' ' || str[*i] == '|'
+			|| str[*i] == '<' || str[*i] == '>')
+			break ;
 		else
-			buffer[buf_index++] = str[*i];
-		(*i)++;
+			buffer[buf_index++] = str[(*i)++];
 	}
 	buffer[buf_index] = '\0';
 	new = new_token(CMD, buffer);

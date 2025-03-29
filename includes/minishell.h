@@ -72,6 +72,13 @@ typedef struct s_outfile
 	struct s_outfile	*next;
 }	t_outfile;
 
+typedef struct s_pipe_data
+{
+	int	(*pipe_fd)[2];
+	int	index;
+	int	num_pipes;
+}	t_pipe_data;
+
 typedef struct s_simple_cmds
 {
 	char					**args;
@@ -112,6 +119,8 @@ int				check_only_spaces(char *line);
 void			print_error(char *error);
 
 /*lexer*/
+void			copy_quoted_content(char *buffer,
+					int *buf_index, char *str, int *i);
 t_token			*lexer(char *str, t_shell *g_env);
 void			handle_token(char *str,
 					t_token **head, t_token **current, int *i);
@@ -141,6 +150,7 @@ int				inside_quotes(char	*str);
 void			in_quotes(char **str, int i, int *in_double, int *in_single);
 
 /*execution*/
+int				read_heredoc_input(int fd, t_simple_cmds *cmd, t_shell *shell);
 char			*find_last_heredoc(t_heredoc *heredocs);
 int				redirect_input(t_simple_cmds *cmd, t_shell *shell);
 int				redirect_output(t_simple_cmds *cmd);

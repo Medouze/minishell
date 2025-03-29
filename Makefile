@@ -28,7 +28,7 @@ SRCS 		=	${DIR}main.c $(DIR_EXECUTION)check.c $(DIR)utils.c $(DIR_BUILTIN)export
 				$(DIR_PARSER)expander.c $(DIR_PARSER)expander_utils.c $(DIR_LEXER)quotes_utils.c \
 				$(DIR_PARSER)tokenizer.c $(DIR_EXECUTION)command.c $(DIR_EXECUTION)main_exec.c \
 				$(DIR_PARSER)tokenizer_utils.c $(DIR_BUILTIN)export_utils.c $(DIR_BUILTIN)cd_utils.c \
-				$(DIR_BUILTIN)cd_utils2.c $(DIR)signals.c $(DIR_EXECUTION)utils.c
+				$(DIR_BUILTIN)cd_utils2.c $(DIR)signals.c $(DIR_EXECUTION)utils.c $(DIR_EXECUTION)heredoc.c
 OBJS 		= 	$(SRCS:.c=.o)
 LIBFT		= 	${LIBFTDIR}/libft.a
 

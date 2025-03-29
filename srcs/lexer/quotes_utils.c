@@ -42,3 +42,14 @@ void	move_to_closing_quote(char *str, int *i, char quote_type)
 		(*i)++;
 	}
 }
+
+void	copy_quoted_content(char *buffer, int *buf_index, char *str, int *i)
+{
+	char	quote;
+
+	quote = str[(*i)++];
+	while (str[*i] && str[*i] != quote)
+		buffer[(*buf_index)++] = str[(*i)++];
+	if (str[*i] == quote)
+		(*i)++;
+}

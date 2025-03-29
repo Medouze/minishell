@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
+#include <stdio.h>
 
 t_simple_cmds	*allocate_new_command(int len)
 {

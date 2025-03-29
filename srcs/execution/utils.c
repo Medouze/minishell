@@ -33,7 +33,8 @@ void	wait_for_children(t_shell *shell)
 	pid_t	pid;
 
 	ft_handler_signal(2);
-	while ((pid = wait(&status)) > 0)
+	pid = wait(&status);
+	while (pid > 0)
 	{
 		if (WIFEXITED(status))
 			shell->last_exit = WEXITSTATUS(status);
@@ -43,6 +44,7 @@ void	wait_for_children(t_shell *shell)
 			if (WTERMSIG(status) == SIGINT)
 				write(STDOUT_FILENO, "\n", 1);
 		}
+		pid = wait(&status);
 	}
 	ft_handler_signal(0);
 }
