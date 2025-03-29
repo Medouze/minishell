@@ -12,7 +12,7 @@
 
 #include "../../includes/minishell.h"
 
-int	check_echo_pwd_exit(char **line, char ***envp)
+int	check_echo_pwd_exit(char **line, char ***envp, int *last_exit)
 {
 	if (ft_strncmp(line[0], "echo", 5) == 0)
 	{
@@ -26,7 +26,7 @@ int	check_echo_pwd_exit(char **line, char ***envp)
 	}
 	if (ft_strncmp(line[0], "exit", 5) == 0)
 	{
-		exit_cmd(line, *envp);
+		exit_cmd(line, *envp, last_exit);
 		return (1);
 	}
 	return (0);
@@ -75,7 +75,7 @@ int	path_exist(char **env)
 
 int	check_builtin(char **line, char ***envp, int *last_exit)
 {
-	if (check_echo_pwd_exit(line, envp)
+	if (check_echo_pwd_exit(line, envp, last_exit)
 		|| check_env_export_unset(line, envp) || check_cd(line, envp))
 	{
 		*last_exit = 0;

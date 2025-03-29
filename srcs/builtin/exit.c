@@ -25,18 +25,21 @@ void	free_envp(char **envp)
 	free(envp);
 }
 
-void	check_digit(char **line, int i, char **envp)
+int	check_digit(char **line, int i, char **envp)
 {
+	int	exit_status;
+
 	if (!(ft_isdigit(line[1][i])))
 	{
 		printf("exit\nminishell: %s: numeric argument required\n", line[1]);
 		free_envp(envp);
 		exit(EXIT_SUCCESS);
 	}
-	return ;
+	exit_status = ft_atoi(line[1]);
+	return (exit_status);
 }
 
-void	exit_cmd(char **line, char **envp)
+void	exit_cmd(char **line, char **envp, int *last_exit)
 {
 	int	i;
 
@@ -45,20 +48,20 @@ void	exit_cmd(char **line, char **envp)
 		printf("exit\n");
 		exit(EXIT_SUCCESS);
 	}
+	if (line[2])
+	{
+		printf("exit\nminishell: exit: too many arguments\n");
+		return ;
+	}
 	if (line[1])
 	{
 		i = 0;
 		while (line[1][i])
 		{
-			check_digit(line, i, envp);
+			*last_exit = check_digit(line, i, envp);
 			i++;
 		}
-		if (line[2])
-			printf("exit\nminishell: exit: too many arguments\n");
-		else
-		{
-			free_envp(envp);
-			exit(EXIT_SUCCESS);
-		}
+		free_envp(envp);
+		exit(EXIT_SUCCESS);
 	}
 }

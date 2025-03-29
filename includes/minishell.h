@@ -95,7 +95,7 @@ char			*check_cmd(char *cmd, char **envp);
 /*built in*/
 void			echo(char **line);
 void			pwd(char **envp);
-void			exit_cmd(char **line, char **envp);
+void			exit_cmd(char **line, char **envp, int *last_exit);
 void			env_cmd(char **myenv, int export);
 void			export_env(char **line, char ***envp, char *export);
 void			unset_env(char **line, char ***envp, char *unset);
