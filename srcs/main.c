@@ -51,6 +51,8 @@ int	main(int ac, char **av, char **envp)
 		if (!line)
 		{
 			printf("exit\n");
+			free_env(g_env.env);
+			free_env(g_env.hidden_env);
 			break ;
 		}
 		if (!process_line(line, &g_env))
