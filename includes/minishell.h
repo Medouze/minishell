@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
+/*   By: lecartuy <lecartuy@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/11 17:10:46 by mlavergn          #+#    #+#             */
-/*   Updated: 2025/03/28 22:23:36 by mlavergn         ###   ########.fr       */
+/*   Updated: 2025/03/29 15:46:24 by lecartuy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@
 # include <readline/history.h>
 # include <fcntl.h>
 # include <signal.h>
+# include <errno.h>
 
 # ifndef SPE_CHARS
 #  define SPE_CHARS "!#$%&()*+,-./:;<=>?@[\\]^_`{|}~"
