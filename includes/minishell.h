@@ -135,6 +135,7 @@ void			move_to_closing_quote(char *str, int *i, char quote_type);
 int				get_nbr_quotes(char *str, char quote_type);
 
 /*parser*/
+void			handle_backslashes(char **str);
 void			add_heredoc(t_heredoc **heredocs, char *delimiter);
 void			add_outfile(t_outfile **outfiles, char *filename, int append);
 t_simple_cmds	*parser2(t_token **tokens, t_shell *g_env);
