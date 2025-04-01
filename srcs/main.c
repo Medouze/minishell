@@ -22,7 +22,10 @@ static int	process_line(char *line, t_shell *g_env)
 	add_history(line);
 	lexed_token = lexer(line, g_env);
 	if (!lexed_token)
+	{
+		g_env->last_exit = 2;
 		return (0);
+	}
 	tokens = parser2(&lexed_token, g_env);
 	if (!tokens)
 	{
@@ -56,8 +59,6 @@ int	main(int ac, char **av, char **envp)
 			break ;
 		}
 		if (!process_line(line, &g_env))
-			free(line);
-		else
 			free(line);
 	}
 	return (0);

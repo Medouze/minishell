@@ -12,23 +12,6 @@
 
 #include "../../includes/minishell.h"
 
-int	valid_line_unset(char *unset)
-{
-	int	i;
-
-	i = 0;
-	if (!(ft_isalpha(unset[0]) || unset[0] == '_'))
-		return (0);
-	i++;
-	while (unset[i])
-	{
-		if (!(ft_isalnum(unset[i])) || unset[i] == '_')
-			return (0);
-		i++;
-	}
-	return (1);
-}
-
 int	find_line_unset(char ***envp, char *unset)
 {
 	int	unset_line;
@@ -71,21 +54,18 @@ void	remove_line_env(char ***envp, int line_unset)
 	*envp = new_env;
 }
 
-void	unset_env(char **line, char ***envp, char *unset)
+void	unset_env(char **line, char ***envp, char *unset, int *last_exit)
 {
 	int	line_unset;
 
 	if (!line[1])
 		return ;
-	if (!valid_line_unset(unset))
-	{
-		printf("minishell: unset: '%s': not a valid identifier\n", unset);
-		return ;
-	}
 	unset = ft_strjoin(unset, "=");
 	line_unset = find_line_unset(envp, unset);
 	if (!line_unset)
 	{
+		*last_exit = 1;
+		printf("minishell: %s: event not found\n", unset);
 		free(unset);
 		return ;
 	}

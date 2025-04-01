@@ -79,6 +79,7 @@ t_token	*lexer(char *str, t_shell *g_env)
 	head = NULL;
 	current = NULL;
 	i = 0;
+	expand_dollar(&str, *g_env);
 	while (str[i])
 	{
 		if ((str[i] >= 9 && str[i] <= 13) || str[i] == 32)
@@ -88,13 +89,12 @@ t_token	*lexer(char *str, t_shell *g_env)
 		else if (str[i] == '\"' || str[i] == '\'')
 		{
 			if (!handle_quotes(str, &i, &current, &head))
-			{
-				g_env->last_exit = 2;
 				return (NULL);
-			}
 		}
 		else
 			proceed_cmd(str, &head, &current, &i);
 	}
+	print_tokens(head);
+	free(str);
 	return (head);
 }

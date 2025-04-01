@@ -117,7 +117,7 @@ void	add_line_env(char ***envp, char *export)
 	}
 }
 
-void	export_env(char **line, char ***envp, char *export)
+void	export_env(char **line, char ***envp, char *export, int *last_exit)
 {
 	if (!line[1])
 	{
@@ -126,6 +126,7 @@ void	export_env(char **line, char ***envp, char *export)
 	}
 	if (!valid_line_export(export))
 	{
+		*last_exit = 1;
 		printf("minishell: export: '%s': not a valid identifier\n", export);
 		return ;
 	}

@@ -84,7 +84,7 @@ void	define_path_currentpwd(char ***envp, char **line,
 	handle_cd_home(*path, *pwd);
 }
 
-void	cd_cmd(char **line, char ***envp)
+int	cd_cmd(char **line, char ***envp)
 {
 	char	*current_pwd;
 	char	*path;
@@ -92,13 +92,13 @@ void	cd_cmd(char **line, char ***envp)
 	if (line[1] && line[2])
 	{
 		printf("minishell: cd: too many arguments\n");
-		return ;
+		return (0);
 	}
 	define_path_currentpwd(envp, line, &path, &current_pwd);
 	if (ft_strncmp(path, "-", 1) == 0)
 	{
 		handle_cd_oldpwd(envp, path, current_pwd);
-		return ;
+		return (1);
 	}
 	if (line[1])
 		remove_slash(&path);
@@ -107,7 +107,8 @@ void	cd_cmd(char **line, char ***envp)
 		printf("minishell: cd: %s: No such file or directory\n", path);
 		free(current_pwd);
 		free(path);
-		return ;
+		return (0);
 	}
 	process_cd_path(envp, path, current_pwd);
+	return (1);
 }

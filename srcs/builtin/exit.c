@@ -50,6 +50,7 @@ void	exit_cmd(char **line, char **envp, int *last_exit)
 	}
 	if (line[2])
 	{
+		*last_exit = 1;
 		printf("exit\nminishell: exit: too many arguments\n");
 		return ;
 	}
