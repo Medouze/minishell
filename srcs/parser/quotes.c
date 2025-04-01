@@ -12,47 +12,6 @@
 
 #include "../../includes/minishell.h"
 
-void handle_backslashes(char **str)
-{
-    char *temp = ft_strdup(*str);
-    int i = 0;
-    int j = 0;
-    int in_quote = 0;  // 0 = none, 1 = single, 2 = double
-
-    while (temp[i])
-    {
-        // Handle quote state changes first
-        if (temp[i] == '\'' && in_quote != 2)
-        {
-            in_quote = (in_quote == 1) ? 0 : 1;
-            (*str)[j++] = temp[i++];
-            continue;
-        }
-        else if (temp[i] == '\"' && in_quote != 1)
-        {
-            in_quote = (in_quote == 2) ? 0 : 2;
-            (*str)[j++] = temp[i++];
-            continue;
-        }
-
-        // Handle backslashes
-        if (temp[i] == '\\')
-        {
-            // Only escape if not in single quotes or escaping a special character
-            if (in_quote != 1 || (temp[i + 1] == '\\' || temp[i + 1] == '\'' || temp[i + 1] == '\"'))
-            {
-                i++;  // Skip the backslash
-                if (!temp[i])  // Handle dangling backslash at end
-                    break;
-            }
-        }
-
-        (*str)[j++] = temp[i++];
-    }
-    (*str)[j] = '\0';
-    free(temp);
-}
-
 static void	process_quotes(char c, char *quote_type, char *new_str, int *j)
 {
 	if (!(*quote_type))
