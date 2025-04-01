@@ -24,7 +24,7 @@ SRCS 		=	${DIR}main.c $(DIR_EXECUTION)check.c $(DIR)utils.c $(DIR_BUILTIN)export
 				$(DIR_BUILTIN)unset.c $(DIR_BUILTIN)cd.c $(DIR_BUILTIN)echo.c \
 				$(DIR_EXECUTION)pipe.c $(DIR_EXECUTION)redirection.c \
 				$(DIR_LEXER)lexer.c $(DIR_BUILTIN)exit.c $(DIR_BUILTIN)pwd.c \
-				$(DIR_LEXER)lexer_utils.c $(DIR_PARSER)parser.c  \
+				$(DIR_LEXER)lexer_utils.c $(DIR_PARSER)parser.c $(DIR_PARSER)quotes.c \
 				$(DIR_PARSER)expander.c $(DIR_PARSER)expander_utils.c $(DIR_LEXER)quotes_utils.c \
 				$(DIR_PARSER)tokenizer.c $(DIR_EXECUTION)command.c $(DIR_EXECUTION)main_exec.c \
 				$(DIR_PARSER)tokenizer_utils.c $(DIR_BUILTIN)export_utils.c $(DIR_BUILTIN)cd_utils.c \

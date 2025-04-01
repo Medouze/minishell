@@ -83,6 +83,8 @@ t_simple_cmds	*parser2(t_token **tokens, t_shell *g_env)
 		if (ft_strncmp(current->str, "~", 1) == 0)
 			expand_tilde(&current->str, (*g_env));
 		expand_dollar(&current->str, (*g_env));
+		if (ft_strchr(current->str, '\"') || ft_strchr(current->str, '\''))
+			remove_quotes(&current->str);
 		if (check_errors(*tokens))
 		{
 			g_env->last_exit = 2;
