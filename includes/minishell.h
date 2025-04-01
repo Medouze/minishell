@@ -91,18 +91,18 @@ typedef struct s_simple_cmds
 
 /*checks*/
 int				check_builtin(char **line, char ***envp, int *last_exit);
-char			*check_cmd(char *cmd, char **envp);
 
 /*built in*/
 void			echo(char **line);
 void			pwd(char **envp);
 void			exit_cmd(char **line, char **envp, int *last_exit);
 void			env_cmd(char **myenv, int export);
-void			export_env(char **line, char ***envp, char *export, int *last_exit);
-void			unset_env(char **line, char ***envp, char *unset, int *last_exit);
+void			export_env(char **line, char ***envp,
+					char *export, int *last_exit);
+void			unset_env(char **line, char ***envp,
+					char *unset, int *last_exit);
 int				cd_cmd(char **line, char ***envp);
 void			remove_slash(char **line);
-int				get_pwd_len(char **envp, int *i);
 char			*extract_key(char *line);
 int				replace_line(char ***envp, char *line);
 char			*get_var(char **envp, char *line);
@@ -135,7 +135,6 @@ void			move_to_closing_quote(char *str, int *i, char quote_type);
 int				get_nbr_quotes(char *str, char quote_type);
 
 /*parser*/
-void			handle_backslashes(char **str);
 void			add_heredoc(t_heredoc **heredocs, char *delimiter);
 void			add_outfile(t_outfile **outfiles, char *filename, int append);
 t_simple_cmds	*parser2(t_token **tokens, t_shell *g_env);
@@ -173,6 +172,5 @@ char			*find_exec(char *cmd, char **paths);
 void			ft_sig_handling(int sig);
 void			ft_sig_heredoc(int sig);
 void			ft_handler_signal(int pick);
-void			handle_sigquit(int sig);
 
 #endif
