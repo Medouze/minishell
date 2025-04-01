@@ -94,7 +94,6 @@ t_token	*lexer(char *str, t_shell *g_env)
 		else
 			proceed_cmd(str, &head, &current, &i);
 	}
-	print_tokens(head);
 	free(str);
 	return (head);
 }
