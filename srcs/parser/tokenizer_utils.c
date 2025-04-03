@@ -6,7 +6,7 @@
 /*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/07 17:01:45 by mlavergn          #+#    #+#             */
-/*   Updated: 2025/03/29 00:04:24 by mlavergn         ###   ########.fr       */
+/*   Updated: 2025/04/02 21:03:57 by mlavergn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,8 +20,12 @@ void	free_outfiles(t_outfile *outfiles)
 	{
 		tmp = outfiles;
 		outfiles = outfiles->next;
-		free(tmp->filename);
-		free(tmp);
+		if (tmp)
+		{
+			if (tmp->filename)
+				free(tmp->filename);
+			free(tmp);
+		}
 	}
 }
 
@@ -54,15 +58,16 @@ void	free_simple_cmds(t_simple_cmds *cmd)
 	}
 }
 
-int	get_nbr_cmd(t_token **tokens)
+int	get_nbr_cmd(t_token *tokens)
 {
 	int	len;
 
 	len = 0;
-	while (*tokens && (*tokens)->type == CMD)
+	while (tokens)
 	{
-		len++;
-		*tokens = (*tokens)->next;
+		if (tokens->type == CMD)
+			len++;
+		tokens = tokens->next;
 	}
 	return (len);
 }
@@ -97,6 +102,11 @@ void	add_outfile(t_outfile **outfiles, char *filename, int append)
 	if (!new)
 		return ;
 	new->filename = ft_strdup(filename);
+	if (!new->filename)
+	{
+		free(new);
+		return ;
+	}
 	new->append = append;
 	new->next = NULL;
 	if (!*outfiles)

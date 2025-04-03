@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lecartuy <lecartuy@student.s19.be>         +#+  +:+       +#+        */
+/*   By: lecartuy <lecartuy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/28 14:03:32 by lecartuy          #+#    #+#             */
-/*   Updated: 2025/03/28 14:18:56 by lecartuy         ###   ########.fr       */
+/*   Updated: 2025/04/03 15:34:57 by lecartuy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,9 @@ void	wait_for_children(t_shell *shell)
 {
 	int		status;
 	pid_t	pid;
+	int		sigint_received;
 
+	sigint_received = 0;
 	ft_handler_signal(2);
 	pid = wait(&status);
 	while (pid > 0)
@@ -42,11 +44,14 @@ void	wait_for_children(t_shell *shell)
 		{
 			shell->last_exit = 128 + WTERMSIG(status);
 			if (WTERMSIG(status) == SIGINT)
-				write(STDOUT_FILENO, "\n", 1);
+				sigint_received = 1;
+			else if (WTERMSIG(status) == SIGQUIT)
+				sigint_received = 2;
 		}
 		pid = wait(&status);
 	}
 	ft_handler_signal(0);
+	ft_sigint_received(sigint_received);
 }
 
 void	handle_exec_exit(pid_t pid, t_shell *shell)
@@ -59,8 +64,10 @@ void	handle_exec_exit(pid_t pid, t_shell *shell)
 	if (WIFSIGNALED(status))
 	{
 		shell->last_exit = 128 + WTERMSIG(status);
-		if (WTERMSIG(status) == SIGINT)
+		if (WTERMSIG(status) == SIGINT && shell->last_exit == 130)
 			write(STDOUT_FILENO, "\n", 1);
+		else if (WTERMSIG(status) == SIGQUIT)
+			write(STDOUT_FILENO, "Quit (core dumped)\n", 19);
 	}
 	else if (WIFEXITED(status))
 		shell->last_exit = WEXITSTATUS(status);
@@ -84,7 +91,7 @@ void	execute_command_pipe(t_simple_cmds *cmd, t_shell *shell)
 		if (!exec_path)
 		{
 			free_tab(paths);
-			print_error("Error: Command not found\n");
+			write(2, "Command not found\n", 18);
 			shell->last_exit = 127;
 			return ;
 		}

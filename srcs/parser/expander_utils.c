@@ -6,7 +6,7 @@
 /*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/25 17:08:48 by mlavergn          #+#    #+#             */
-/*   Updated: 2025/03/27 11:17:40 by mlavergn         ###   ########.fr       */
+/*   Updated: 2025/04/02 19:30:45 by mlavergn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,10 @@ char	*ft_strjoin_char_free(char *s, char c)
 	len = ft_strlen(s);
 	new_str = malloc(len + 2);
 	if (!new_str)
+	{
+		free(s);
 		return (NULL);
+	}
 	ft_strlcpy(new_str, s, len + 1);
 	new_str[len] = c;
 	new_str[len + 1] = '\0';

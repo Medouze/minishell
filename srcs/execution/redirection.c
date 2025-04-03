@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   redirection.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
+/*   By: lecartuy <lecartuy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/18 10:25:48 by lecartuy          #+#    #+#             */
-/*   Updated: 2025/03/28 22:52:25 by mlavergn         ###   ########.fr       */
+/*   Updated: 2025/04/03 15:48:00 by lecartuy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-static int	handle_heredoc(t_simple_cmds *cmd, t_shell *shell)
+int	handle_heredoc(t_simple_cmds *cmd, t_shell *shell)
 {
 	int	pipe_fd[2];
 
@@ -20,6 +20,7 @@ static int	handle_heredoc(t_simple_cmds *cmd, t_shell *shell)
 		return (perror("pipe"), -1);
 	if (read_heredoc_input(pipe_fd[1], cmd, shell) == -1)
 		return (-1);
+	close(pipe_fd[1]);
 	if (dup2(pipe_fd[0], STDIN_FILENO) == -1)
 	{
 		perror("dup2 for heredoc failed");
@@ -34,17 +35,13 @@ int	redirect_input(t_simple_cmds *cmd, t_shell *shell)
 {
 	int	fd;
 
-	if (cmd->heredocs)
-	{
-		if (handle_heredoc(cmd, shell) == -1)
-			return (-1);
-	}
-	else if (cmd->infile)
+	if (cmd->infile)
 	{
 		fd = open(cmd->infile, O_RDONLY);
 		if (fd == -1)
 		{
 			perror("Error opening input file");
+			shell->last_exit = 1;
 			return (-1);
 		}
 		if (dup2(fd, STDIN_FILENO) == -1)
@@ -92,6 +89,9 @@ int	handle_redirection(t_simple_cmds *cmd, t_shell *shell)
 	if (redirect_input(cmd, shell) == -1)
 		return (-1);
 	if (redirect_output(cmd) == -1)
+	{
+		shell->last_exit = 1;
 		return (-1);
+	}
 	return (0);
 }

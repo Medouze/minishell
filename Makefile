@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: lecartuy <lecartuy@student.s19.be>         +#+  +:+       +#+         #
+#    By: lecartuy <lecartuy@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/12/07 13:53:34 by mlavergn          #+#    #+#              #
-#    Updated: 2025/03/28 19:06:19 by lecartuy         ###   ########.fr        #
+#    Updated: 2025/04/03 17:02:38 by lecartuy         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -15,10 +15,10 @@ DIR					=	srcs/
 DIR_BUILTIN			= 	srcs/builtin/
 DIR_LEXER			= 	srcs/lexer/
 DIR_PARSER			=	srcs/parser/
-DIR_EXECUTION		=	srcs/execution/
+DIR_EXECUTION		= 	srcs/execution/
 LIBFTDIR			= 	./libft
 CC					= 	cc
-FLAGS				= 	-Wall -Wextra -Werror -fsanitize=address -g
+FLAGS				= 	-Wall -Wextra -Werror
 
 SRCS 		=	${DIR}main.c $(DIR_EXECUTION)check.c $(DIR)utils.c $(DIR_BUILTIN)export.c \
 				$(DIR_BUILTIN)unset.c $(DIR_BUILTIN)cd.c $(DIR_BUILTIN)echo.c \
@@ -29,28 +29,33 @@ SRCS 		=	${DIR}main.c $(DIR_EXECUTION)check.c $(DIR)utils.c $(DIR_BUILTIN)export
 				$(DIR_PARSER)tokenizer.c $(DIR_EXECUTION)command.c $(DIR_EXECUTION)main_exec.c \
 				$(DIR_PARSER)tokenizer_utils.c $(DIR_BUILTIN)export_utils.c $(DIR_BUILTIN)cd_utils.c \
 				$(DIR_BUILTIN)cd_utils2.c $(DIR)signals.c $(DIR_EXECUTION)utils.c $(DIR_EXECUTION)heredoc.c
+
 OBJS 		= 	$(SRCS:.c=.o)
 LIBFT		= 	${LIBFTDIR}/libft.a
 
+HEADERS		=	includes/minishell.h includes/lexer.h includes/parser.h includes/execution.h \
+				includes/builtin.h includes/utils.h
+
 all: $(NAME)
 
-%.o: %.c 
-	$(CC) $(FLAGS)  -o $@ -c $<
+%.o: %.c $(HEADERS)
+	$(CC) $(FLAGS) -o $@ -c $<
 
 $(LIBFT):
-	$(MAKE) -C $(LIBFTDIR)
+	$(MAKE) -C $(LIBFTDIR) $(notdir $(LIBFT))
 
 $(NAME): $(OBJS) $(LIBFT)
 	$(CC) $(FLAGS) -o $(NAME) $(OBJS) $(LIBFT) -lreadline
 
 clean:
 	rm -f $(OBJS)
-	@cd $(LIBFTDIR) &&$(MAKE) clean  
+	@$(MAKE) -C $(LIBFTDIR) clean  
 
 fclean: clean
 	rm -f $(NAME)
-	@cd $(LIBFTDIR) &&$(MAKE) fclean 
-	
+	@$(MAKE) -C $(LIBFTDIR) fclean 
+
 re: fclean all
 
-.PHONY:	all clean fclean re
+.PHONY: all clean fclean re
+

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
+/*   By: lecartuy <lecartuy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 13:54:10 by mlavergn          #+#    #+#             */
-/*   Updated: 2025/03/28 23:59:24 by mlavergn         ###   ########.fr       */
+/*   Updated: 2025/04/03 16:01:31 by lecartuy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ static int	process_line(char *line, t_shell *g_env)
 	if (!lexed_token)
 	{
 		g_env->last_exit = 2;
-		return (0);
+		return (2);
 	}
 	tokens = parser2(&lexed_token, g_env);
 	if (!tokens)

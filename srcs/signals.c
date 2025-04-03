@@ -6,7 +6,7 @@
 /*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/19 21:11:23 by mlavergn          #+#    #+#             */
-/*   Updated: 2025/03/27 21:02:53 by mlavergn         ###   ########.fr       */
+/*   Updated: 2025/04/02 20:14:22 by mlavergn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,14 @@ void	ft_sig_heredoc(int sig)
 	write(1, "\n", 1);
 	close(0);
 	(void) sig;
+}
+
+void	ft_sigint_received(int sigint_received)
+{
+	if (sigint_received == 1)
+		write(STDOUT_FILENO, "\n", 1);
+	else if (sigint_received == 2)
+		write(STDOUT_FILENO, "Quit (core dumped)\n", 19);
 }
 
 void	ft_handler_signal(int pick)

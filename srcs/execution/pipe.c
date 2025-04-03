@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipe.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lecartuy <lecartuy@student.s19.be>         +#+  +:+       +#+        */
+/*   By: lecartuy <lecartuy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/18 10:25:46 by lecartuy          #+#    #+#             */
-/*   Updated: 2025/03/28 19:06:58 by lecartuy         ###   ########.fr       */
+/*   Updated: 2025/04/03 16:38:15 by lecartuy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ void	execute_child(t_simple_cmds *cmd, t_pipe_data *p_data, t_shell *shell)
 	i = 0;
 	ft_handler_signal(3);
 	if (redirect_input(cmd, shell) == -1)
-		exit(EXIT_FAILURE);
+		exit(1);
 	if (p_data->index > 0)
 		dup2(p_data->pipe_fd[p_data->index - 1][0], STDIN_FILENO);
 	if (redirect_output(cmd) == -1)

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   lexer.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
+/*   By: lecartuy <lecartuy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/05 14:59:17 by mlavergn          #+#    #+#             */
-/*   Updated: 2025/03/29 00:21:00 by mlavergn         ###   ########.fr       */
+/*   Updated: 2025/04/03 17:05:48 by lecartuy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ void	fill_token(t_token **head, t_token **current, t_token *new)
 	*current = new;
 }
 
-void	print_tokens(t_token *head) // A supprimer par la suite(test)
+void	print_tokens(t_token *head)
 {
 	t_token	*current;
 
@@ -79,6 +79,8 @@ t_token	*lexer(char *str, t_shell *g_env)
 	head = NULL;
 	current = NULL;
 	i = 0;
+	if (!closed(str))
+		return (NULL);
 	expand_dollar(&str, *g_env);
 	while (str[i])
 	{
@@ -87,10 +89,7 @@ t_token	*lexer(char *str, t_shell *g_env)
 		else if (str[i] == '|' || str[i] == '<' || str[i] == '>')
 			handle_token(str, &head, &current, &i);
 		else if (str[i] == '\"' || str[i] == '\'')
-		{
-			if (!handle_quotes(str, &i, &current, &head))
-				return (NULL);
-		}
+			handle_quotes(str, &i, &current, &head);
 		else
 			proceed_cmd(str, &head, &current, &i);
 	}

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main_exec.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lecartuy <lecartuy@student.s19.be>         +#+  +:+       +#+        */
+/*   By: lecartuy <lecartuy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/18 11:18:06 by lecartuy          #+#    #+#             */
-/*   Updated: 2025/03/28 19:01:13 by lecartuy         ###   ########.fr       */
+/*   Updated: 2025/04/03 16:37:33 by lecartuy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,22 @@ static int	execute_command_builtin(t_simple_cmds *cmds, t_shell *shell)
 	return (0);
 }
 
+static int	handle_heredocs_and_backup(t_simple_cmds *cmds, t_shell *shell,
+		int *stdin_backup, int *stdout_backup)
+{
+	if (backup_fds(stdin_backup, stdout_backup) == -1)
+		return (0);
+	if (cmds->heredocs)
+	{
+		if (handle_heredoc(cmds, shell) == -1)
+		{
+			restore_fds(*stdin_backup, *stdout_backup);
+			return (0);
+		}
+	}
+	return (1);
+}
+
 void	execute_tokens(t_simple_cmds *cmds, t_shell *shell)
 {
 	int	stdin_backup;
@@ -56,14 +72,20 @@ void	execute_tokens(t_simple_cmds *cmds, t_shell *shell)
 
 	while (cmds)
 	{
-		if (cmds->next)
-			return (handle_pipe(cmds, shell));
-		if (backup_fds(&stdin_backup, &stdout_backup) == -1)
+		if (!handle_heredocs_and_backup(cmds, shell, &stdin_backup,
+				&stdout_backup))
 			return ;
+		if (cmds->next)
+		{
+			handle_pipe(cmds, shell);
+			restore_fds(stdin_backup, stdout_backup);
+			return ;
+		}
 		if (handle_redirection(cmds, shell) != -1)
 		{
 			if (execute_command_builtin(cmds, shell))
 				return (restore_fds(stdin_backup, stdout_backup));
+			restore_fds(stdin_backup, stdout_backup);
 		}
 		ft_handler_signal(0);
 		restore_fds(stdin_backup, stdout_backup);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lecartuy <lecartuy@student.s19.be>         +#+  +:+       +#+        */
+/*   By: lecartuy <lecartuy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/11 17:10:46 by mlavergn          #+#    #+#             */
-/*   Updated: 2025/03/29 15:46:24 by lecartuy         ###   ########.fr       */
+/*   Updated: 2025/04/03 16:51:04 by lecartuy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@
 # include <errno.h>
 
 # ifndef SPE_CHARS
-#  define SPE_CHARS "!#$%&()*+,-./:;<=>?@[\\]^_`{|}~"
+#  define SPE_CHARS "!#$%&()*+,-./:;=?@[\\]^_`{|}~"
 # endif
 
 typedef enum e_type
@@ -122,6 +122,7 @@ void			print_error(char *error);
 /*lexer*/
 void			copy_quoted_content(char *buffer,
 					int *buf_index, char *str, int *i);
+int				check_closed_dollar(char **str, t_token **head, t_shell g_env);
 t_token			*lexer(char *str, t_shell *g_env);
 void			handle_token(char *str,
 					t_token **head, t_token **current, int *i);
@@ -133,6 +134,8 @@ int				handle_quotes(char *str, int *i,
 void			print_tokens(t_token *head); //delete plus tard
 void			move_to_closing_quote(char *str, int *i, char quote_type);
 int				get_nbr_quotes(char *str, char quote_type);
+int				check_closed(char *str);
+int				closed(char *str);
 
 /*parser*/
 void			add_heredoc(t_heredoc **heredocs, char *delimiter);
@@ -145,7 +148,7 @@ char			*ft_strjoin_free(char *s1, char *s2);
 char			*ft_strreplace(char *str, char *old, char *new);
 t_simple_cmds	*tokenize(t_token *tokens);
 void			free_simple_cmds(t_simple_cmds *cmd);
-int				get_nbr_cmd(t_token **tokens);
+int				get_nbr_cmd(t_token *tokens);
 void			expand_tilde(char **path, t_shell g_env);
 int				inside_quotes(char	*str);
 void			in_quotes(char **str, int i, int *in_double, int *in_single);
@@ -166,11 +169,12 @@ void			handle_exec_exit(pid_t pid, t_shell *shell);
 void			execute_command_pipe(t_simple_cmds *cmd, t_shell *shell);
 char			**get_paths(char **env);
 char			*find_exec(char *cmd, char **paths);
-
+int				handle_heredoc(t_simple_cmds *cmd, t_shell *shell);
 /*signals*/
 
 void			ft_sig_handling(int sig);
 void			ft_sig_heredoc(int sig);
 void			ft_handler_signal(int pick);
+void			ft_sigint_received(int sigint_received);
 
 #endif

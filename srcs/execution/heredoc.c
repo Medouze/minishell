@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   heredoc.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
+/*   By: lecartuy <lecartuy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 13:54:10 by mlavergn          #+#    #+#             */
-/*   Updated: 2025/03/28 23:59:24 by mlavergn         ###   ########.fr       */
+/*   Updated: 2025/04/03 15:55:32 by lecartuy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,7 @@ int	read_heredoc_input(int fd, t_simple_cmds *cmd, t_shell *shell)
 	char		*line;
 	char		*last_delim;
 
+	ft_handler_signal(1);
 	current = cmd->heredocs;
 	last_delim = find_last_heredoc(cmd->heredocs);
 	while (current)

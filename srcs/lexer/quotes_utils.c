@@ -6,7 +6,7 @@
 /*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/26 15:40:51 by mlavergn          #+#    #+#             */
-/*   Updated: 2025/02/27 23:09:02 by mlavergn         ###   ########.fr       */
+/*   Updated: 2025/04/02 21:05:11 by mlavergn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,4 +52,15 @@ void	copy_quoted_content(char *buffer, int *buf_index, char *str, int *i)
 		buffer[(*buf_index)++] = str[(*i)++];
 	if (str[*i] == quote)
 		(*i)++;
+}
+
+int	closed(char *str)
+{
+	if (!check_closed(str))
+	{
+		printf("minishell: unclosed quotes\n");
+		free(str);
+		return (0);
+	}
+	return (1);
 }

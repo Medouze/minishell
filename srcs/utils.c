@@ -6,7 +6,7 @@
 /*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/11 16:37:39 by mlavergn          #+#    #+#             */
-/*   Updated: 2025/03/27 11:01:08 by mlavergn         ###   ########.fr       */
+/*   Updated: 2025/04/02 18:14:39 by mlavergn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,8 +93,7 @@ int	check_only_spaces(char *line)
 	i = 0;
 	while (line[i])
 	{
-		if (!((line[i] >= 8 && line[i] <= 13) || line[i] == 32
-				|| line[i] == '\"' || line[i] == '\''))
+		if (!((line[i] >= 8 && line[i] <= 13) || line[i] == 32))
 			return (0);
 		i++;
 	}

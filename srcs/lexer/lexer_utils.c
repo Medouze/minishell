@@ -6,7 +6,7 @@
 /*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/12 16:15:26 by mlavergn          #+#    #+#             */
-/*   Updated: 2025/03/29 00:24:20 by mlavergn         ###   ########.fr       */
+/*   Updated: 2025/04/02 19:50:33 by mlavergn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,12 +98,6 @@ int	handle_quotes(char *str, int *i, t_token **current, t_token **head)
 	int		buf_index;
 
 	buf_index = 0;
-	if (!check_closed(str))
-	{
-		printf("minishell: unclosed quotes\n");
-		free_tokens(head);
-		return (0);
-	}
 	while (str[*i])
 	{
 		if (str[*i] == '"' || str[*i] == '\'')

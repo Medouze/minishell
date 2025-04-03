@@ -6,7 +6,7 @@
 /*   By: mlavergn <mlavergn@student.s19.be>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/01 13:12:02 by mlavergn          #+#    #+#             */
-/*   Updated: 2025/03/29 00:20:31 by mlavergn         ###   ########.fr       */
+/*   Updated: 2025/04/02 21:04:32 by mlavergn         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,28 +68,27 @@ void	handle_redir(t_simple_cmds *exec_cmd, t_token **tokens)
 	}
 }
 
-int	fill_args(t_simple_cmds *cmd, t_token *tokens)
+int	fill_args(t_simple_cmds *cmd, t_token **tokens)
 {
 	int	i;
 	int	j;
 
 	i = 0;
 	j = 0;
-	while (tokens && (tokens->type == CMD))
+	while ((*tokens) && (*tokens)->type != PIPE)
 	{
-		cmd->args[i] = ft_strdup(tokens->str);
-		if (!cmd->args[i])
+		if ((*tokens)->type == CMD)
 		{
-			while (j < i)
-			{
-				free(cmd->args[j]);
-				j++;
-			}
-			free(cmd->args);
-			return (-1);
+			cmd->args[i] = ft_strdup((*tokens)->str);
+			i++;
 		}
-		i++;
-		tokens = tokens->next;
+		if ((*tokens) && ((*tokens)->type >= REDIRECT_IN
+				&& (*tokens)->type <= HEREDOC))
+			handle_redir(cmd, tokens);
+		else if ((*tokens)->type == PIPE)
+			break ;
+		else
+			(*tokens) = (*tokens)->next;
 	}
 	cmd->args[i] = NULL;
 	return (0);
@@ -100,25 +99,24 @@ t_simple_cmds	*tokenize(t_token *tokens)
 	t_simple_cmds	*exec_token;
 	t_simple_cmds	*current_cmd;
 	t_simple_cmds	*last_cmd;
-	t_token			*current;
 
 	exec_token = NULL;
 	while (tokens)
 	{
-		current = tokens;
-		current_cmd = allocate_new_command(get_nbr_cmd(&tokens));
+		current_cmd = allocate_new_command(get_nbr_cmd(tokens));
 		if (!current_cmd)
 			return (NULL);
-		if (fill_args(current_cmd, current) == -1)
+		if (fill_args(current_cmd, &tokens) == -1)
 		{
 			free(current_cmd);
 			return (NULL);
 		}
 		add_command_to_list(&exec_token, current_cmd, &last_cmd);
-		while (tokens && (tokens->type >= REDIRECT_IN
-				&& tokens->type <= HEREDOC))
-			handle_redir(current_cmd, &tokens);
-		if (tokens && tokens->type == PIPE)
+		if (!tokens)
+			break ;
+		else if (tokens && tokens->type == PIPE)
+			tokens = tokens->next;
+		else
 			tokens = tokens->next;
 	}
 	return (exec_token);

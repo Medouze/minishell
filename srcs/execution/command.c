@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   command.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lecartuy <lecartuy@student.s19.be>         +#+  +:+       +#+        */
+/*   By: lecartuy <lecartuy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/27 12:20:31 by mlavergn          #+#    #+#             */
-/*   Updated: 2025/03/29 15:40:25 by lecartuy         ###   ########.fr       */
+/*   Updated: 2025/04/03 15:33:42 by lecartuy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@ static char	*get_exec_path(t_simple_cmds *cmd, t_shell *shell)
 	if (!exec_path)
 	{
 		free_tab(paths);
-		perror("Error: Command not found");
+		write(2, "Error: Command not found\n", 25);
 		shell->last_exit = 127;
 		return (NULL);
 	}
@@ -74,7 +74,18 @@ static void	launch_exec(char *exec_path, t_simple_cmds *cmd, t_shell *shell)
 {
 	execve(exec_path, cmd->args, shell->env);
 	if (errno == EACCES)
-		exit(126);
+	{
+		if (cmd->args[0][0] == '\0')
+		{
+			write(2, "Command not found\n", 18);
+			exit(127);
+		}
+		else
+		{
+			write(2, "Permission denied\n", 18);
+			exit(126);
+		}
+	}
 	else if (errno == ENOENT)
 		exit(127);
 	else
