@@ -18,7 +18,7 @@ DIR_PARSER			=	srcs/parser/
 DIR_EXECUTION		= 	srcs/execution/
 LIBFTDIR			= 	./libft
 CC					= 	cc
-FLAGS				= 	-Wall -Wextra -Werror
+FLAGS				= 	-Wall -Wextra -Werror -fsanitize=address
 
 SRCS 		=	${DIR}main.c $(DIR_EXECUTION)check.c $(DIR)utils.c $(DIR_BUILTIN)export.c \
 				$(DIR_BUILTIN)unset.c $(DIR_BUILTIN)cd.c $(DIR_BUILTIN)echo.c \

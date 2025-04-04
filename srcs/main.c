@@ -58,7 +58,7 @@ int	main(int ac, char **av, char **envp)
 			free_env(g_env.hidden_env);
 			break ;
 		}
-		if (!process_line(line, &g_env))
+		if (process_line(line, &g_env) == 1)
 			free(line);
 	}
 	return (0);
